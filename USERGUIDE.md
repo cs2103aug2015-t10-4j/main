@@ -8,7 +8,7 @@ This program is meant to help you efficiently manage your work life and personal
 
 The first thing you will see when you open the program is the user interface. There, you will see these main components.
 
-     | Item | Description
+ No. | Item | Description
 ---  | --- | ---
  1   | Command box    | This is where you input everything to use the app                 
  2   | Program output | This gives you any information regarding the commands you entered 
@@ -18,7 +18,7 @@ The first thing you will see when you open the program is the user interface. Th
 This interface you see is just the start screen. There will be different interfaces as you further explore the program.
 This program is split into three main interfaces. 
 
-    | Screen | Description
+ No. | Screen | Description
 ---  | --- | ---
  1   | Startup   | This screen displays both your personal and work schedule.         
  2   | Personal | This screen displays primarily your personal schedule.
