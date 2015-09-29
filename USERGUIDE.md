@@ -34,7 +34,7 @@ Note: Anything in the [] means it's optional. () refers to a parameter.
 Command | Usage | Description
 ---  | --- | ---
  help   | help [command] | This will give you a list of commands you can use.<br/>If you give it a command, it will tell you how to use that command
- add  | add (eventname) of [type] <from/to>/on/at [eventdatetime] [priority]  |  This adds an item to your schedule.    
+ add  | add (eventname) of [type] \<from/to\>/on/at [eventdatetime] [priority]  |  This adds an item to your schedule.    
  edit | change (fieldname) of (eventname) to (newvalue) | This lets you edit the details of an event.
  list  | list [type]  | This lists all future events <br/> If type is defined, it will list all of that type only.  
  switch   | switch [screen] | This toggles between the personal and work screen.</br>If screen is given, then it switches to that screen.
