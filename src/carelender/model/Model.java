@@ -14,6 +14,7 @@ public class Model {
 	public static String filename;
 	
 	public Model() {
+        filename = "events.dat";
 		eventFile = new File(filename);
 	}
 	
