@@ -13,7 +13,7 @@ public class Search {
 	}
 	
 	public EventList parseQuery (QueryObject query) {
-		
+		return null;
 	}
 
 }
