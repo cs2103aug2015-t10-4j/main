@@ -1,5 +1,6 @@
 package carelender;
 
+import carelender.controller.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +12,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        Controller.initialise();
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("CareLender");
         primaryStage.setScene(new Scene(root, 1024, 768));

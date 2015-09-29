@@ -1,5 +1,6 @@
-package carelender;
+package carelender.view;
 
+import carelender.controller.Controller;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,7 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class GraphicalInterface implements Initializable {
     @FXML
     private TextArea outputText;
     @FXML
@@ -26,7 +27,9 @@ public class Controller implements Initializable {
         assert inputText != null : "fx:id=\"inputText\" was not injected: check your FXML file 'simple.fxml'.";
         // initialize your logic here: all @FXML variables will have been injected
 
+        Controller.initGraphicalInterface(this);
         messageList = new ArrayList<>();
+
         final EventHandler<KeyEvent> keyEventHandler =
                 new EventHandler<KeyEvent>() {
                     public void handle(final KeyEvent keyEvent) {
@@ -34,26 +37,12 @@ public class Controller implements Initializable {
                             if (keyEvent.getCode() == KeyCode.ENTER) {
                                 String text = inputText.getText();
                                 inputText.setText("");
-                                //displayMessage(text);
-                                processInput(text);
+                                Controller.processUserInput(text);
                             }
                         }
                     }
                 };
         inputText.setOnKeyPressed( keyEventHandler );
-    }
-
-    private void processInput( String input ) {
-        if ( input.equals("clear") ) {
-            clearMessageLog();
-        } else if (input.equals("help")) {
-            displayMessage("Commands:\ndisplay - displays the text input\nclear - clears the screen\nhelp - shows this screen");
-        } else if (input.startsWith("display ")) {
-            displayMessage(input.substring(8));
-        } else {
-            displayMessage("Invalid command. Need help? Type help.");
-        }
-
     }
 
     public void clearMessageLog() {
@@ -73,4 +62,5 @@ public class Controller implements Initializable {
         outputText.setText(stringBuilder.toString());
         outputText.setScrollTop(Double.MAX_VALUE);
     }
+
 }
