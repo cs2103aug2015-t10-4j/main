@@ -1,4 +1,4 @@
-package carelender;
+package carelender.Controller;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
