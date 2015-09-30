@@ -19,7 +19,7 @@ public class EventObject {
 	private DateRecurrence eventRecurrence;
 	
 	public EventObject () {
-		//TODO: Initialise internal fields.
+		//TODO: Initialize internal fields.
 	}
 	
 	public EventType getEventType () {

@@ -18,7 +18,7 @@ public class Controller {
     private static Model model = null;
     private static InputParser inputParser = null;
 
-    public static void initialise() {
+    public static void initialize() {
         search = new Search();
         model = new Model();
         inputParser = new InputParser();
@@ -58,5 +58,9 @@ public class Controller {
         } else {
             graphicalInterface.displayMessage("Invalid command. Need help? Type help.");
         }
+    }
+    
+    public static void printWelcomeMessage(){
+    	graphicalInterface.displayMessage("CareLender: Maybe the best task manager in the world.");
     }
 }
