@@ -29,7 +29,7 @@ public class GraphicalInterface implements Initializable {
 
         Controller.initGraphicalInterface(this);
         messageList = new ArrayList<>();
-
+        Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
                 new EventHandler<KeyEvent>() {
                     public void handle(final KeyEvent keyEvent) {
