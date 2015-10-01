@@ -18,6 +18,7 @@ public class Model {
 	private static File eventFile;
 	public static String filename;
 	public static ArrayList<EventList> cache;
+	public static ArrayList<String> storage;
 	
 	public Model() {
         filename = "events.dat";
