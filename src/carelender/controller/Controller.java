@@ -1,11 +1,14 @@
 package carelender.controller;
 
 import carelender.model.Model;
+import carelender.model.data.QueryAdd;
 import carelender.model.data.QueryDummy;
 import carelender.model.data.QueryBase;
 import carelender.model.data.QueryError;
 import carelender.view.GraphicalInterface;
 import carelender.view.parser.InputParser;
+
+import java.text.SimpleDateFormat;
 
 /**
  * Does all the logic of the application
@@ -50,14 +53,22 @@ public class Controller {
             case CLEAR:
                 graphicalInterface.clearMessageLog();
                 break;
+
+            case ADD:
+                processAdd( (QueryAdd) query);
+                break;
             default:
                 graphicalInterface.displayMessage("Command accepted.");
                 break;
         }
     }
 
-    private static void processError(QueryError query) {
-        graphicalInterface.displayMessage(query.getMessage());
+    private static void processAdd(QueryAdd queryAdd ) {
+        String dateString = new SimpleDateFormat("E dd MMM yyyy h:mma Z").format(queryAdd.getTime());
+        displayMessage("Adding new task: ["+queryAdd.getName()+"] at " + dateString);
+    }
+    private static void processError(QueryError queryError) {
+        graphicalInterface.displayMessage(queryError.getMessage());
         showHelp();
     }
 
@@ -65,13 +76,13 @@ public class Controller {
         graphicalInterface.displayMessage("Available Commands:");
         graphicalInterface.displayMessage(inputParser.showCommandList());
     }
-    private static void processDummy(QueryDummy query) {
-        if ( query.getData().equals("clear") ) {
+    private static void processDummy(QueryDummy queryDummy) {
+        if ( queryDummy.getData().equals("clear") ) {
             graphicalInterface.clearMessageLog();
-        } else if (query.getData().equals("help")) {
+        } else if (queryDummy.getData().equals("help")) {
             graphicalInterface.displayMessage("Commands:\ndisplay [to display] - displays the text input\nclear - clears the screen\nhelp - shows this screen");
-        } else if (query.getData().startsWith("display ")) {
-            graphicalInterface.displayMessage(query.getData().substring(8));
+        } else if (queryDummy.getData().startsWith("display ")) {
+            graphicalInterface.displayMessage(queryDummy.getData().substring(8));
         } else {
             graphicalInterface.displayMessage("Invalid command. Need help? Type help.");
         }
@@ -82,7 +93,14 @@ public class Controller {
     }
 
     /**
-     * Prints a message to the screen, used for debugging purposes.
+     * Prints a message to screen
+     * @param message message to be displayed
+     */
+    public static void displayMessage ( String message ) {
+        graphicalInterface.displayMessage(message);
+    }
+    /**
+     * Prints a message to the screen only in debug mode.
      * @param message message to be displayed
      */
     public static void printDebugMessage ( String message ) {

@@ -11,37 +11,65 @@ public class Command {
     private String command;
     private String description;
     private QueryType type;
-    ArrayList<CommandParameter> parameters;
+    ArrayList<CommandKeyword> keywords;
     public Command(String name, QueryType type) {
-        command = name;
+        command = name.trim();
         this.type = type;
         description = "";
-        parameters = new ArrayList<>();
+        keywords = new ArrayList<>();
     }
 
     /**
-     * Matches the parts of the command to the parameters
+     * Adds a possible keyword for this command
+     *
+     * @param type Keyword type
+     * @param keyword New keyword
+     */
+    public void addKeyword(String type, String keyword) {
+        keyword = keyword.trim();
+        if ( keyword.length() == 0 ) return;
+        if ( matchKeyword(keyword) != null ) return;
+        keywords.add(new CommandKeyword(keyword, type) );
+    }
+
+    /**
+     * Adds a list of possible keywords for this command
+     *
+     * @param type Keyword type
+     * @param keywords Comma delimited keyword list
+     */
+    public void addKeywords(String type, String keywords) {
+        String [] keywordArray = keywords.split(",");
+        for ( String key: keywordArray ) {
+            addKeyword(type,key);
+        }
+    }
+    /**
+     * Matches the parts of the command to the keywords
      * @param queryParts Parts of the query
      * @return boolean array with true at the indices of the matched param keywords
      */
-    public boolean[] processParameters( String [] queryParts ) {
-        boolean [] isParam = new boolean[queryParts.length];
+    public CommandPart[] processKeywords(String[] queryParts) {
+        CommandPart[] commandParts = new CommandPart[queryParts.length];
         for ( int i = 0 ; i < queryParts.length; i++ ) {
-            isParam[i] = matchParam(queryParts[i]);
+            CommandKeyword keyword = matchKeyword(queryParts[i]);
+            commandParts[i] = new CommandPart(  queryParts[i],
+                                                keyword!=null,
+                                                keyword==null?null:keyword.getType());
         }
-        return isParam;
+        return commandParts;
     }
 
     /**
-     * Checks if a parameter exists
-     * @param param Parameter to check
-     * @return true if it exists
+     * Checks if a keyword exists
+     * @param keyword Parameter to check
+     * @return null if not exists
      */
-    public boolean matchParam ( String param ) {
-        for ( CommandParameter thisParam : parameters ) {
-            if ( thisParam.getKeyword().equalsIgnoreCase(param) ) return true;
+    public CommandKeyword matchKeyword(String keyword) {
+        for ( CommandKeyword thisKeyword : keywords) {
+            if ( thisKeyword.getKeyword().equalsIgnoreCase(keyword) ) return thisKeyword;
         }
-        return false;
+        return null;
     }
     public String getCommand() {
         return command;
@@ -56,6 +84,6 @@ public class Command {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description.trim();
     }
 }
