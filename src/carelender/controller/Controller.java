@@ -2,16 +2,15 @@ package carelender.controller;
 
 import carelender.model.Model;
 import carelender.model.data.QueryDummy;
-import carelender.model.data.QueryObject;
+import carelender.model.data.QueryBase;
 import carelender.view.GraphicalInterface;
-import carelender.view.InputParser;
-
-import javax.naming.ldap.Control;
+import carelender.view.parser.InputParser;
 
 /**
  * Does all the logic of the application
  */
 public class Controller {
+    private static boolean debugMode = true;
 
     private static GraphicalInterface graphicalInterface = null;
     private static Search search = null;
@@ -32,10 +31,10 @@ public class Controller {
     /**
      * Processes the user input.
      * Called by the GraphicalInterface class
-     * @param userInput
+     * @param userInput The user input string
      */
     public static void processUserInput(String userInput) {
-        QueryObject query = inputParser.parseCompleteInput(userInput);
+        QueryBase query = inputParser.parseCompleteInput(userInput);
 
         switch (query.getQueryType()) {
             case DUMMY:
@@ -62,5 +61,16 @@ public class Controller {
     
     public static void printWelcomeMessage(){
     	graphicalInterface.displayMessage("CareLender: Maybe the best task manager in the world.");
+    }
+
+    /**
+     * Prints a message to the screen, used for debugging purposes.
+     * @param message message to be displayed
+     */
+    public static void printDebugMessage ( String message ) {
+        if ( debugMode ) {
+            graphicalInterface.displayMessage(message);
+        }
+        System.out.println(message);
     }
 }

@@ -1,13 +1,11 @@
 package carelender.model;
 
-import java.io.BufferedReader;
 /**
  * Handles all database and file saving
  */
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+		import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -40,7 +38,7 @@ public class Model {
 		}
 	}
 	
-	public static EventList retrieveEvent(QueryObject queryObj) {
+	public static EventList retrieveEvent(QueryBase queryObj) {
 		EventList eventList = new EventList();
 		return eventList;
 	}
@@ -49,7 +47,7 @@ public class Model {
 		//TODO: Checks cache and update the event.
 	}
 	
-	public static void deleteEvent(QueryObject queryObj) {
+	public static void deleteEvent(QueryBase queryObj) {
 		//TODO: Checks cache and update the event.
 	}
 }
