@@ -3,6 +3,7 @@ package carelender.controller;
 import carelender.model.Model;
 import carelender.model.data.QueryDummy;
 import carelender.model.data.QueryBase;
+import carelender.model.data.QueryError;
 import carelender.view.GraphicalInterface;
 import carelender.view.parser.InputParser;
 
@@ -38,15 +39,32 @@ public class Controller {
 
         switch (query.getQueryType()) {
             case DUMMY:
-                processDummy((QueryDummy)query);
+                processDummy((QueryDummy) query);
                 break;
-            case ADD:
-            case DELETE:
-            case EDIT:
+            case ERROR:
+                processError((QueryError) query);
+                break;
+            case HELP:
+                showHelp();
+                break;
+            case CLEAR:
+                graphicalInterface.clearMessageLog();
+                break;
+            default:
+                graphicalInterface.displayMessage("Command accepted.");
                 break;
         }
     }
 
+    private static void processError(QueryError query) {
+        graphicalInterface.displayMessage(query.getMessage());
+        showHelp();
+    }
+
+    private static void showHelp() {
+        graphicalInterface.displayMessage("Available Commands:");
+        graphicalInterface.displayMessage(inputParser.showCommandList());
+    }
     private static void processDummy(QueryDummy query) {
         if ( query.getData().equals("clear") ) {
             graphicalInterface.clearMessageLog();

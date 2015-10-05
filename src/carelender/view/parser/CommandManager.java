@@ -14,25 +14,23 @@ public class CommandManager {
 
     /**
      * Adds a new command to the list of commands
-     * @param c The new command
+     * @param command The new command
      */
-    public void addCommand(Command c) {
-        commands.add(c);
+    public void addCommand(Command command) {
+        commands.add(command);
     }
 
     /**
      * Checks if a command exists
      * @param command Command to check against
-     * @return true if command exists
+     * @return Command that has been matched. Null if no match
      */
-    public boolean matchCommand ( String command ) {
-        Iterator<Command> itr = commands.iterator();
-        while ( itr.hasNext() ) {
-            Command thisCommand = itr.next();
-            if ( thisCommand.getCommand().equals( command ) ) {
-                return true;
+    public Command matchCommand ( String command ) {
+        for ( Command commandObject : commands ) {
+            if ( commandObject.getCommand().equalsIgnoreCase( command ) ) {
+                return commandObject;
             }
         }
-        return false;
+        return null;
     }
 }
