@@ -14,21 +14,64 @@ public class EventObject {
 	private long uid;
 	private String name;
 	//If timeRange is null, task is a FLOATING_TASK.
-	//Deadline tasks have DateRange have same start and end date.
-	private DateRange[] timeRange;
-	private DateRecurrence eventRecurrence;
+	//Deadline tasks have DateRange with same start and end date.
+	private DateRange[] dateRange;
+	private DateRecurrence dateRecurrence;
 	
-	public EventObject () {
+	public EventObject (long uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
 		//TODO: Initialize internal fields.
+		this.uid = uidToSet;
+		this.name = nameToSet;
+		this.dateRange = dateRangetoSet;
+	}
+	
+	public DateRange[] getDateRange () {
+		return this.dateRange;
+	}
+	
+	public Date getLatestDate () {
+		Date lastDate = null;
+		
+		for (DateRange dateR : this.dateRange) {
+			if (lastDate == null) {
+				lastDate = dateR.getEnd();
+			} else {
+				if (dateR.getEnd().after(lastDate)) {
+					lastDate = dateR.getEnd();
+				}
+			}
+		}
+		return lastDate;
+	}
+	
+	public Date getEarliestDate () {
+		Date firstDate = null;
+		
+		for (DateRange dateR : this.dateRange) {
+			if (firstDate == null) {
+				firstDate = dateR.getStart();
+			} else {
+				if (dateR.getStart().before(firstDate)) {
+					firstDate = dateR.getStart();
+				}
+			}
+		}
+		return firstDate;
+	}
+	
+	public String getName () {
+		return this.name;
 	}
 	
 	public EventType getEventType () {
-		if (this.eventRecurrence == null) {
-			if (this.timeRange == null) {
+		if (this.dateRecurrence == null) {
+			if (this.dateRange == null) {
 				return EventType.FLOATING_TASK;
+			} else {
+				
 			}
 		} else {
-			if (this.timeRange == null) {
+			if (this.dateRange == null) {
 				return EventType.REC_FLOATING_TASK;
 			}
 		}
