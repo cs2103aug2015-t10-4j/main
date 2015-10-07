@@ -149,6 +149,11 @@ public class InputParser {
 
     public QueryBase parseSearchCommand ( String[] queryParts, CommandPart [] commandParts ) {
         QueryList queryList = new QueryList();
+        //WZ: Prevent array index out of bounds.
+        if (queryParts.length == 1) {
+        	return new QueryError("Please enter a parameter to search by!");
+        }
+        //WZ: END
         queryList.addSearchParam(QueryList.SearchParam.NAME_CONTAINS, queryParts[1]);
         return queryList;
     }
