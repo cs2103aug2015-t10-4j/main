@@ -81,7 +81,8 @@ public class Controller {
     }
 
     private static void processList ( QueryList queryList ) {
-        //TODO: Actually list objects
+        EventList searchResults = search.parseQuery(queryList);
+        
         SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
         displayMessage("Listing events");
         HashMap<QueryList.SearchParam, Object> paramList = queryList.getParamsList();
@@ -97,6 +98,14 @@ public class Controller {
             String search = (String)paramList.get(QueryList.SearchParam.NAME_CONTAINS);
             displayMessage("   matching: " + search);
         }
+        
+        if (searchResults.size() > 0) {
+        	int count = 1;
+        	for (EventObject event : searchResults) {
+        		displayMessage(count + ". " + event.getName());
+        		count++;
+        	}
+        }
     }
 
     private static void processAdd(QueryAdd queryAdd ) {
@@ -107,13 +116,14 @@ public class Controller {
         QueryList checkClashesQuery = new QueryList();
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_END, queryAdd.getTime());
-        EventList clashingTasks = search.parseQuery(checkClashesQuery);
+        
+        EventList searchResults = search.parseQuery(checkClashesQuery);
         
         //There is at least one task that clashes with the task to add.
-        if (clashingTasks.size() > 0) {
+        if (searchResults.size() > 0) {
         	displayMessage("Task clashes with:");
         	int count = 1;
-        	for (EventObject event : clashingTasks) {
+        	for (EventObject event : searchResults) {
         		displayMessage(count + ". " + event.getName());
         		count++;
         	}

@@ -83,13 +83,13 @@ public class Search {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			
 			if (startDate instanceof Date) {
-				match = this.isEventBeforeDate(eventToCheck, (Date)startDate);
+				match = this.isEventAfterDate(eventToCheck, (Date)startDate);
 			}
 		} else if (this.hasEndDate(paramsList)) {
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
 			
 			if (endDate instanceof Date) {
-				match = this.isEventAfterDate(eventToCheck, (Date)endDate);
+				match = this.isEventBeforeDate(eventToCheck, (Date)endDate);
 			}
 		}
 		return match;
