@@ -2,6 +2,7 @@ package carelender.view.parser;
 
 import carelender.model.data.*;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -43,9 +44,65 @@ public class InputParser {
         commandManager.addCommand(newCommand);
     }
 
-    public QueryBase parseCompleteInput ( String input ) {
+    /**
+     * Splits up the query into it's individual parts.
+     * Takes into account "" strings.
+     *   e.g. "Hello world" will be converted into one string excluding the "
+     * @param input The user input
+     * @return String array with each part in it's own entry
+     */
+    public String [] splitQuery ( String input ) {
         String [] queryParts = input.split(" ");
+        ArrayList<String> processingList = new ArrayList<>(queryParts.length);
+        int startString = 0;
+        int endString;
+        boolean isProcessingString = false;
+
+        for ( int i = 0; i < queryParts.length; i++ ) {
+            String part = queryParts[i];
+            if (!isProcessingString) {
+                //Search for the start of a string
+                if ( part.startsWith("\"") ) {
+                    startString = i;
+                    isProcessingString = true;
+                } else {
+                    processingList.add(part);
+                }
+            }
+
+            if ( isProcessingString ){
+                //Search for the end of a string
+                if ( part.endsWith("\"") ) {
+                    endString = i;
+                    isProcessingString = false;
+                    String extracted = extractString(queryParts, startString, endString);
+                    //Add to list and remove the "" wrapping characters.
+                    processingList.add(extracted.substring(1,extracted.length()-1));
+                }
+            }
+
+            if ( isProcessingString && i == queryParts.length - 1 ) {
+                //Unmatched string close. Automatically close
+                endString = i;
+                isProcessingString = false;
+                String extracted = extractString(queryParts, startString, endString);
+                //Add to list and remove the initial " characters.
+                processingList.add(extracted.substring(1,extracted.length()));
+            }
+        }
+        for ( int i = 0; i < queryParts.length; i++ ) {
+            if ( i >= processingList.size() ) {
+                queryParts[i] = "";
+            } else {
+                queryParts[i] = processingList.get(i);
+            }
+        }
         queryParts = removeEmptyEntries(queryParts);
+        return queryParts;
+    }
+
+    public QueryBase parseCompleteInput ( String input ) {
+        String [] queryParts = splitQuery(input);
 
         String commandString = queryParts[0];
 
@@ -66,7 +123,7 @@ public class InputParser {
                 newQuery = new QueryEdit();
                 break;
             case DELETE:
-                newQuery = new QueryDelete();
+                newQuery = parseDeleteCommand(queryParts, commandParts);
                 break;
             case HELP:
                 newQuery = new QueryHelp();
@@ -78,10 +135,18 @@ public class InputParser {
         return newQuery;
     }
 
+    public QueryBase parseDeleteCommand ( String[] queryParts, CommandPart [] commandParts ) {
+        QueryDelete queryDelete = new QueryDelete();
+
+        queryDelete.setName(extractString(queryParts,1,queryParts.length));
+
+        return queryDelete;
+    }
+
     public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts ) {
         QueryAdd queryAdd = new QueryAdd();
 
-        int startIndex = 1; //Start at 1 because the first index is the command
+        /*int startIndex = 1; //Start at 1 because the first index is the command
         int endIndex = 1;
         //Find the end of the name
         while (endIndex < commandParts.length - 1) {
@@ -90,7 +155,8 @@ public class InputParser {
                 break;
             }
         }
-        String name = extractString(queryParts, startIndex, endIndex );
+        String name = extractString(queryParts, startIndex, endIndex );*/
+        String name = queryParts[1]; //First item is the name
         queryAdd.setName(name);
 
         //Check if a relative day keyword exists
@@ -198,14 +264,14 @@ public class InputParser {
      * Takes the parts of the query and extracts the parts bounded by the indices
      * Returns the string joined by a " "
      * @param queryParts Parts of the query
-     * @param start Start index
-     * @param end End index
+     * @param start Start index inclusive
+     * @param end End index inclusive
      * @return Extracted string
      */
     private String extractString ( String [] queryParts, int start, int end ) {
         StringBuilder stringBuilder = new StringBuilder();
         String space = "";
-        for ( int i = start; i < end && i < queryParts.length; i++ ) {
+        for ( int i = start; i <= end && i < queryParts.length; i++ ) {
             stringBuilder.append(space);
             stringBuilder.append(queryParts[i]);
             space = " ";
