@@ -24,11 +24,12 @@ public class InputParser {
         newCommand.setDescription("Adds a new event/task");
         newCommand.addKeywords("delimiter", "in,at,from,to,on");
         newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday");
-        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon" );
+        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("list", QueryType.LIST);
         newCommand.setDescription("List all your future events/tasks");
+        newCommand.addKeywords("range", "past,today,tomorrow");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("delete", QueryType.DELETE );
@@ -125,6 +126,9 @@ public class InputParser {
             case DELETE:
                 newQuery = parseDeleteCommand(queryParts, commandParts);
                 break;
+            case LIST:
+                newQuery = parseListCommand(queryParts, commandParts);
+                break;
             case HELP:
                 newQuery = new QueryHelp();
                 break;
@@ -135,6 +139,23 @@ public class InputParser {
         return newQuery;
     }
 
+    public QueryBase parseListCommand ( String[] queryParts, CommandPart [] commandParts ) {
+        QueryList queryList = new QueryList();
+
+        //Check if a relative day keyword exists
+        String range = null;
+        for ( CommandPart commandPart :commandParts ) {
+            if ( commandPart.getKeywordType() != null &&
+                    commandPart.getKeywordType().equalsIgnoreCase("range") ) {
+                range = commandPart.getQueryPart();
+            }
+        }
+
+
+
+        return queryList;
+
+    }
     public QueryBase parseDeleteCommand ( String[] queryParts, CommandPart [] commandParts ) {
         QueryDelete queryDelete = new QueryDelete();
 
@@ -146,16 +167,6 @@ public class InputParser {
     public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts ) {
         QueryAdd queryAdd = new QueryAdd();
 
-        /*int startIndex = 1; //Start at 1 because the first index is the command
-        int endIndex = 1;
-        //Find the end of the name
-        while (endIndex < commandParts.length - 1) {
-            endIndex++;
-            if ( commandParts[endIndex].isKeyword() ) {
-                break;
-            }
-        }
-        String name = extractString(queryParts, startIndex, endIndex );*/
         String name = queryParts[1]; //First item is the name
         queryAdd.setName(name);
 

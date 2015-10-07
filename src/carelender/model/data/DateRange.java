@@ -11,7 +11,11 @@ import java.util.Date;
 public class DateRange {
 	private Date start;
 	private Date end;
-	
+
+	public DateRange (Date date) {
+		start = end = date;
+	}
+
 	public DateRange (Date startToSet, Date endToSet) {
 		if (!endToSet.after(startToSet)) {
 			this.start = endToSet;
@@ -49,4 +53,12 @@ public class DateRange {
 		}
 		this.start = start;
 	}
+
+    /**
+     * Checks if this is a range or just a single point in time
+     * @return true if this is a range
+     */
+    public boolean isRange() {
+        return start != end;
+    }
 }
