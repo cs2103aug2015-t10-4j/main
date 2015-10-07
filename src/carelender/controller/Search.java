@@ -40,7 +40,19 @@ public class Search {
 				}
 				
 				break;
-			case DUMMY:
+			case UPDATE:
+				
+				QueryList queryUpdate = (QueryList)query;
+				
+				//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
+				if (this.model.retrieveEvent() != null) {
+					for (EventObject event : this.model.retrieveEvent()) {
+						if (this.eventMatchesParams(event, queryUpdate.getSearchParamsList())) {
+							returnList.add(event);
+						}
+					}
+				}
+				
 				break;
 			case EDIT:
 				break;
@@ -55,7 +67,7 @@ public class Search {
 				//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
 				if (this.model.retrieveEvent() != null) {
 					for (EventObject event : this.model.retrieveEvent()) {
-						if (this.eventMatchesParams(event, queryList.getParamsList())) {
+						if (this.eventMatchesParams(event, queryList.getSearchParamsList())) {
 							returnList.add(event);
 						}
 					}
@@ -158,6 +170,7 @@ public class Search {
 										Date startDate) {
 		Date latestDate = eventToCheck.getLatestDate();
 		if (latestDate != null) {
+			System.out.println ( latestDate.getTime() + "     " + startDate.getTime());
 			if (!latestDate.after(startDate)) {
 				return true;
 			}
@@ -169,6 +182,7 @@ public class Search {
 										Date endDate) {
 		Date earliestDate = eventToCheck.getEarliestDate();
 		if (earliestDate != null) {
+			System.out.println ( earliestDate.getTime() + "     " + endDate.getTime());
 			if (!earliestDate.before(endDate)) {
 				return true;
 			}
@@ -182,6 +196,9 @@ public class Search {
 		Date latestDate = eventToCheck.getLatestDate();
 		
 		if (earliestDate != null && latestDate != null) {
+			
+			System.out.println ( earliestDate.getTime() + "     " + startDate.getTime());
+			System.out.println ( latestDate.getTime() + "     " + endDate.getTime());
 			if (!earliestDate.before(startDate) && !latestDate.after(endDate)) {
 				return true;
 			}

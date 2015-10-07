@@ -58,6 +58,9 @@ public class Controller {
             case DELETE:
                 processDelete((QueryDelete) query);
                 break;
+            case UPDATE:
+                processUpdate((QueryUpdate) query);
+                break;
             case LIST:
                 processList( (QueryList) query);
                 break;
@@ -73,13 +76,36 @@ public class Controller {
     	
         displayMessage("Deleting [" + queryDelete.getName() + "]");
     }
+    
+    private static void processUpdate ( QueryUpdate queryUpdate ) {
+        //TODO: Actually update something
+    	EventList searchResults = search.parseQuery(queryUpdate);
+    	for ( EventObject event : searchResults ) {
+    		//TODO: This will have to change if we want to do bulk updating.
+    		HashMap<QueryUpdate.UpdateParam, Object> paramList = queryUpdate.getUpdateParamsList();
+        	
+        	if ( paramList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
+                String fromName = (String)paramList.get(QueryUpdate.UpdateParam.NAME);
+                event.setName(fromName);
+            }
+        	
+        	if ( paramList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
+                DateRange[] fromDateRange = (DateRange[])paramList.get(QueryUpdate.UpdateParam.DATE_RANGE);
+                event.setDateRange(fromDateRange);
+            }
+        	
+        	//Call Model updateEvent function
+        	//this.model.updateEvent ( event );
+        	System.out.println ( event.getName() );
+    	}
+    }
 
     private static void processList ( QueryList queryList ) {
         EventList searchResults = search.parseQuery(queryList);
         
         SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
         displayMessage("Listing events");
-        HashMap<QueryList.SearchParam, Object> paramList = queryList.getParamsList();
+        HashMap<QueryList.SearchParam, Object> paramList = queryList.getSearchParamsList();
         if ( paramList.containsKey(QueryList.SearchParam.DATE_START) ) {
             Date fromDate = (Date)paramList.get(QueryList.SearchParam.DATE_START);
             displayMessage("   from " + dateFormat.format(fromDate));

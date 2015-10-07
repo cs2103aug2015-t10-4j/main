@@ -29,6 +29,10 @@ public class EventObject {
 		return this.dateRange;
 	}
 	
+	public void setDateRange (DateRange[] dateRangeToSet) {
+		this.dateRange = dateRangeToSet;
+	}
+	
 	public Date getLatestDate () {
 		Date lastDate = null;
 		
@@ -61,6 +65,10 @@ public class EventObject {
 	
 	public String getName () {
 		return this.name;
+	}
+	
+	public void setName (String nameToSet) {
+		this.name = nameToSet;
 	}
 	
 	public EventType getEventType () {

@@ -8,18 +8,22 @@ import java.util.HashMap;
 
 public class QueryList extends QueryBase {
 	
-	private HashMap<SearchParam, Object> paramsList = new HashMap<SearchParam, Object>();
+	private HashMap<SearchParam, Object> searchParamsList = new HashMap<SearchParam, Object>();
 	
 	public QueryList() {
         super(QueryType.LIST);
     }
 	
+	public QueryList (QueryType type) {
+        super(type);
+    }
+	
 	public void addSearchParam (SearchParam key, Object value) {
-		this.paramsList.put(key, value);
+		this.searchParamsList.put(key, value);
 	}
 	
-	public HashMap<SearchParam, Object> getParamsList () {
-		return paramsList;
+	public HashMap<SearchParam, Object> getSearchParamsList () {
+		return searchParamsList;
 	}
 	
 	public enum SearchParam {
