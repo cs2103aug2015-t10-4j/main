@@ -76,7 +76,7 @@ public class Controller {
 
     private static void processDelete ( QueryDelete queryDelete ) {
         //TODO: Actually delete something
-        //Delete search
+    	
         displayMessage("Deleting [" + queryDelete.getName() + "]");
     }
 

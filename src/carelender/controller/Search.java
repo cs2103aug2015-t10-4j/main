@@ -24,6 +24,17 @@ public class Search {
 			case CLEAR:
 				break;
 			case DELETE:
+				
+				QueryDelete queryDelete = (QueryDelete)query;
+				
+				if (Model.retrieveEvent(null) != null) {
+					for (EventObject event : Model.retrieveEvent(null)) {
+						if (this.isEventNameExact(event, queryDelete.getName())) {
+							returnList.add(event);
+						}
+					}
+				}
+				
 				break;
 			case DUMMY:
 				break;
@@ -35,10 +46,12 @@ public class Search {
 				break;
 			case LIST:
 				
-				//TODO: Replace the null param in retrieveEvent to something that makes sense.
+				QueryList queryList = (QueryList)query;
+				
+				//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
 				if (Model.retrieveEvent(null) != null) {
 					for (EventObject event : Model.retrieveEvent(null)) {
-						if (this.eventMatchesParams(event, ((QueryList) query).getParamsList())) {
+						if (this.eventMatchesParams(event, queryList.getParamsList())) {
 							returnList.add(event);
 						}
 					}
