@@ -18,45 +18,51 @@ import carelender.model.data.*;
 
 public class Model {
 	
-	private static File eventFile;
-	private static File customCommands;
-	public static String filename;
-	//WZ: I initialised events. Before it was null and trying to add stuff to a null thing.
-	public static EventList events = new EventList();
-	//WZ: END
-	public static ArrayList<EventList> cache;
-	public static ArrayList<String> storage;
+	private File eventFile;
+	private File customCommands;
+	private String filename;
+	private EventList events;
+	private ArrayList<EventList> cache;
+	private ArrayList<String> storage;
 	
 	public Model() {
         filename = "events.dat";
 		eventFile = new File(filename);
+		events = new EventList();
 	}
 	
-	public static boolean addEvent(EventObject eventObj) {
+	public boolean addEvent(QueryAdd queryAdd) {
+		DateRange dateRange = new DateRange(queryAdd.getTime());
+		DateRange[] dateRangeArray = new DateRange[1];
+		dateRangeArray[0] = dateRange;
+		EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);
+		
 		events.add(eventObj);
-		try {
-			OutputStream file = new FileOutputStream("events.dat");
-			OutputStream buffer = new BufferedOutputStream(file);
-			ObjectOutput output = new ObjectOutputStream(buffer);
-			
-			output.writeObject(events);
-
-	        return true;
-		} catch (IOException e) {
-			System.out.println("Failed to add event");
-			return false;
-		}
+		System.out.println(eventObj);
+		return true;
+//		try {
+//			OutputStream file = new FileOutputStream("events.dat");
+//			OutputStream buffer = new BufferedOutputStream(file);
+//			ObjectOutput output = new ObjectOutputStream(buffer);
+//			
+//			output.writeObject(events);
+//
+//	        return true;
+//		} catch (IOException e) {
+//			System.out.println("Failed to add event");
+//			return false;
+//		}
 	}
 	
-	public static EventList retrieveEvent(QueryBase queryObj) {
+	public EventList retrieveEvent() {
 		return events;
 	}
 	
-	public static void updateEvent(EventObject eventObj) {
+	public void updateEvent(EventObject eventObj) {
 		//TODO: Checks cache and update the event.
 	}
 	
-	public static void deleteEvent(QueryBase queryObj) {
-		//TODO: Checks cache and update the event.
+	public void deleteEvent(QueryDelete querydelete) {
+		
 	}
 }
