@@ -38,7 +38,7 @@ public class Model {
 		EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);
 		
 		events.add(eventObj);
-		System.out.println(eventObj);
+		System.out.println(eventObj.getName());
 		return true;
 //		try {
 //			OutputStream file = new FileOutputStream("events.dat");
@@ -58,11 +58,19 @@ public class Model {
 		return events;
 	}
 	
-	public void updateEvent(EventObject eventObj) {
-		//TODO: Checks cache and update the event.
+	public void updateEvent() {
+//		for (int i = 0; i < events.size(); i++) {
+//			if(events.get(i).getName().equals(queryDelete.getName())) {
+//				events.remove(i);
+//			}
+//		}
 	}
 	
-	public void deleteEvent(QueryDelete querydelete) {
-		
+	public void deleteEvent(QueryDelete queryDelete) {
+		for (int i = 0; i < events.size(); i++) {
+			if(events.get(i).getName().equals(queryDelete.getName())) {
+				events.remove(i);
+			}
+		}
 	}
 }
