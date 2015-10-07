@@ -13,7 +13,11 @@ import carelender.model.data.*;
  */
 
 public class Search {
-	public Search () {
+	
+	private Model model = null;
+	
+	public Search (Model modelToSet) {
+		this.model = modelToSet;
 	}
 	
 	public EventList parseQuery (QueryBase query) {
@@ -27,8 +31,8 @@ public class Search {
 				
 				QueryDelete queryDelete = (QueryDelete)query;
 				
-				if (Model.retrieveEvent(null) != null) {
-					for (EventObject event : Model.retrieveEvent(null)) {
+				if (this.model.retrieveEvent() != null) {
+					for (EventObject event : this.model.retrieveEvent()) {
 						if (this.isEventNameExact(event, queryDelete.getName())) {
 							returnList.add(event);
 						}
@@ -49,8 +53,8 @@ public class Search {
 				QueryList queryList = (QueryList)query;
 				
 				//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
-				if (Model.retrieveEvent(null) != null) {
-					for (EventObject event : Model.retrieveEvent(null)) {
+				if (this.model.retrieveEvent() != null) {
+					for (EventObject event : this.model.retrieveEvent()) {
 						if (this.eventMatchesParams(event, queryList.getParamsList())) {
 							returnList.add(event);
 						}

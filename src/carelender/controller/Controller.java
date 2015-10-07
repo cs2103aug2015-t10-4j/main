@@ -20,16 +20,10 @@ public class Controller {
     private static Model model = null;
     private static InputParser inputParser = null;
 
-    //TODO: TEMP LOCAL STORAGE FOR TASKS.
-    private static EventList eventList = null;
-    
     public static void initialize() {
-        search = new Search();
         model = new Model();
+        search = new Search(model);
         inputParser = new InputParser();
-        
-        //TODO: TEMP LOCAL STORAGE FOR TASKS.
-        eventList = new EventList();
     }
     public static void initGraphicalInterface(GraphicalInterface graphicalInterface) {
         Controller.graphicalInterface = graphicalInterface;
@@ -128,9 +122,7 @@ public class Controller {
         		count++;
         	}
         } else { //Add the task to the Model.
-			DateRange[] dateRange = new DateRange[]{new DateRange(queryAdd.getTime(),
-																	queryAdd.getTime())};
-        	Model.addEvent(new EventObject(0, queryAdd.getName(), dateRange));
+        	model.addEvent(queryAdd);
         }
         //WZ: END
     }
