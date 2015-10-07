@@ -1,7 +1,11 @@
 package carelender.controller;
 
 import carelender.model.Model;
+import carelender.model.data.DateRange;
+import carelender.model.data.EventList;
+import carelender.model.data.EventObject;
 import carelender.model.data.QueryAdd;
+import carelender.model.data.QueryList;
 import carelender.model.data.QueryDummy;
 import carelender.model.data.QueryBase;
 import carelender.model.data.QueryError;
@@ -21,10 +25,16 @@ public class Controller {
     private static Model model = null;
     private static InputParser inputParser = null;
 
+    //TODO: TEMP LOCAL STORAGE FOR TASKS.
+    private static EventList eventList = null;
+    
     public static void initialize() {
         search = new Search();
         model = new Model();
         inputParser = new InputParser();
+        
+        //TODO: TEMP LOCAL STORAGE FOR TASKS.
+        eventList = new EventList();
     }
     public static void initGraphicalInterface(GraphicalInterface graphicalInterface) {
         Controller.graphicalInterface = graphicalInterface;
@@ -66,6 +76,27 @@ public class Controller {
     private static void processAdd(QueryAdd queryAdd ) {
         String dateString = new SimpleDateFormat("E dd MMM yyyy h:mma Z").format(queryAdd.getTime());
         displayMessage("Adding new task: ["+queryAdd.getName()+"] at " + dateString);
+        
+        //WZ: I added all these to accommodate adding of tasks into the model.
+        QueryList checkClashesQuery = new QueryList();
+        checkClashesQuery.addSearchParam(QueryList.PARAM.DATE_START, queryAdd.getTime());
+        checkClashesQuery.addSearchParam(QueryList.PARAM.DATE_END, queryAdd.getTime());
+        EventList clashingTasks = search.parseQuery(checkClashesQuery);
+        
+        //There is at least one task that clashes with the task to add.
+        if (clashingTasks.size() > 0) {
+        	displayMessage("Task clashes with:");
+        	int count = 1;
+        	for (EventObject event : clashingTasks) {
+        		displayMessage(count + ". " + event.getName());
+        		count++;
+        	}
+        } else { //Add the task to the Model.
+			DateRange[] dateRange = new DateRange[]{new DateRange(queryAdd.getTime(),
+																	queryAdd.getTime())};
+        	Model.addEvent(new EventObject(0, queryAdd.getName(), dateRange));
+        }
+        //WZ: END
     }
     private static void processError(QueryError queryError) {
         graphicalInterface.displayMessage(queryError.getMessage());

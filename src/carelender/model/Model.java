@@ -21,7 +21,9 @@ public class Model {
 	private static File eventFile;
 	private static File customCommands;
 	public static String filename;
-	public static EventList events;
+	//WZ: I initialised events. Before it was null and trying to add stuff to a null thing.
+	public static EventList events = new EventList();
+	//WZ: END
 	public static ArrayList<EventList> cache;
 	public static ArrayList<String> storage;
 	

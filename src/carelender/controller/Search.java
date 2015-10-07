@@ -1,8 +1,11 @@
 package carelender.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import carelender.model.Model;
 import carelender.model.data.*;
 
 /**
@@ -10,9 +13,7 @@ import carelender.model.data.*;
  */
 
 public class Search {
-	
 	public Search () {
-		
 	}
 	
 	public EventList parseQuery (QueryBase query) {
@@ -34,18 +35,12 @@ public class Search {
 				break;
 			case LIST:
 				
-				//TODO: This should instead draw from the model.
-				EventList eventList = new EventList();
-				
-				DateRange[] dateRange = new DateRange[]{new DateRange(new Date(), new Date())};
-				EventObject temp = new EventObject(0, "birthday party", dateRange);
-				eventList.add(temp);
-				temp = new EventObject(1, "important meeting", dateRange);
-				eventList.add(temp);
-				
-				for (EventObject event : eventList) {
-					if (this.eventMatchesParams(event, ((QueryList) query).getParamsList())) {
-						returnList.add(event);
+				//TODO: Replace the null param in retrieveEvent to something that makes sense.
+				if (Model.retrieveEvent(null) != null) {
+					for (EventObject event : Model.retrieveEvent(null)) {
+						if (this.eventMatchesParams(event, ((QueryList) query).getParamsList())) {
+							returnList.add(event);
+						}
 					}
 				}
 				

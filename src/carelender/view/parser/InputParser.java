@@ -135,7 +135,11 @@ public class InputParser {
                     break;
             }
         }
-
+        
+        //WZ: I added these so they aren't random values floating around spoiling my equals.
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.SECOND, 0);
+        //WZ: END
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
 
