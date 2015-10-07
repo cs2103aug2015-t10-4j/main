@@ -21,15 +21,19 @@ public class InputParser {
         Command newCommand;
 
         newCommand = new Command("add", QueryType.ADD);
-        newCommand.setDescription("Adds a new event/task");
+        newCommand.setDescription("Adds a new event/task\n    Usage: add \"event name\" [tomorrow/today/etc...] [morning/noon/etc...]");
         newCommand.addKeywords("delimiter", "in,at,from,to,on");
         newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday");
         newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("search", QueryType.LIST);
+        newCommand.setDescription("Search for events/tasks\n    Usage: search \"event name\"");
+        commandManager.addCommand(newCommand);
+
         newCommand = new Command("list", QueryType.LIST);
-        newCommand.setDescription("List all your future events/tasks");
-        newCommand.addKeywords("range", "past,today,tomorrow");
+        newCommand.setDescription("List all your future events/tasks\n    Usage: list [past/today/tomorrow/future]");
+        newCommand.addKeywords("range", "past,today,tomorrow,future");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("delete", QueryType.DELETE );
@@ -127,7 +131,11 @@ public class InputParser {
                 newQuery = parseDeleteCommand(queryParts, commandParts);
                 break;
             case LIST:
-                newQuery = parseListCommand(queryParts, commandParts);
+                if ( matchedCommand.getCommand().equalsIgnoreCase("search") ) {
+                    newQuery = parseSearchCommand(queryParts, commandParts);
+                } else {
+                    newQuery = parseListCommand(queryParts, commandParts);
+                }
                 break;
             case HELP:
                 newQuery = new QueryHelp();
@@ -137,6 +145,12 @@ public class InputParser {
                 break;
         }
         return newQuery;
+    }
+
+    public QueryBase parseSearchCommand ( String[] queryParts, CommandPart [] commandParts ) {
+        QueryList queryList = new QueryList();
+        queryList.addSearchParam(QueryList.SearchParam.NAME_CONTAINS, queryParts[1]);
+        return queryList;
     }
 
     public QueryBase parseListCommand ( String[] queryParts, CommandPart [] commandParts ) {
@@ -153,13 +167,47 @@ public class InputParser {
 
 
 
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+
+        if ( range == null ) {
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
+        } else {
+            switch (range) {
+                case "past": //Displays events that have passed
+                    queryList.addSearchParam(QueryList.SearchParam.DATE_END, now);
+                    break;
+                case "tomorrow": //Displays events tomorrow onwards
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                case "today": //Everything for today
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.set(Calendar.MINUTE, 0);
+                    queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
+
+                    calendar.set(Calendar.HOUR_OF_DAY, 23);
+                    calendar.set(Calendar.MINUTE, 59);
+                    queryList.addSearchParam(QueryList.SearchParam.DATE_END, calendar.getTime());
+                    break;
+                case "future": //Displays events today onwards
+                default:
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.set(Calendar.MINUTE, 0);
+                    queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
+                    break;
+            }
+        }
+
+
         return queryList;
 
     }
     public QueryBase parseDeleteCommand ( String[] queryParts, CommandPart [] commandParts ) {
         QueryDelete queryDelete = new QueryDelete();
 
-        queryDelete.setName(extractString(queryParts,1,queryParts.length));
+        queryDelete.setName(queryParts[1]);
 
         return queryDelete;
     }

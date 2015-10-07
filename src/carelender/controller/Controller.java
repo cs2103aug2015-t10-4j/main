@@ -6,6 +6,8 @@ import carelender.view.GraphicalInterface;
 import carelender.view.parser.InputParser;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Does all the logic of the application
@@ -50,7 +52,6 @@ public class Controller {
             case CLEAR:
                 graphicalInterface.clearMessageLog();
                 break;
-
             case ADD:
                 processAdd((QueryAdd) query);
                 break;
@@ -75,7 +76,21 @@ public class Controller {
 
     private static void processList ( QueryList queryList ) {
         //TODO: Actually list objects
-        displayMessage("Listing future events");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
+        displayMessage("Listing events");
+        HashMap<QueryList.SearchParam, Object> paramList = queryList.getParamsList();
+        if ( paramList.containsKey(QueryList.SearchParam.DATE_START) ) {
+            Date fromDate = (Date)paramList.get(QueryList.SearchParam.DATE_START);
+            displayMessage("   from " + dateFormat.format(fromDate));
+        }
+        if ( paramList.containsKey(QueryList.SearchParam.DATE_END) ) {
+            Date toDate = (Date)paramList.get(QueryList.SearchParam.DATE_END);
+            displayMessage("   till " + dateFormat.format(toDate));
+        }
+        if ( paramList.containsKey(QueryList.SearchParam.NAME_CONTAINS) ) {
+            String search = (String)paramList.get(QueryList.SearchParam.NAME_CONTAINS);
+            displayMessage("   matching: " + search);
+        }
     }
 
     private static void processAdd(QueryAdd queryAdd ) {
