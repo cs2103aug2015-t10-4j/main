@@ -8,6 +8,7 @@ public enum QueryType {
     DUMMY,      //Temporary //TODO: Remove
     ADD,        //Adding new event
     DELETE,     //Deleting an event
+    UPDATE,     //Updating an event
     EDIT,       //Editing an event
     HELP,       //Showing the help list
     LIST,       //Listing tasks //TODO: Split into different types

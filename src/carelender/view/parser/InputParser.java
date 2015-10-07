@@ -35,6 +35,13 @@ public class InputParser {
         newCommand.setDescription("List all your future events/tasks\n    Usage: list [past/today/tomorrow/future]");
         newCommand.addKeywords("range", "past,today,tomorrow,future");
         commandManager.addCommand(newCommand);
+        
+        newCommand = new Command("update", QueryType.UPDATE);
+        newCommand.setDescription("Update events/tasks\n    Usage: update \"event name\" into \"new name\" [tomorrow/today/etc...] [morning/noon/etc...]");
+        newCommand.addKeywords("delimiter", "into");
+        newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday");
+        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon");
+        commandManager.addCommand(newCommand);
 
         newCommand = new Command("delete", QueryType.DELETE );
         newCommand.setDescription("Deletes a specified event/task");
@@ -130,6 +137,9 @@ public class InputParser {
             case DELETE:
                 newQuery = parseDeleteCommand(queryParts, commandParts);
                 break;
+            case UPDATE:
+                newQuery = parseUpdateCommand(queryParts, commandParts);
+                break;
             case LIST:
                 if ( matchedCommand.getCommand().equalsIgnoreCase("search") ) {
                     newQuery = parseSearchCommand(queryParts, commandParts);
@@ -149,6 +159,11 @@ public class InputParser {
 
     public QueryBase parseSearchCommand ( String[] queryParts, CommandPart [] commandParts ) {
         QueryList queryList = new QueryList();
+        //WZ: Prevent array index out of bounds.
+        if (queryParts.length == 1) {
+        	return new QueryError("Please enter a parameter to search by!");
+        }
+        //WZ: END
         queryList.addSearchParam(QueryList.SearchParam.NAME_CONTAINS, queryParts[1]);
         return queryList;
     }
@@ -164,8 +179,6 @@ public class InputParser {
                 range = commandPart.getQueryPart();
             }
         }
-
-
 
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -204,12 +217,118 @@ public class InputParser {
         return queryList;
 
     }
+    
     public QueryBase parseDeleteCommand ( String[] queryParts, CommandPart [] commandParts ) {
         QueryDelete queryDelete = new QueryDelete();
 
         queryDelete.setName(queryParts[1]);
 
         return queryDelete;
+    }
+    
+    public QueryBase parseUpdateCommand ( String [] queryParts, CommandPart [] commandParts ) {
+        QueryUpdate queryUpdate = new QueryUpdate();
+
+        String name = queryParts[1]; //First item is the name
+        queryUpdate.addSearchParam(QueryList.SearchParam.NAME_EXACT, name);
+        
+        //TODO: THIS IS A HACK.
+        String newName = queryParts[3];
+        queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.NAME, newName);
+        
+        //TODO: THIS IS A HACK AS WELL.
+        if (queryParts.length <= 4) {
+        	return queryUpdate;
+        }
+        
+        //Check if a relative day keyword exists
+        String relativeDay = null;
+        for ( CommandPart commandPart :commandParts ) {
+            if ( commandPart.getKeywordType() != null &&
+                 commandPart.getKeywordType().equalsIgnoreCase("relativeday") ) {
+                relativeDay = commandPart.getQueryPart();
+            }
+        }
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+
+
+        if ( relativeDay != null ) {
+            switch ( relativeDay ) {
+                case "tomorrow":
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    break;
+                case "monday":
+                    calendar = nextDayOfWeek(Calendar.MONDAY);
+                    break;
+                case "tuesday":
+                    calendar = nextDayOfWeek(Calendar.TUESDAY);
+                    break;
+                case "wednesday":
+                    calendar = nextDayOfWeek(Calendar.WEDNESDAY);
+                    break;
+                case "thursday":
+                    calendar = nextDayOfWeek(Calendar.THURSDAY);
+                    break;
+                case "friday":
+                    calendar = nextDayOfWeek(Calendar.FRIDAY);
+                    break;
+                case "saturday":
+                    calendar = nextDayOfWeek(Calendar.SATURDAY);
+                    break;
+                case "sunday":
+                    calendar = nextDayOfWeek(Calendar.SUNDAY);
+                    break;
+            }
+        }
+        
+        //WZ: I added these so they aren't random values floating around spoiling my equals.
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.SECOND, 0);
+        //WZ: END
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+
+        //Check if a time of day keyword exists
+        String timeOfDay = null;
+        for ( CommandPart commandPart :commandParts ) {
+            if ( commandPart.getKeywordType() != null &&
+                    commandPart.getKeywordType().equalsIgnoreCase("timeofday") ) {
+                timeOfDay = commandPart.getQueryPart();
+            }
+        }
+
+        if ( timeOfDay != null ) {
+            switch ( timeOfDay ) {
+                case "later":
+                    calendar.add(Calendar.HOUR, 3);
+                    break;
+                case "tonight":
+                case "night":
+                    calendar.set(Calendar.HOUR_OF_DAY, 20);
+                    break;
+                case "afternoon":
+                    calendar.set(Calendar.HOUR_OF_DAY, 14);
+                    break;
+                case "noon":
+                    calendar.set(Calendar.HOUR_OF_DAY, 12);
+                    break;
+                case "morning":
+                    calendar.set(Calendar.HOUR_OF_DAY, 9);
+                    break;
+                case "evening":
+                    calendar.set(Calendar.HOUR_OF_DAY, 18);
+                    break;
+            }
+        }
+
+        Date newTime = calendar.getTime();
+        DateRange[] dr = new DateRange[]{new DateRange(newTime)};
+        queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.DATE_RANGE, dr );
+
+        return queryUpdate;
     }
 
     public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts ) {
