@@ -1,18 +1,13 @@
 package carelender.controller;
 
 import carelender.model.Model;
-import carelender.model.data.DateRange;
-import carelender.model.data.EventList;
-import carelender.model.data.EventObject;
-import carelender.model.data.QueryAdd;
-import carelender.model.data.QueryList;
-import carelender.model.data.QueryDummy;
-import carelender.model.data.QueryBase;
-import carelender.model.data.QueryError;
+import carelender.model.data.*;
 import carelender.view.GraphicalInterface;
 import carelender.view.parser.InputParser;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Does all the logic of the application
@@ -51,9 +46,9 @@ public class Controller {
         QueryBase query = inputParser.parseCompleteInput(userInput);
 
         switch (query.getQueryType()) {
-            case DUMMY:
+            /*case DUMMY:
                 processDummy((QueryDummy) query);
-                break;
+                break;*/
             case ERROR:
                 processError((QueryError) query);
                 break;
@@ -63,9 +58,14 @@ public class Controller {
             case CLEAR:
                 graphicalInterface.clearMessageLog();
                 break;
-
             case ADD:
-                processAdd( (QueryAdd) query);
+                processAdd((QueryAdd) query);
+                break;
+            case DELETE:
+                processDelete((QueryDelete) query);
+                break;
+            case LIST:
+                processList( (QueryList) query);
                 break;
             default:
                 graphicalInterface.displayMessage("Command accepted.");
@@ -73,14 +73,40 @@ public class Controller {
         }
     }
 
+
+    private static void processDelete ( QueryDelete queryDelete ) {
+        //TODO: Actually delete something
+        //Delete search
+        displayMessage("Deleting [" + queryDelete.getName() + "]");
+    }
+
+    private static void processList ( QueryList queryList ) {
+        //TODO: Actually list objects
+        SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
+        displayMessage("Listing events");
+        HashMap<QueryList.SearchParam, Object> paramList = queryList.getParamsList();
+        if ( paramList.containsKey(QueryList.SearchParam.DATE_START) ) {
+            Date fromDate = (Date)paramList.get(QueryList.SearchParam.DATE_START);
+            displayMessage("   from " + dateFormat.format(fromDate));
+        }
+        if ( paramList.containsKey(QueryList.SearchParam.DATE_END) ) {
+            Date toDate = (Date)paramList.get(QueryList.SearchParam.DATE_END);
+            displayMessage("   till " + dateFormat.format(toDate));
+        }
+        if ( paramList.containsKey(QueryList.SearchParam.NAME_CONTAINS) ) {
+            String search = (String)paramList.get(QueryList.SearchParam.NAME_CONTAINS);
+            displayMessage("   matching: " + search);
+        }
+    }
+
     private static void processAdd(QueryAdd queryAdd ) {
         String dateString = new SimpleDateFormat("E dd MMM yyyy h:mma Z").format(queryAdd.getTime());
         displayMessage("Adding new task: ["+queryAdd.getName()+"] at " + dateString);
-        
+
         //WZ: I added all these to accommodate adding of tasks into the model.
         QueryList checkClashesQuery = new QueryList();
-        checkClashesQuery.addSearchParam(QueryList.PARAM.DATE_START, queryAdd.getTime());
-        checkClashesQuery.addSearchParam(QueryList.PARAM.DATE_END, queryAdd.getTime());
+        checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
+        checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_END, queryAdd.getTime());
         EventList clashingTasks = search.parseQuery(checkClashesQuery);
         
         //There is at least one task that clashes with the task to add.
@@ -107,17 +133,6 @@ public class Controller {
         graphicalInterface.displayMessage("Available Commands:");
         graphicalInterface.displayMessage(inputParser.showCommandList());
     }
-    private static void processDummy(QueryDummy queryDummy) {
-        if ( queryDummy.getData().equals("clear") ) {
-            graphicalInterface.clearMessageLog();
-        } else if (queryDummy.getData().equals("help")) {
-            graphicalInterface.displayMessage("Commands:\ndisplay [to display] - displays the text input\nclear - clears the screen\nhelp - shows this screen");
-        } else if (queryDummy.getData().startsWith("display ")) {
-            graphicalInterface.displayMessage(queryDummy.getData().substring(8));
-        } else {
-            graphicalInterface.displayMessage("Invalid command. Need help? Type help.");
-        }
-    }
     
     public static void printWelcomeMessage(){
     	graphicalInterface.displayMessage("CareLender: Maybe the best task manager in the world.");
@@ -140,4 +155,18 @@ public class Controller {
         }
         System.out.println(message);
     }
+
+
+
+    /*private static void processDummy(QueryDummy queryDummy) {
+        if ( queryDummy.getData().equals("clear") ) {
+            graphicalInterface.clearMessageLog();
+        } else if (queryDummy.getData().equals("help")) {
+            graphicalInterface.displayMessage("Commands:\ndisplay [to display] - displays the text input\nclear - clears the screen\nhelp - shows this screen");
+        } else if (queryDummy.getData().startsWith("display ")) {
+            graphicalInterface.displayMessage(queryDummy.getData().substring(8));
+        } else {
+            graphicalInterface.displayMessage("Invalid command. Need help? Type help.");
+        }
+    }*/
 }

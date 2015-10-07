@@ -52,11 +52,11 @@ public class Search {
 	}
 	
 	private boolean eventMatchesParams (EventObject eventToCheck,
-										HashMap<QueryList.PARAM, Object> paramsList) {
+										HashMap<QueryList.SearchParam, Object> paramsList) {
 		boolean match = false;
 		
 		if (this.hasNameExact(paramsList)) {
-			Object name = paramsList.get(QueryList.PARAM.NAME_EXACT);
+			Object name = paramsList.get(QueryList.SearchParam.NAME_EXACT);
 			
 			if (name instanceof String) {
 				match = this.isEventNameExact(eventToCheck, (String)name);
@@ -64,7 +64,7 @@ public class Search {
 		}
 		
 		if (this.hasNameContains(paramsList)) {
-			Object name = paramsList.get(QueryList.PARAM.NAME_CONTAINS);
+			Object name = paramsList.get(QueryList.SearchParam.NAME_CONTAINS);
 			
 			if (name instanceof String) {
 				match = this.isEventNameMatch(eventToCheck, (String)name);
@@ -72,21 +72,21 @@ public class Search {
 		}
 		
 		if (this.hasDateRange(paramsList)) {
-			Object startDate = paramsList.get(QueryList.PARAM.DATE_START);
-			Object endDate = paramsList.get(QueryList.PARAM.DATE_END);
+			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
+			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
 			
 			if (startDate instanceof Date && endDate instanceof Date) {
 				match = this.isEventInDateRange(eventToCheck, 
 												(Date)startDate, (Date)endDate);
 			}
 		} else if (this.hasStartDate(paramsList)) {
-			Object startDate = paramsList.get(QueryList.PARAM.DATE_START);
+			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			
 			if (startDate instanceof Date) {
 				match = this.isEventBeforeDate(eventToCheck, (Date)startDate);
 			}
 		} else if (this.hasEndDate(paramsList)) {
-			Object endDate = paramsList.get(QueryList.PARAM.DATE_END);
+			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
 			
 			if (endDate instanceof Date) {
 				match = this.isEventAfterDate(eventToCheck, (Date)endDate);
@@ -95,23 +95,23 @@ public class Search {
 		return match;
 	}
 	
-	private boolean hasNameExact (HashMap<QueryList.PARAM, Object> paramsList) {
-		return paramsList.containsKey(QueryList.PARAM.NAME_EXACT);
+	private boolean hasNameExact (HashMap<QueryList.SearchParam, Object> paramsList) {
+		return paramsList.containsKey(QueryList.SearchParam.NAME_EXACT);
 	}
 	
-	private boolean hasNameContains (HashMap<QueryList.PARAM, Object> paramsList) {
-		return paramsList.containsKey(QueryList.PARAM.NAME_CONTAINS);
+	private boolean hasNameContains (HashMap<QueryList.SearchParam, Object> paramsList) {
+		return paramsList.containsKey(QueryList.SearchParam.NAME_CONTAINS);
 	}
 	
-	private boolean hasStartDate (HashMap<QueryList.PARAM, Object> paramsList) {
-		return paramsList.containsKey(QueryList.PARAM.DATE_START);
+	private boolean hasStartDate (HashMap<QueryList.SearchParam, Object> paramsList) {
+		return paramsList.containsKey(QueryList.SearchParam.DATE_START);
 	}
 	
-	private boolean hasEndDate (HashMap<QueryList.PARAM, Object> paramsList) {
-		return paramsList.containsKey(QueryList.PARAM.DATE_END);
+	private boolean hasEndDate (HashMap<QueryList.SearchParam, Object> paramsList) {
+		return paramsList.containsKey(QueryList.SearchParam.DATE_END);
 	}
 	
-	private boolean hasDateRange (HashMap<QueryList.PARAM, Object> paramsList) {
+	private boolean hasDateRange (HashMap<QueryList.SearchParam, Object> paramsList) {
 		return (this.hasStartDate(paramsList) && this.hasEndDate(paramsList));
 	}
 	
