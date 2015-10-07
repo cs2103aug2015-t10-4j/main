@@ -73,6 +73,13 @@ public class Controller {
 
     private static void processDelete ( QueryDelete queryDelete ) {
         //TODO: Actually delete something
+    	EventList searchResults = search.parseQuery(queryDelete);
+    	
+    	int count = 1;
+    	for (EventObject event : searchResults) {
+    		//this.model.deleteEvent(event);
+    		System.out.println(event.getName());
+    	}
     	
         displayMessage("Deleting [" + queryDelete.getName() + "]");
     }
