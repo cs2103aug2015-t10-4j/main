@@ -54,6 +54,10 @@ public class InputParser {
         newCommand = new Command("clear", QueryType.CLEAR);
         newCommand.setDescription("Clears the screen");
         commandManager.addCommand(newCommand);
+        
+        newCommand = new Command("switch", QueryType.SWITCHUI);
+        newCommand.setDescription("Switches the screen");
+        commandManager.addCommand(newCommand);
     }
 
     /**

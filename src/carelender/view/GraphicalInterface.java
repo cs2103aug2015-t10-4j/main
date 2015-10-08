@@ -28,7 +28,7 @@ public class GraphicalInterface implements Initializable {
         // initialize your logic here: all @FXML variables will have been injected
 
         Controller.initGraphicalInterface(this);
-        messageList = new ArrayList<>();
+        
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
                 new EventHandler<KeyEvent>() {
@@ -43,6 +43,10 @@ public class GraphicalInterface implements Initializable {
                     }
                 };
         inputText.setOnKeyPressed( keyEventHandler );
+    }
+    
+    public void setMessageList( ArrayList<String> messageList ) {
+    	this.messageList = messageList;
     }
 
     public void clearMessageLog() {

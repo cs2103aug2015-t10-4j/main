@@ -6,6 +6,7 @@ import carelender.view.GraphicalInterface;
 import carelender.view.parser.InputParser;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -19,14 +20,18 @@ public class Controller {
     private static Search search = null;
     private static Model model = null;
     private static InputParser inputParser = null;
+    
+    private static ArrayList<String> messageList;
 
     public static void initialize() {
         model = new Model();
         search = new Search(model);
         inputParser = new InputParser();
+        messageList = new ArrayList<>();
     }
     public static void initGraphicalInterface(GraphicalInterface graphicalInterface) {
         Controller.graphicalInterface = graphicalInterface;
+        Controller.graphicalInterface.setMessageList(messageList);
     }
 
 
@@ -64,12 +69,19 @@ public class Controller {
             case LIST:
                 processList( (QueryList) query);
                 break;
+                
+            case SWITCHUI:
+            	processSwitchUI();
+            	break;
             default:
                 graphicalInterface.displayMessage("Command accepted.");
                 break;
         }
     }
 
+    private static void processSwitchUI () {
+    	displayMessage("Switching UI");
+    }
 
     private static void processDelete ( QueryDelete queryDelete ) {
         //TODO: Actually delete something

@@ -12,5 +12,6 @@ public enum QueryType {
     EDIT,       //Editing an event
     HELP,       //Showing the help list
     LIST,       //Listing tasks //TODO: Split into different types
-    CLEAR       //Clears the message screen
+    CLEAR,       //Clears the message screen
+    SWITCHUI
 }
