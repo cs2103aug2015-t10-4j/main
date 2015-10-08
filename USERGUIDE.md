@@ -3,8 +3,20 @@
 ###Welcome to CARELender<sup>TM</sup>
 *a task manager for a people manager*
 
-##Introduction
-This program is meant to help you efficiently manage your work life and personal life. It's built around a keyboard only input so all functions are fully accessible only through the keyboard. 
+CARELender<sup>TM</sup> is meant to help you efficiently manage the onslaught of tasks that you face daily be it from work or your family. It's built around a keyboard only input so all functions are fully accessible only through the keyboard. 
+
+##1. Getting Started
+To start using the program, just type and hit enter to execute your command. Try to type:
+
+    add meeting tomorrow at 6pm
+
+It's as simple as that. The program will help you along as you use it, and if you ever get lost, you can just type:
+
+	help
+
+
+
+##2. Interface
 
 The first thing you will see when you open the program is the user interface. There, you will see these main components.
 
@@ -14,6 +26,8 @@ The first thing you will see when you open the program is the user interface. Th
  2   | Program output | This gives you any information regarding the commands you entered 
  3   | Calendar View  | This gives you an overview of the upcoming weeks                  
  4   | Task View      | This shows you all your upcoming tasks and events 
+
+![Start screen](http://placehold.it/550x350)
  
 This interface you see is just the start screen. There will be different interfaces as you further explore the program.
 This program is split into three main interfaces. 
@@ -24,9 +38,11 @@ This program is split into three main interfaces.
  2   | Personal | This screen displays primarily your personal schedule.
  3   | Work  | This screen displays primarily your work schedule.         
  
+ ![Start screen](http://placehold.it/550x350)
+ 
  Each of these screens is specially designed to cater to your needs.
 
-##Basic Commands
+##3. Basic Commands
 
 To use the application, you will have to type the commands. Don't worry about memorising all the commands, the application will automatically help you to complete the commands if you forget.
 Note: Anything in the [] means it's optional. () refers to a parameter.
@@ -41,7 +57,7 @@ Command | Usage | Description
  delete | delete (eventname) | This deletes the given event.
  complete | complete (eventname) | This marks an event complete.
  
-##Advanced Commands
+##4. Advanced Commands
 
 These commands are there for those who want to get the most out of the program.
 
@@ -55,7 +71,7 @@ move     | move | This starts the move process. You will be asked where to put e
 postpone | postpone (by) | All selected items will be postponed by the stipulated time. Yuo will be asked to resolve any conflicts.
 delete   | delete | This deletes all events in the selected timespan
 
-##Settings
+##5. Settings
 
 Command | Usage | Description
 ---  | --- | ---
