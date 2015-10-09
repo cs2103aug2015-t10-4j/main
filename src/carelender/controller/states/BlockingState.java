@@ -3,7 +3,7 @@ package carelender.controller.states;
 /**
  * Used when the program requires the user to input some data
  */
-public enum InputRequestState {
+public enum BlockingState {
     NONE,
     EVENTSELECTION,       //Used for selecting multiple events.
     SELECTION,      //Used for selecting options

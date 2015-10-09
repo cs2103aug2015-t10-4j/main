@@ -12,7 +12,7 @@ import carelender.model.strings.ErrorMessages;
  * Manages the logic for the states that require user input
  */
 public class BlockingStateController {
-    private InputRequestState inputRequestState;
+    private BlockingState blockingState;
     private OnEventSelectedCallback onEventSelectedCallback;
     private OnSelectedCallback onSelectedCallback;
     private OnConfirmedCallback onConfirmedCallback;
@@ -23,7 +23,7 @@ public class BlockingStateController {
 
 
     public BlockingStateController() {
-        inputRequestState = InputRequestState.NONE;
+        blockingState = BlockingState.NONE;
         onEventSelectedCallback = null;
         onConfirmedCallback = null;
         onSelectedCallback = null;
@@ -36,7 +36,7 @@ public class BlockingStateController {
      * @return true if program is blocked
      */
     public boolean processBlockingState ( String userInput ) {
-        switch ( inputRequestState ) {
+        switch (blockingState) {
             case EVENTSELECTION:
                 stateEventSelection(userInput);
                 break;
@@ -61,7 +61,7 @@ public class BlockingStateController {
      * @param callback Code to be run after the choosing is complete
      */
     public void startSelection(String message, String [] choices, OnSelectedCallback callback) {
-        inputRequestState = InputRequestState.SELECTION;
+        blockingState = BlockingState.SELECTION;
         stringSelectionList = choices;
         onSelectedCallback = callback;
 
@@ -87,7 +87,7 @@ public class BlockingStateController {
      * @param callback Code to be run after the choosing is complete
      */
     public void startEventSelection(String message, EventList choices, OnEventSelectedCallback callback) {
-        inputRequestState = InputRequestState.EVENTSELECTION;
+        blockingState = BlockingState.EVENTSELECTION;
         selectionList = choices;
         onEventSelectedCallback = callback;
         Controller.displayMessage(message);
@@ -99,7 +99,7 @@ public class BlockingStateController {
      * @param message Message to show user
      */
     public void startConfirmation ( String message, OnConfirmedCallback callback ) {
-        inputRequestState = InputRequestState.CONFIRMING;
+        blockingState = BlockingState.CONFIRMING;
         onConfirmedCallback = callback;
 
         Controller.displayMessage(message);
@@ -116,7 +116,7 @@ public class BlockingStateController {
             if ( chosen < 1 || chosen > stringSelectionList.length ) {
                 Controller.displayMessage(ErrorMessages.invalidNumberRange(1, stringSelectionList.length));
             } else {
-                inputRequestState = InputRequestState.NONE;
+                blockingState = BlockingState.NONE;
                 if ( onSelectedCallback != null ) {
                     onSelectedCallback.onChosen(chosen-1);
                 }
@@ -137,7 +137,7 @@ public class BlockingStateController {
                 Controller.displayMessage(ErrorMessages.invalidNumberRange(1, selectionList.size()));
             } else {
                 EventObject selectedObject = selectionList.get(chosen-1);
-                inputRequestState = InputRequestState.NONE;
+                blockingState = BlockingState.NONE;
                 if ( onEventSelectedCallback != null ) {
                     onEventSelectedCallback.onChosen(selectedObject);
                 }
@@ -150,12 +150,12 @@ public class BlockingStateController {
     private void stateConfirming(String userInput) {
         userInput = userInput.trim().toLowerCase();
         if ( userInput.startsWith("y") ) {
-            inputRequestState = InputRequestState.NONE;
+            blockingState = BlockingState.NONE;
             if ( onConfirmedCallback != null ) {
                 onConfirmedCallback.onConfirmed(true);
             }
         } else if ( userInput.startsWith("n") ) {
-            inputRequestState = InputRequestState.NONE;
+            blockingState = BlockingState.NONE;
             if ( onConfirmedCallback != null ) {
                 onConfirmedCallback.onConfirmed(false);
             }
