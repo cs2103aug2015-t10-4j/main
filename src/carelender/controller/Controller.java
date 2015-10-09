@@ -173,9 +173,6 @@ public class Controller {
         QueryBase query = inputParser.parseCompleteInput(userInput);
 
         switch (query.getQueryType()) {
-            /*case DUMMY:
-                processDummy((QueryDummy) query);
-                break;*/
             case ERROR:
                 processError((QueryError) query);
                 break;

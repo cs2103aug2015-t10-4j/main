@@ -1,7 +1,6 @@
 package carelender.model;
 
 public class InvalidTypeException extends Exception {
-
 	/**
 	 * 
 	 */
