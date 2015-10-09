@@ -166,11 +166,19 @@ public class Controller {
         		displayMessage(count + ". " + event.getName());
         		count++;
         	}
-        } else { //Add the task to the Model.
-        	model.addEvent(queryAdd);
+        } else { //Add the task to the Model.	
+        	model.addEvent(cQueryAddToEventObject(queryAdd));
         }
         //WZ: END
     }
+	private static EventObject cQueryAddToEventObject(QueryAdd queryAdd) {
+		DateRange dateRange = new DateRange(queryAdd.getTime());
+		DateRange[] dateRangeArray = new DateRange[1];
+		dateRangeArray[0] = dateRange;
+		EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);
+		return eventObj;
+	}
+	
     private static void processError(QueryError queryError) {
         graphicalInterface.displayMessage(queryError.getMessage());
         showHelp();
