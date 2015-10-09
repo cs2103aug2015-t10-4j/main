@@ -312,9 +312,23 @@ public class Controller {
             displayMessage("Task clashes with:");
             displayMessage(searchResults.toString());
         } else { //Add the task to the Model.
-            model.addEvent(queryAdd);
+            model.addEvent(queryAddToEventObject(queryAdd));
         }
     }
+
+    /**
+     * Converts an add query to an event object
+     * @param queryAdd
+     * @return
+     */
+	private static EventObject queryAddToEventObject(QueryAdd queryAdd) {
+		DateRange dateRange = new DateRange(queryAdd.getTime());
+		DateRange[] dateRangeArray = new DateRange[1];
+		dateRangeArray[0] = dateRange;
+		EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);
+		return eventObj;
+	}
+	
 
     private static void processError(QueryError queryError) {
         graphicalInterface.displayMessage(queryError.getMessage());

@@ -15,23 +15,18 @@ import carelender.model.data.*;
 
 public class Model {
 	
-	private File eventFile;
-	private File customCommands;
 	private String filename;
 	private EventList events;
 	private ArrayList<EventList> cache;
 	private ArrayList<String> storage;
 	
 	public Model() {
+		File file = new File("events.dat");
 		events = new EventList();
-		events = retrieveFromFile();
+		events = getFromFile();
 	}
 	
-	public boolean addEvent(QueryAdd queryAdd) {
-		DateRange dateRange = new DateRange(queryAdd.getTime());
-		DateRange[] dateRangeArray = new DateRange[1];
-		dateRangeArray[0] = dateRange;
-		EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);	
+	public boolean addEvent(EventObject eventObj) {
 		events.add(eventObj);
 		return saveToFile(events);
 	}
@@ -77,7 +72,7 @@ public class Model {
 		}
 	}
 	
-	private EventList retrieveFromFile(){
+	private EventList getFromFile(){
 		try	{
             FileInputStream fis = new FileInputStream("events.dat");
             ObjectInputStream ois = new ObjectInputStream(fis);
