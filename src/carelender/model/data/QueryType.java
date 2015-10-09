@@ -12,5 +12,6 @@ public enum QueryType {
     HELP,       //Showing the help list
     LIST,       //Listing tasks //TODO: Split into different types
     CLEAR,       //Clears the message screen
-    SWITCHUI
+    SWITCHUI,
+    DATETEST       //Used for testing date parsing
 }

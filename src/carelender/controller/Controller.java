@@ -12,10 +12,13 @@ import carelender.model.strings.FirstStartMessages;
 import carelender.view.GraphicalInterface;
 import carelender.view.parser.InputParser;
 
+import com.joestelmach.natty.*;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Does all the logic of the application
@@ -191,6 +194,24 @@ public class Controller {
                 break;
             case LIST:
                 processList( (QueryList) query);
+                break;
+
+            case DATETEST:
+                Parser parser = new Parser();
+                List <DateGroup> groups = parser.parse(userInput);
+                displayMessage("Matched " + groups.size() + " date groups\n");
+
+                for(DateGroup group:groups) {
+
+                    List<Date> dates = group.getDates();
+                    int line = group.getLine();
+                    int column = group.getPosition();
+                    String matchingValue = group.getText();
+                    for ( Date date : dates ) {
+                        displayMessage("   " + date.toString());
+                    }
+                    displayMessage("      at " + line + ":" + column + " from " + matchingValue );
+                }
                 break;
 
             case SWITCHUI:

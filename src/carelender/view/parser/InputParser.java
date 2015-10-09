@@ -1,10 +1,13 @@
 package carelender.view.parser;
 
 import carelender.model.data.*;
+import com.joestelmach.natty.DateGroup;
+import com.joestelmach.natty.Parser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Parses the user input
@@ -22,7 +25,8 @@ public class InputParser {
 
         newCommand = new Command("add", QueryType.ADD);
         newCommand.setDescription("Adds a new event/task\n    Usage: add \"event name\" [tomorrow/today/etc...] [morning/noon/etc...]");
-        newCommand.addKeywords("delimiter", "in,at,from,to,on");
+        newCommand.addKeywords("timedelimeter", "at,on,by");
+        newCommand.addKeywords("rangedelimiter", "from,to");
         newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday");
         newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon");
         commandManager.addCommand(newCommand);
@@ -57,6 +61,10 @@ public class InputParser {
         
         newCommand = new Command("switch", QueryType.SWITCHUI);
         newCommand.setDescription("Switches the screen");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("date", QueryType.DATETEST);
+        newCommand.setDescription("Does date parse testing");
         commandManager.addCommand(newCommand);
     }
 
@@ -155,6 +163,7 @@ public class InputParser {
             case HELP:
                 newQuery = new QueryHelp();
                 break;
+
             default:
                 newQuery = new QueryGeneric(matchedCommand.getType());
                 break;
@@ -337,6 +346,8 @@ public class InputParser {
         return queryUpdate;
     }
 
+
+
     public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts ) {
         QueryAdd queryAdd = new QueryAdd();
 
@@ -385,11 +396,9 @@ public class InputParser {
                     break;
             }
         }
-        
-        //WZ: I added these so they aren't random values floating around spoiling my equals.
+
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.set(Calendar.SECOND, 0);
-        //WZ: END
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
 
