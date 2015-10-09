@@ -1,5 +1,6 @@
 package carelender.model.data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /*
@@ -10,7 +11,7 @@ import java.util.Date;
  * 			EventList
  */
 
-public class EventObject {
+public class EventObject implements Serializable{
 	private long uid;
 	private String name;
 	//If timeRange is null, task is a FLOATING_TASK.

@@ -1,12 +1,14 @@
 package carelender.model.data;
 
+import java.io.Serializable;
+
 /*
  * Data object to help with managing recurring tasks.
  * Used by:
  *			EventObject
  */
 
-public class DateRecurrence {
+public class DateRecurrence implements Serializable{
 	private int interval;
 	private IntervalType intervalType;
 	private int numberOfRecurrences;

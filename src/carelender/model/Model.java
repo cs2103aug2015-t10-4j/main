@@ -26,9 +26,8 @@ public class Model {
 	private ArrayList<String> storage;
 	
 	public Model() {
-        filename = "events.dat";
-		eventFile = new File(filename);
 		events = new EventList();
+		storage = new ArrayList<String>();
 	}
 	
 	public boolean addEvent(QueryAdd queryAdd) {
@@ -39,19 +38,37 @@ public class Model {
 		
 		events.add(eventObj);
 		System.out.println(eventObj.getName());
-		return true;
-//		try {
-//			OutputStream file = new FileOutputStream("events.dat");
-//			OutputStream buffer = new BufferedOutputStream(file);
-//			ObjectOutput output = new ObjectOutputStream(buffer);
-//			
-//			output.writeObject(events);
-//
-//	        return true;
-//		} catch (IOException e) {
-//			System.out.println("Failed to add event");
-//			return false;
-//		}
+		storage.add(eventObj.getName());
+		try {
+			FileOutputStream file1 = new FileOutputStream("events1.dat");
+			//OutputStream buffer = new BufferedOutputStream(file);
+			ObjectOutputStream output1 = new ObjectOutputStream(file1);
+			
+			output1.writeObject(storage);
+			output1.close();
+			file1.close();
+			
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Failed to add event");
+		}
+		
+		try {
+			FileOutputStream file = new FileOutputStream("events.dat");
+			//OutputStream buffer = new BufferedOutputStream(file);
+			ObjectOutputStream output = new ObjectOutputStream(file);
+			
+			output.writeObject(events);
+			output.close();
+			file.close();
+
+	        return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Failed to add event");
+			return false;
+		}
 	}
 	
 	public EventList retrieveEvent() {
