@@ -118,6 +118,7 @@ public class InputParser {
     }
 
     public QueryBase parseCompleteInput ( String input ) {
+        assert input.length() != 0 : "Cannot parse empty input";
         String [] queryParts = splitQuery(input);
 
         String commandString = queryParts[0];
@@ -165,7 +166,7 @@ public class InputParser {
         QueryList queryList = new QueryList();
         //WZ: Prevent array index out of bounds.
         if (queryParts.length == 1) {
-        	return new QueryError("Please enter a parameter to search by!");
+            return new QueryError("Please enter a parameter to search by!");
         }
         //WZ: END
         queryList.addSearchParam(QueryList.SearchParam.NAME_CONTAINS, queryParts[1]);
@@ -223,10 +224,11 @@ public class InputParser {
     }
     
     public QueryBase parseDeleteCommand ( String[] queryParts, CommandPart [] commandParts ) {
+        if ( queryParts.length < 2 ) {
+            return new QueryError("What do you want to delete?");
+        }
         QueryDelete queryDelete = new QueryDelete();
-
         queryDelete.setName(queryParts[1]);
-
         return queryDelete;
     }
     
@@ -242,7 +244,7 @@ public class InputParser {
         
         //TODO: THIS IS A HACK AS WELL.
         if (queryParts.length <= 4) {
-        	return queryUpdate;
+            return queryUpdate;
         }
         
         //Check if a relative day keyword exists

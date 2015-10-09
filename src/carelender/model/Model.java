@@ -83,11 +83,12 @@ public class Model {
             return eventList;
 		} catch(IOException ioe){
 			ioe.printStackTrace();
-         	return null;
 		} catch(ClassNotFoundException c){
             System.out.println("Class not found");
             c.printStackTrace();
-            return null;
-		}
-	}
+		} catch ( Exception e ) {
+        }
+	    return new EventList();
+    }
+
 }

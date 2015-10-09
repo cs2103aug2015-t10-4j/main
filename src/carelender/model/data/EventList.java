@@ -23,6 +23,6 @@ public class EventList extends ArrayList<EventObject> {
             stringBuilder.append(". ");
             stringBuilder.append(eventObject.getInfo());
         }
-        return super.toString();
+        return stringBuilder.toString();
     }
 }
