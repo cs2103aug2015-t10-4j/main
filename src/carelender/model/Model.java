@@ -21,6 +21,7 @@ public class Model {
 	private ArrayList<String> storage;
 	
 	public Model() {
+		File file = new File("events.dat");
 		events = new EventList();
 		events = getFromFile();
 	}
