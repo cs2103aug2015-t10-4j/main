@@ -16,7 +16,6 @@ public class FirstStartMessages {
     public static String askForNameAgain() {
         return "Please tell us what to call you.";
     }
-    public static String invalidInput() {
-        return "Sorry, we didn't understand you. Please say [Yes] or [No]";
-    }
+
+
 }

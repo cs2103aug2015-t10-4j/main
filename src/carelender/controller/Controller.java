@@ -3,10 +3,13 @@ package carelender.controller;
 import carelender.controller.callbacks.OnConfirmedCallback;
 import carelender.controller.callbacks.OnEventSelectedCallback;
 import carelender.controller.states.AppState;
+import carelender.controller.states.BlockingStateController;
 import carelender.controller.states.InputRequestState;
+import carelender.controller.states.StateManager;
 import carelender.model.AppSettings;
 import carelender.model.Model;
 import carelender.model.data.*;
+import carelender.model.strings.ErrorMessages;
 import carelender.model.strings.FirstStartMessages;
 import carelender.view.GraphicalInterface;
 import carelender.view.parser.InputParser;
@@ -27,6 +30,8 @@ public class Controller {
     private static Model model = null;
     private static InputParser inputParser = null;
     private static AppSettings appSettings = null;
+    private static StateManager stateManager;
+    private static BlockingStateController blockingStateController;
 
     //Stores the messages to the user
     private static ArrayList<String> messageList;
@@ -36,16 +41,9 @@ public class Controller {
     private static String incompleteInput;
 
     //Application state
-    private static AppState appState;
-    private static AppState prevState;
-    private static InputRequestState inputRequestState;
-    private static OnEventSelectedCallback onEventSelectedCallback;
-    private static OnConfirmedCallback onConfirmedCallback;
-
     private static String userName;
 
-    //Temp variables
-    private static EventList selectionList; //Used for selecting multiple objects
+
 
     public static void initialize() {
         model = new Model();
@@ -54,14 +52,12 @@ public class Controller {
         inputParser = new InputParser();
         messageList = new ArrayList<>();
         commandList = new ArrayList<>();
-        appState = AppState.FIRSTSTART;
-        inputRequestState = InputRequestState.NONE;
-        prevState = null;
+        stateManager = new StateManager();
+        blockingStateController = new BlockingStateController();
+
         userName = null;
         currentCommand = 0;
-        selectionList = null;
-        onEventSelectedCallback = null;
-        onConfirmedCallback = null;
+
     }
 
     public static void initGraphicalInterface(GraphicalInterface graphicalInterface) {
@@ -134,29 +130,20 @@ public class Controller {
     public static void processUserInput(String userInput) {
         userInput = userInput.trim();
         saveUserCommand(userInput);
-        switch ( inputRequestState ) {
-            case EVENTSELECTION:
-                stateChoosing(userInput);
-                break;
 
-            case CONFIRMING:
-                stateConfirming(userInput);
-                break;
+        boolean blocked = blockingStateController.processBlockingState(userInput);
 
-            default:
-                switch ( appState ) {
-                    case FIRSTSTART:
-                        stateFirstStart(userInput);
-                        break;
+        if ( !blocked ) {
+            switch ( stateManager.getAppState() ) {
+                case FIRSTSTART:
+                    stateFirstStart(userInput);
+                    break;
 
-                    default:
-                        stateDefault(userInput);
-                        break;
-                }
-                break;
+                default:
+                    stateDefault(userInput);
+                    break;
+            }
         }
-
-        System.out.println("Current state: " + appState.toString() + " " + inputRequestState.toString());
     }
 
 
@@ -167,7 +154,7 @@ public class Controller {
                 System.out.println("Confirmed: " + confirmed);
                 if ( confirmed ) {
                     displayMessage(FirstStartMessages.confirmed(userName));
-                    changeState(AppState.DEFAULT);
+                    stateManager.changeState(AppState.DEFAULT);
                 } else {
                     displayMessage(FirstStartMessages.askForNameAgain());
                     userName = null;
@@ -177,47 +164,9 @@ public class Controller {
         //TODO: Save user's name to memory
 
         userName = userInput;
-        startConfirmation(FirstStartMessages.confirmation(userName), confirmNameCallback);
+        blockingStateController.startConfirmation(FirstStartMessages.confirmation(userName), confirmNameCallback);
     }
 
-    /**
-     * This state is used when the user is required to choose from a list of events
-     * @param userInput User's input
-     */
-    private static void stateChoosing ( String userInput ) {
-        try {
-            int chosen = Integer.parseInt( userInput );
-            if ( chosen < 1 || chosen > selectionList.size() ) {
-                String message = "You've chosen an invalid number, please enter a number between 1 and " + selectionList.size();
-                displayMessage(message);
-            } else {
-                EventObject selectedObject = selectionList.get(chosen-1);
-                inputRequestState = InputRequestState.NONE;
-                if ( onEventSelectedCallback != null ) {
-                    onEventSelectedCallback.onChosen(selectedObject);
-                }
-            }
-        } catch ( NumberFormatException e ) {
-            displayMessage("Please input a number");
-        }
-    }
-
-    private static void stateConfirming(String userInput) {
-        userInput = userInput.trim().toLowerCase();
-        if ( userInput.startsWith("y") ) {
-            inputRequestState = InputRequestState.NONE;
-            if ( onConfirmedCallback != null ) {
-                onConfirmedCallback.onConfirmed(true);
-            }
-        } else if ( userInput.startsWith("n") ) {
-            inputRequestState = InputRequestState.NONE;
-            if ( onConfirmedCallback != null ) {
-                onConfirmedCallback.onConfirmed(false);
-            }
-        } else {
-            displayMessage(FirstStartMessages.invalidInput());
-        }
-    }
 
     private static void stateDefault(String userInput) {
         if ( userInput.length() == 0 ) return;
@@ -276,12 +225,10 @@ public class Controller {
         if ( searchResults.size() == 0 ) {
             displayMessage("There is no task called " + queryDelete.getName() );
         } else if ( searchResults.size() > 1 ) {
-            selectionList = searchResults;
             String message = "There are multiple \""+queryDelete.getName()+"\" tasks, please choose the one to delete.";
-
-            startEventSelection(message, searchResults, deleteCallback);
+            blockingStateController.startEventSelection(message, searchResults, deleteCallback);
         } else {
-            deleteCallback.onChosen(selectionList.get(0));
+            deleteCallback.onChosen(searchResults.get(0));
         }
     }
     
@@ -378,7 +325,7 @@ public class Controller {
     }
 
     public static void printWelcomeMessage() {
-        if ( appState == AppState.FIRSTSTART ) {
+        if ( stateManager.isState(AppState.FIRSTSTART) ) {
             graphicalInterface.displayMessage("CareLender: Maybe the best task manager in the world.");
             graphicalInterface.displayMessage(FirstStartMessages.askForName());
         } else {
@@ -404,51 +351,4 @@ public class Controller {
         }
         System.out.println(message);
     }
-
-    /**
-     * Set the application into a choosing mode
-     * @param message Message to show to user before displaying the choices
-     * @param choices List of events to choose from
-     * @param callback Code to be run after the choosing is complete
-     */
-    public static void startEventSelection(String message, EventList choices, OnEventSelectedCallback callback) {
-        inputRequestState = InputRequestState.EVENTSELECTION;
-        selectionList = choices;
-        onEventSelectedCallback = callback;
-        displayMessage(message);
-        displayMessage(selectionList.toString());
-    }
-
-    /**
-     * Set the application into a confirmation mode
-     * @param message Message to show user
-     */
-    public static void startConfirmation ( String message, OnConfirmedCallback callback ) {
-        inputRequestState = InputRequestState.CONFIRMING;
-        onConfirmedCallback = callback;
-
-        displayMessage(message);
-    }
-
-
-
-    public static void changeState ( AppState newState ) {
-        if ( appState == newState ) return;
-        prevState = appState;
-        appState = newState;
-        System.out.println("State changed: " + newState.toString());
-    }
-
-
-    /*private static void processDummy(QueryDummy queryDummy) {
-        if ( queryDummy.getData().equals("clear") ) {
-            graphicalInterface.clearMessageLog();
-        } else if (queryDummy.getData().equals("help")) {
-            graphicalInterface.displayMessage("Commands:\ndisplay [to display] - displays the text input\nclear - clears the screen\nhelp - shows this screen");
-        } else if (queryDummy.getData().startsWith("display ")) {
-            graphicalInterface.displayMessage(queryDummy.getData().substring(8));
-        } else {
-            graphicalInterface.displayMessage("Invalid command. Need help? Type help.");
-        }
-    }*/
 }

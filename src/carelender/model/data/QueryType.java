@@ -5,7 +5,6 @@ package carelender.model.data;
  */
 public enum QueryType {
     ERROR,      //Invalid command entered
-    DUMMY,      //Temporary //TODO: Remove
     ADD,        //Adding new event
     DELETE,     //Deleting an event
     UPDATE,     //Updating an event
