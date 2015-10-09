@@ -32,7 +32,7 @@ public class Model {
 		DateRange[] dateRangeArray = new DateRange[1];
 		dateRangeArray[0] = dateRange;
 		EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);	
-		events.add(eventObj);	
+		events.add(eventObj);
 		return saveToFile(events);
 	}
 	

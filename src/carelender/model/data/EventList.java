@@ -10,4 +10,19 @@ import java.util.ArrayList;
  */
 
 public class EventList extends ArrayList<EventObject> {
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        String breakline = "";
+        int count = 0;
+        for ( EventObject eventObject : this ) {
+            count++;
+            stringBuilder.append(breakline);
+            breakline = System.lineSeparator();
+            stringBuilder.append(count);
+            stringBuilder.append(". ");
+            stringBuilder.append(eventObject.getInfo());
+        }
+        return super.toString();
+    }
 }

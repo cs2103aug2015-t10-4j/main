@@ -33,8 +33,13 @@ public class Controller {
 
     //Application state
     private static AppState appState;
+    private static AppState prevState;
 
     private static String userName;
+
+    //Temp variables
+    private static EventList selectionList; //Used for selecting multiple objects
+    private static EventObject selectedObject;
 
     public static void initialize() {
         model = new Model();
@@ -44,8 +49,11 @@ public class Controller {
         messageList = new ArrayList<>();
         commandList = new ArrayList<>();
         appState = AppState.FIRSTSTART;
+        prevState = null;
         userName = null;
         currentCommand = 0;
+        selectionList = null;
+        selectedObject = null;
 
     }
 
@@ -129,7 +137,7 @@ public class Controller {
                 break;
 
             case CHOOSING:
-
+                stateChoosing( userInput );
                 break;
 
             case CONFIRMING:
@@ -151,6 +159,7 @@ public class Controller {
             String answer = userInput.trim().toLowerCase();
             if ( answer.startsWith("y") ) {
                 displayMessage(FirstStartMessages.confirmed(userName));
+                changeState(AppState.DEFAULT);
             } else if ( answer.startsWith("n") ) {
                 displayMessage(FirstStartMessages.askForNameAgain());
                 userName = null;
@@ -158,7 +167,21 @@ public class Controller {
                 displayMessage(FirstStartMessages.invalidInput());
             }
         }
+    }
 
+    /**
+     * This state is used when the user is required to choose from a list of events
+     * @param userInput User's input
+     */
+    private static void stateChoosing ( String userInput ) {
+        int chosen = Integer.parseInt( userInput );
+        if ( chosen < 1 || chosen > selectionList.size() ) {
+            String message = "You've chosen an invalid number, please enter a number between 1 and " + selectionList.size();
+            displayMessage(message);
+        } else {
+            selectedObject = selectionList.get(chosen-1);
+            changeState(prevState);
+        }
     }
 
     private static void stateDefault(String userInput) {
@@ -206,6 +229,15 @@ public class Controller {
     private static void processDelete ( QueryDelete queryDelete ) {
         //TODO: Actually delete something
         EventList searchResults = search.parseQuery(queryDelete);
+
+        if ( searchResults.size() > 1 ) {
+            selectionList = searchResults;
+            displayMessage("There are multiple \""+queryDelete.getName()+"\" tasks, please choose the one to delete.");
+            startChoosing(selectionList);
+        } else {
+
+        }
+
 
         int count = 1;
         for (EventObject event : searchResults) {
@@ -259,11 +291,9 @@ public class Controller {
         }
         
         if (searchResults.size() > 0) {
-            int count = 1;
-            for (EventObject event : searchResults) {
-                displayMessage(count + ". " + event.getName());
-                count++;
-            }
+            displayMessage(searchResults.toString());
+        } else {
+            displayMessage("No results");
         }
     }
 
@@ -271,7 +301,6 @@ public class Controller {
         String dateString = new SimpleDateFormat("E dd MMM yyyy h:mma Z").format(queryAdd.getTime());
         displayMessage("Adding new task: ["+queryAdd.getName()+"] at " + dateString);
 
-        //WZ: I added all these to accommodate adding of tasks into the model.
         QueryList checkClashesQuery = new QueryList();
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_END, queryAdd.getTime());
@@ -281,16 +310,12 @@ public class Controller {
         //There is at least one task that clashes with the task to add.
         if (searchResults.size() > 0) {
             displayMessage("Task clashes with:");
-            int count = 1;
-            for (EventObject event : searchResults) {
-                displayMessage(count + ". " + event.getName());
-                count++;
-            }
+            displayMessage(searchResults.toString());
         } else { //Add the task to the Model.
             model.addEvent(queryAdd);
         }
-        //WZ: END
     }
+
     private static void processError(QueryError queryError) {
         graphicalInterface.displayMessage(queryError.getMessage());
         showHelp();
@@ -329,6 +354,22 @@ public class Controller {
         System.out.println(message);
     }
 
+    /**
+     * Set the application into a choosing mode
+     * @param choices
+     */
+    public static void startChoosing ( EventList choices ) {
+        changeState(AppState.CHOOSING);
+        selectionList = choices;
+        displayMessage(selectionList.toString());
+    }
+
+
+    public static void changeState ( AppState newState ) {
+        if ( appState == newState ) return;
+        prevState = appState;
+        appState = newState;
+    }
 
 
     /*private static void processDummy(QueryDummy queryDummy) {
