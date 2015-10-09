@@ -1,17 +1,14 @@
 package carelender.model;
 
-import java.io.BufferedOutputStream;
 /**
  * Handles all database and file saving
  */
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 import carelender.model.data.*;
@@ -26,44 +23,32 @@ public class Model {
 	private ArrayList<String> storage;
 	
 	public Model() {
-        filename = "events.dat";
-		eventFile = new File(filename);
 		events = new EventList();
+		events = retrieveFromFile();
 	}
 	
 	public boolean addEvent(QueryAdd queryAdd) {
 		DateRange dateRange = new DateRange(queryAdd.getTime());
 		DateRange[] dateRangeArray = new DateRange[1];
 		dateRangeArray[0] = dateRange;
-		EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);
-		
-		events.add(eventObj);
-		System.out.println(eventObj.getName());
-		return true;
-//		try {
-//			OutputStream file = new FileOutputStream("events.dat");
-//			OutputStream buffer = new BufferedOutputStream(file);
-//			ObjectOutput output = new ObjectOutputStream(buffer);
-//			
-//			output.writeObject(events);
-//
-//	        return true;
-//		} catch (IOException e) {
-//			System.out.println("Failed to add event");
-//			return false;
-//		}
+		EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);	
+		events.add(eventObj);	
+		return saveToFile(events);
 	}
 	
 	public EventList retrieveEvent() {
 		return events;
 	}
 	
-	public void updateEvent() {
-//		for (int i = 0; i < events.size(); i++) {
-//			if(events.get(i).getName().equals(queryDelete.getName())) {
-//				events.remove(i);
-//			}
-//		}
+	public boolean updateEvent(EventObject eventObj) {
+		for (int i = 0; i < events.size(); i++) {
+			if(events.get(i).getName().equals(eventObj.getName())) {
+				events.remove(i);
+				events.add(eventObj);
+				return saveToFile(events);
+			}
+		}
+		return false;
 	}
 	
 	public void deleteEvent(QueryDelete queryDelete) {
@@ -71,6 +56,43 @@ public class Model {
 			if(events.get(i).getName().equals(queryDelete.getName())) {
 				events.remove(i);
 			}
+			saveToFile(events);
+		}
+	}
+	
+	private boolean saveToFile(EventList eventList) {
+		try {
+			FileOutputStream fos = new FileOutputStream("events.dat");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			
+			oos.writeObject(eventList);
+			oos.close();
+			fos.close();
+
+	        return true;
+		} catch (IOException ioe) {
+			System.out.println("Failed to add event");
+			ioe.printStackTrace();
+			return false;
+		}
+	}
+	
+	private EventList retrieveFromFile(){
+		try	{
+            FileInputStream fis = new FileInputStream("events.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            
+            EventList eventList = (EventList) ois.readObject();
+            ois.close();
+            fis.close();
+            return eventList;
+		} catch(IOException ioe){
+			ioe.printStackTrace();
+         	return null;
+		} catch(ClassNotFoundException c){
+            System.out.println("Class not found");
+            c.printStackTrace();
+            return null;
 		}
 	}
 }
