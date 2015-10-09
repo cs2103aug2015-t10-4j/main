@@ -34,11 +34,23 @@ public class GraphicalInterface implements Initializable {
                 new EventHandler<KeyEvent>() {
                     public void handle(final KeyEvent keyEvent) {
                         if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
-                            if (keyEvent.getCode() == KeyCode.ENTER) {
-                                String text = inputText.getText();
-                                inputText.setText("");
-                                Controller.processUserInput(text);
+                            switch ( keyEvent.getCode() ) {
+                                case ENTER:
+                                    String text = inputText.getText();
+                                    inputText.setText("");
+                                    Controller.processUserInput(text);
+                                    break;
+                                case UP:
+                                    Controller.processUpPress();
+                                    break;
+                                case DOWN:
+                                    Controller.processDownPress();
+                                    break;
+                                default:
+                                    Controller.processIncompleteInput(inputText.getText());
+                                    break;
                             }
+
                         }
                     }
                 };
@@ -56,6 +68,10 @@ public class GraphicalInterface implements Initializable {
     public void displayMessage( String message ) {
         messageList.add(message);
         refreshOutputField();
+    }
+
+    public void setUserInput ( String inputText ) {
+        this.inputText.setText(inputText);
     }
     public void refreshOutputField() {
         StringBuilder stringBuilder = new StringBuilder();

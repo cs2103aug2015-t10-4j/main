@@ -26,6 +26,10 @@ public class Controller {
 
     //Stores the messages to the user
     private static ArrayList<String> messageList;
+    //Stores the user's inputs
+    private static ArrayList<String> commandList;
+    private static int currentCommand;
+    private static String incompleteInput;
 
     //Application state
     private static AppState appState;
@@ -38,8 +42,11 @@ public class Controller {
         appSettings = new AppSettings();
         inputParser = new InputParser();
         messageList = new ArrayList<>();
+        commandList = new ArrayList<>();
         appState = AppState.FIRSTSTART;
         userName = null;
+        currentCommand = 0;
+
     }
 
     public static void initGraphicalInterface(GraphicalInterface graphicalInterface) {
@@ -48,6 +55,61 @@ public class Controller {
     }
 
 
+    /**
+     * Called by UI when up key is pressed
+     */
+    public static void processUpPress() {
+        if (currentCommand < commandList.size() - 1){
+            currentCommand++;
+        }
+        showPreviousCommand();
+    }
+
+    /**
+     * Called by UI when down key is pressed
+     */
+    public static void processDownPress() {
+        if ( currentCommand >= 0 ) {
+            currentCommand--;
+        }
+        showPreviousCommand();
+    }
+
+    /**
+     * Shows any previous command based on the currentCommand variable
+     */
+    private static void showPreviousCommand() {
+        if ( currentCommand == -1 ) { //Index -1 is an empty command
+            graphicalInterface.setUserInput(incompleteInput);
+        } else {
+            int commandIndex = commandList.size() - currentCommand - 1;
+            if (commandIndex < 0 || commandIndex >= commandList.size()) {
+                return;
+            }
+            graphicalInterface.setUserInput(commandList.get(commandIndex));
+        }
+    }
+
+    /**
+     * Called by UI while user is typing
+     * @param userInput the incomplete user input
+     */
+    public static void processIncompleteInput(String userInput) {
+        incompleteInput = userInput;
+    }
+
+    /**
+     * Saves the user's command. Removes duplicates and empty commands
+     * @param userInput User input to save
+     */
+    private static void saveUserCommand ( String userInput ) {
+        if ( userInput.length() > 0 ) {
+            int index = commandList.indexOf(userInput);
+            if ( index >= 0 ) commandList.remove(index);
+            commandList.add(userInput);
+            currentCommand = -1;
+        }
+    }
 
     /**
      * Processes the user input.
@@ -55,6 +117,8 @@ public class Controller {
      * @param userInput The user input string
      */
     public static void processUserInput(String userInput) {
+        userInput = userInput.trim();
+        saveUserCommand(userInput);
         switch ( appState ) {
             case FIRSTSTART:
                 stateFirstStart(userInput);
