@@ -287,11 +287,12 @@ public class Controller {
         		count++;
         	}
         } else { //Add the task to the Model.	
-        	model.addEvent(cQueryAddToEventObject(queryAdd));
+        	model.addEvent(queryAddToEventObject(queryAdd));
         }
         //WZ: END
     }
-	private static EventObject cQueryAddToEventObject(QueryAdd queryAdd) {
+    //SQ: Function to convert QueryAdd to EventObject
+	private static EventObject queryAddToEventObject(QueryAdd queryAdd) {
 		DateRange dateRange = new DateRange(queryAdd.getTime());
 		DateRange[] dateRangeArray = new DateRange[1];
 		dateRangeArray[0] = dateRange;
