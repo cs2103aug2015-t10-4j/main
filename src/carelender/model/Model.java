@@ -6,9 +6,11 @@ import java.io.BufferedOutputStream;
  */
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -27,7 +29,21 @@ public class Model {
 	
 	public Model() {
 		events = new EventList();
-		storage = new ArrayList<String>();
+		try
+        {
+            FileInputStream fis = new FileInputStream("events.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            events = (EventList) ois.readObject();
+            ois.close();
+            fis.close();
+         }catch(IOException ioe){
+             ioe.printStackTrace();
+             return;
+          }catch(ClassNotFoundException c){
+             System.out.println("Class not found");
+             c.printStackTrace();
+             return;
+          }
 	}
 	
 	public boolean addEvent(QueryAdd queryAdd) {
@@ -38,21 +54,6 @@ public class Model {
 		
 		events.add(eventObj);
 		System.out.println(eventObj.getName());
-		storage.add(eventObj.getName());
-		try {
-			FileOutputStream file1 = new FileOutputStream("events1.dat");
-			//OutputStream buffer = new BufferedOutputStream(file);
-			ObjectOutputStream output1 = new ObjectOutputStream(file1);
-			
-			output1.writeObject(storage);
-			output1.close();
-			file1.close();
-			
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Failed to add event");
-		}
 		
 		try {
 			FileOutputStream file = new FileOutputStream("events.dat");
