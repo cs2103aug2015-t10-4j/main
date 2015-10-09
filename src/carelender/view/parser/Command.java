@@ -10,7 +10,11 @@ import java.util.ArrayList;
 public class Command {
     private String command;
     private String description;
-    private QueryType type;
+    private String usage;
+    
+    
+
+	private QueryType type;
     ArrayList<CommandKeyword> keywords;
     public Command(String name, QueryType type) {
         command = name.trim();
@@ -71,6 +75,15 @@ public class Command {
         }
         return null;
     }
+    
+    public String getUsage() {
+		return usage;
+	}
+
+	public void setUsage(String usage) {
+		this.usage = usage;
+	}
+	
     public String getCommand() {
         return command;
     }
