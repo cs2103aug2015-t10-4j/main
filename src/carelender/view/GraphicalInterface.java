@@ -28,7 +28,7 @@ public class GraphicalInterface implements Initializable {
         // initialize your logic here: all @FXML variables will have been injected
 
         Controller.initGraphicalInterface(this);
-        
+
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
                 new EventHandler<KeyEvent>() {

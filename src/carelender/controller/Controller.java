@@ -1,7 +1,9 @@
 package carelender.controller;
 
+import carelender.model.AppSettings;
 import carelender.model.Model;
 import carelender.model.data.*;
+import carelender.model.strings.FirstStartMessages;
 import carelender.view.GraphicalInterface;
 import carelender.view.parser.InputParser;
 
@@ -20,15 +22,26 @@ public class Controller {
     private static Search search = null;
     private static Model model = null;
     private static InputParser inputParser = null;
-    
+    private static AppSettings appSettings = null;
+
+    //Stores the messages to the user
     private static ArrayList<String> messageList;
+
+    //Application state
+    private static AppState appState;
+
+    private static String userName;
 
     public static void initialize() {
         model = new Model();
         search = new Search(model);
+        appSettings = new AppSettings();
         inputParser = new InputParser();
         messageList = new ArrayList<>();
+        appState = AppState.FIRSTSTART;
+        userName = null;
     }
+
     public static void initGraphicalInterface(GraphicalInterface graphicalInterface) {
         Controller.graphicalInterface = graphicalInterface;
         Controller.graphicalInterface.setMessageList(messageList);
@@ -42,6 +55,49 @@ public class Controller {
      * @param userInput The user input string
      */
     public static void processUserInput(String userInput) {
+        switch ( appState ) {
+            case FIRSTSTART:
+                stateFirstStart(userInput);
+                break;
+
+            case DEFAULT:
+                stateDefault(userInput);
+                break;
+
+            case CHOOSING:
+
+                break;
+
+            case CONFIRMING:
+
+                break;
+
+            default:
+
+                break;
+        }
+    }
+
+    private static void stateFirstStart ( String userInput ) {
+        //TODO: Save user's name to memory
+        if ( userName == null ) {
+            userName = userInput;
+            displayMessage(FirstStartMessages.confirmation(userName));
+        } else {
+            String answer = userInput.trim().toLowerCase();
+            if ( answer.startsWith("y") ) {
+                displayMessage(FirstStartMessages.confirmed(userName));
+            } else if ( answer.startsWith("n") ) {
+                displayMessage(FirstStartMessages.askForNameAgain());
+                userName = null;
+            } else {
+                displayMessage(FirstStartMessages.invalidInput());
+            }
+        }
+
+    }
+
+    private static void stateDefault(String userInput) {
         QueryBase query = inputParser.parseCompleteInput(userInput);
 
         switch (query.getQueryType()) {
@@ -69,10 +125,10 @@ public class Controller {
             case LIST:
                 processList( (QueryList) query);
                 break;
-                
+
             case SWITCHUI:
-            	processSwitchUI();
-            	break;
+                processSwitchUI();
+                break;
             default:
                 graphicalInterface.displayMessage("Command accepted.");
                 break;
@@ -80,43 +136,43 @@ public class Controller {
     }
 
     private static void processSwitchUI () {
-    	displayMessage("Switching UI");
+        displayMessage("Switching UI");
     }
 
     private static void processDelete ( QueryDelete queryDelete ) {
         //TODO: Actually delete something
-    	EventList searchResults = search.parseQuery(queryDelete);
-    	
-    	int count = 1;
-    	for (EventObject event : searchResults) {
-    		//this.model.deleteEvent(event);
-    		System.out.println(event.getName());
-    	}
-    	
+        EventList searchResults = search.parseQuery(queryDelete);
+
+        int count = 1;
+        for (EventObject event : searchResults) {
+            //this.model.deleteEvent(event);
+            System.out.println(event.getName());
+        }
+
         displayMessage("Deleting [" + queryDelete.getName() + "]");
     }
     
     private static void processUpdate ( QueryUpdate queryUpdate ) {
         //TODO: Actually update something
-    	EventList searchResults = search.parseQuery(queryUpdate);
-    	for ( EventObject event : searchResults ) {
-    		//TODO: This will have to change if we want to do bulk updating.
-    		HashMap<QueryUpdate.UpdateParam, Object> paramList = queryUpdate.getUpdateParamsList();
-        	
-        	if ( paramList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
+        EventList searchResults = search.parseQuery(queryUpdate);
+        for ( EventObject event : searchResults ) {
+            //TODO: This will have to change if we want to do bulk updating.
+            HashMap<QueryUpdate.UpdateParam, Object> paramList = queryUpdate.getUpdateParamsList();
+
+            if ( paramList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
                 String fromName = (String)paramList.get(QueryUpdate.UpdateParam.NAME);
                 event.setName(fromName);
             }
-        	
-        	if ( paramList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
+
+            if ( paramList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
                 DateRange[] fromDateRange = (DateRange[])paramList.get(QueryUpdate.UpdateParam.DATE_RANGE);
                 event.setDateRange(fromDateRange);
             }
-        	
-        	//Call Model updateEvent function
-        	//this.model.updateEvent ( event );
-        	System.out.println ( event.getName() );
-    	}
+
+            //Call Model updateEvent function
+            //this.model.updateEvent ( event );
+            System.out.println ( event.getName() );
+        }
     }
 
     private static void processList ( QueryList queryList ) {
@@ -139,11 +195,11 @@ public class Controller {
         }
         
         if (searchResults.size() > 0) {
-        	int count = 1;
-        	for (EventObject event : searchResults) {
-        		displayMessage(count + ". " + event.getName());
-        		count++;
-        	}
+            int count = 1;
+            for (EventObject event : searchResults) {
+                displayMessage(count + ". " + event.getName());
+                count++;
+            }
         }
     }
 
@@ -160,14 +216,14 @@ public class Controller {
         
         //There is at least one task that clashes with the task to add.
         if (searchResults.size() > 0) {
-        	displayMessage("Task clashes with:");
-        	int count = 1;
-        	for (EventObject event : searchResults) {
-        		displayMessage(count + ". " + event.getName());
-        		count++;
-        	}
+            displayMessage("Task clashes with:");
+            int count = 1;
+            for (EventObject event : searchResults) {
+                displayMessage(count + ". " + event.getName());
+                count++;
+            }
         } else { //Add the task to the Model.
-        	model.addEvent(queryAdd);
+            model.addEvent(queryAdd);
         }
         //WZ: END
     }
@@ -180,9 +236,15 @@ public class Controller {
         graphicalInterface.displayMessage("Available Commands:");
         graphicalInterface.displayMessage(inputParser.showCommandList());
     }
-    
-    public static void printWelcomeMessage(){
-    	graphicalInterface.displayMessage("CareLender: Maybe the best task manager in the world.");
+
+    public static void printWelcomeMessage() {
+        if ( appState == AppState.FIRSTSTART ) {
+            graphicalInterface.displayMessage("CareLender: Maybe the best task manager in the world.");
+            graphicalInterface.displayMessage(FirstStartMessages.askForName());
+        } else {
+            graphicalInterface.displayMessage("Welcome back, <username>");
+        }
+
     }
 
     /**
