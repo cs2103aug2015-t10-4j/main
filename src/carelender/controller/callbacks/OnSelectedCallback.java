@@ -1,7 +1,9 @@
 package carelender.controller.callbacks;
 
+
 /**
- * Created by JiaXun on 9/10/2015.
+ * Used for the option selection input blocking state
  */
-public class OnSelectedCallback {
+public interface OnSelectedCallback {
+    void onChosen(int selectedIndex);
 }

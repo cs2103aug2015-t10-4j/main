@@ -3,6 +3,7 @@ package carelender.controller.states;
 import carelender.controller.Controller;
 import carelender.controller.callbacks.OnConfirmedCallback;
 import carelender.controller.callbacks.OnEventSelectedCallback;
+import carelender.controller.callbacks.OnSelectedCallback;
 import carelender.model.data.EventList;
 import carelender.model.data.EventObject;
 import carelender.model.strings.ErrorMessages;
@@ -13,16 +14,19 @@ import carelender.model.strings.ErrorMessages;
 public class BlockingStateController {
     private InputRequestState inputRequestState;
     private OnEventSelectedCallback onEventSelectedCallback;
+    private OnSelectedCallback onSelectedCallback;
     private OnConfirmedCallback onConfirmedCallback;
 
     //Temp variables
-    private static EventList selectionList; //Used for selecting multiple objects
+    private EventList selectionList; //Used for selecting multiple events
+    private String [] stringSelectionList; //Used for selecting multiple choices
 
 
     public BlockingStateController() {
         inputRequestState = InputRequestState.NONE;
         onEventSelectedCallback = null;
         onConfirmedCallback = null;
+        onSelectedCallback = null;
     }
 
     /**
@@ -34,9 +38,12 @@ public class BlockingStateController {
     public boolean processBlockingState ( String userInput ) {
         switch ( inputRequestState ) {
             case EVENTSELECTION:
-                stateChoosing(userInput);
+                stateEventSelection(userInput);
                 break;
 
+            case SELECTION:
+                stateSelection(userInput);
+                break;
             case CONFIRMING:
                 stateConfirming(userInput);
                 break;
@@ -45,6 +52,32 @@ public class BlockingStateController {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * Set the application into a choosing mode
+     * @param message Message to show to user before displaying the choices
+     * @param choices List of events to choose from
+     * @param callback Code to be run after the choosing is complete
+     */
+    public void startSelection(String message, String [] choices, OnSelectedCallback callback) {
+        inputRequestState = InputRequestState.SELECTION;
+        stringSelectionList = choices;
+        onSelectedCallback = callback;
+
+        Controller.displayMessage(message);
+        StringBuilder stringBuilder = new StringBuilder();
+        String breakline = "";
+        int count = 0;
+        for ( String choice : choices ) {
+                count++;
+                stringBuilder.append(breakline);
+                breakline = System.lineSeparator();
+                stringBuilder.append(count);
+                stringBuilder.append(". ");
+                stringBuilder.append(choice);
+            }
+        Controller.displayMessage(stringBuilder.toString());
     }
 
     /**
@@ -74,15 +107,34 @@ public class BlockingStateController {
 
 
     /**
+     * This state is used when the user is required to choose from a list of choices
+     * @param userInput User's input
+     */
+    private void stateSelection(String userInput) {
+        try {
+            int chosen = Integer.parseInt( userInput );
+            if ( chosen < 1 || chosen > stringSelectionList.length ) {
+                Controller.displayMessage(ErrorMessages.invalidNumberRange(1, stringSelectionList.length));
+            } else {
+                inputRequestState = InputRequestState.NONE;
+                if ( onSelectedCallback != null ) {
+                    onSelectedCallback.onChosen(chosen-1);
+                }
+            }
+        } catch ( NumberFormatException e ) {
+            Controller.displayMessage(ErrorMessages.invalidNumber());
+        }
+    }
+
+    /**
      * This state is used when the user is required to choose from a list of events
      * @param userInput User's input
      */
-    private void stateChoosing ( String userInput ) {
+    private void stateEventSelection(String userInput) {
         try {
             int chosen = Integer.parseInt( userInput );
             if ( chosen < 1 || chosen > selectionList.size() ) {
-                String message = "You've chosen an invalid number, please enter a number between 1 and " + selectionList.size();
-                Controller.displayMessage(message);
+                Controller.displayMessage(ErrorMessages.invalidNumberRange(1, selectionList.size()));
             } else {
                 EventObject selectedObject = selectionList.get(chosen-1);
                 inputRequestState = InputRequestState.NONE;
@@ -91,7 +143,7 @@ public class BlockingStateController {
                 }
             }
         } catch ( NumberFormatException e ) {
-            Controller.displayMessage("Please input a number");
+            Controller.displayMessage(ErrorMessages.invalidNumber());
         }
     }
 
