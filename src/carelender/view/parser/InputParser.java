@@ -25,10 +25,10 @@ public class InputParser {
 
         newCommand = new Command("add", QueryType.ADD);
         newCommand.setDescription("Adds a new event/task\n    Usage: add \"event name\" [tomorrow/today/etc...] [morning/noon/etc...]");
-        newCommand.addKeywords("timedelimeter", "at,on,by");
+        /*newCommand.addKeywords("timedelimeter", "at,on,by");
         newCommand.addKeywords("rangedelimiter", "from,to");
         newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday");
-        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon");
+        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon");*/
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("search", QueryType.LIST);
@@ -142,7 +142,7 @@ public class InputParser {
         QueryBase newQuery;
         switch (matchedCommand.getType()) {
             case ADD:
-                newQuery = parseAddCommand(queryParts, commandParts);
+                newQuery = parseAddCommand(queryParts, commandParts, input);
                 break;
             case EDIT:
                 newQuery = new QueryEdit();
@@ -151,7 +151,7 @@ public class InputParser {
                 newQuery = parseDeleteCommand(queryParts, commandParts);
                 break;
             case UPDATE:
-                newQuery = parseUpdateCommand(queryParts, commandParts);
+                newQuery = parseUpdateCommand(queryParts, commandParts, input);
                 break;
             case LIST:
                 if ( matchedCommand.getCommand().equalsIgnoreCase("search") ) {
@@ -241,7 +241,7 @@ public class InputParser {
         return queryDelete;
     }
     
-    public QueryBase parseUpdateCommand ( String [] queryParts, CommandPart [] commandParts ) {
+    public QueryBase parseUpdateCommand ( String [] queryParts, CommandPart [] commandParts, String input ) {
         QueryUpdate queryUpdate = new QueryUpdate();
 
         String name = queryParts[1]; //First item is the name
@@ -255,9 +255,21 @@ public class InputParser {
         if (queryParts.length <= 4) {
             return queryUpdate;
         }
+
+        SimpleDateGroup [] dateGroups = DateTimeParser.parseDateTime(input);
+        if ( dateGroups != null ) {
+            if ( dateGroups.length > 1 && dateGroups.length % 2 != 0) {
+                //Odd number of dates
+                return new QueryError("Please input an even number of date time values", false);
+            }
+
+            DateRange[] dr = new DateRange[]{new DateRange(dateGroups[0].dates[0])};
+            queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.DATE_RANGE, dr);
+
+        }
         
         //Check if a relative day keyword exists
-        String relativeDay = null;
+        /*String relativeDay = null;
         for ( CommandPart commandPart :commandParts ) {
             if ( commandPart.getKeywordType() != null &&
                  commandPart.getKeywordType().equalsIgnoreCase("relativeday") ) {
@@ -341,14 +353,34 @@ public class InputParser {
 
         Date newTime = calendar.getTime();
         DateRange[] dr = new DateRange[]{new DateRange(newTime)};
-        queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.DATE_RANGE, dr );
+        queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.DATE_RANGE, dr);*/
 
         return queryUpdate;
     }
 
+    public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts, String input ) {
+        QueryAdd queryAdd = new QueryAdd();
+
+        String name = queryParts[1]; //First item is the name
+        queryAdd.setName(name);
+
+        SimpleDateGroup [] dateGroups = DateTimeParser.parseDateTime(input);
+        if ( dateGroups != null ) {
+            if ( dateGroups.length > 1 && dateGroups.length % 2 != 0) {
+                //Odd number of dates
+                return new QueryError("Please input an even number of date time values", false);
+            }
+
+            queryAdd.setTime(dateGroups[0].dates[0]);
+
+        }
 
 
-    public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts ) {
+
+        return queryAdd;
+    }
+
+    /*public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts ) {
         QueryAdd queryAdd = new QueryAdd();
 
         String name = queryParts[1]; //First item is the name
@@ -440,7 +472,7 @@ public class InputParser {
         queryAdd.setTime(newTime);
 
         return queryAdd;
-    }
+    }*/
 
     /**
      * Gets the date of the next day of the week

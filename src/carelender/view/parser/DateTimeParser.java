@@ -1,12 +1,12 @@
 package carelender.view.parser;
 
+import com.joestelmach.natty.DateGroup;
+import com.joestelmach.natty.Parser;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by JiaXun on 10/10/2015.
@@ -52,6 +52,7 @@ public class DateTimeParser {
     /**
      * Determine SimpleDateFormat pattern matching with the given date string. Returns null if
      * format is unknown. You can simply extend DateUtil with more formats if needed.
+     * Depreciated, Natty is now used to parse the date time.
      * @param dateString The date string to determine the SimpleDateFormat pattern for.
      * @return DateTimeFormat pattern, or null if format is unknown.
      * @see DateTimeFormat
@@ -67,9 +68,11 @@ public class DateTimeParser {
 
     /**
      * Converts a date time string into a date object
+     * Depreciated, Natty is now used to parse the date time.
      * @param dateString The date string to be converted
      * @return Date object, or null if it does not match a known format
      */
+
     public static Date stringToDate ( String dateString ) {
         DateTimeFormat dateTimeFormat = determineDateFormat(dateString);
         if ( dateTimeFormat == null ) {
@@ -94,6 +97,49 @@ public class DateTimeParser {
             System.out.println("Cannot parse date [" + dateString + "]");
             return null;
         }
+    }
+
+    /**
+     * Parses the date time string and returns an array of SimpleDateGroup objects
+     * @param inputString Date string to be parsed
+     * @return SimpleDateGroup object array, null if no dates found
+     */
+    public static SimpleDateGroup[] parseDateTime ( String inputString ) {
+        Parser parser = new Parser();
+        List <DateGroup> groups = parser.parse(inputString);
+        if ( groups.size() == 0 ) {
+            return null;
+        }
+        SimpleDateGroup [] simpleGroups = new SimpleDateGroup[groups.size()];
+
+        int i = 0;
+        for(DateGroup group:groups) {
+            List<Date> dates = group.getDates();
+            int column = group.getPosition();
+            String matchingValue = group.getText();
+            boolean hasTime = stringHasTime(matchingValue);
+            Date [] dateArray = new Date[dates.size()];
+            for ( int j = 0 ; j < dates.size(); j++ ) {
+                dateArray[j] = dates.get(j);
+            }
+            SimpleDateGroup simpleDateGroup = new SimpleDateGroup(dateArray, matchingValue, column, hasTime);
+            simpleGroups[i] = simpleDateGroup;
+            i++;
+        }
+
+        return simpleGroups;
+    }
+
+    /**
+     * Runs through the date and searches for anything that looks like a time.
+     * @param dateString Date string to be searched
+     * @return true if there is a semblance of a time
+     */
+    public static boolean stringHasTime ( String dateString ) {
+        //This regex will look for patters like this
+        //   "3pm" "5:20a" "4:20" "13:40" "2044 hrs" "1202h" "at 3"
+        String timeRegex = "((1[0-2]|[0-9])(:[0-5][0-9])?\\s?(a|p)(m)?)|([0-2]?[0-9]:[0-5][0-9])|([0-2][0-9]:?[0-5][0-9]\\s?(hrs|hr|h))|(at\\s(1[0-2]|[0-9])(:[0-5][0-9])?)";
+        return dateString.toLowerCase().matches(timeRegex);
     }
 
 }

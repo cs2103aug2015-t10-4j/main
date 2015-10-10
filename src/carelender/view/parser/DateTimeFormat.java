@@ -2,6 +2,8 @@ package carelender.view.parser;
 
 /**
  * Stores the format of a date time string, used by the date time parser
+ * Note: Depreciated class
+ *       Natty is now used to parse the date time.
  */
 public class DateTimeFormat {
     private String format;

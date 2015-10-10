@@ -199,7 +199,8 @@ public class Controller {
             case DATETEST:
                 Parser parser = new Parser();
                 List <DateGroup> groups = parser.parse(userInput);
-                displayMessage("Matched " + groups.size() + " date groups\n");
+                displayMessage( "User input: [" + userInput + "]" );
+                displayMessage("Matched " + groups.size() + " date groups");
 
                 for(DateGroup group:groups) {
 
@@ -210,7 +211,7 @@ public class Controller {
                     for ( Date date : dates ) {
                         displayMessage("   " + date.toString());
                     }
-                    displayMessage("      at " + line + ":" + column + " from " + matchingValue );
+                    displayMessage("      at pos " + column + " from \"" + matchingValue + "\"");
                 }
                 break;
 
@@ -332,7 +333,9 @@ public class Controller {
 
     private static void processError(QueryError queryError) {
         graphicalInterface.displayMessage(queryError.getMessage());
-        showHelp();
+        if ( queryError.isHelpDisplayed() ) {
+            showHelp();
+        }
     }
 
     private static void showHelp() {
