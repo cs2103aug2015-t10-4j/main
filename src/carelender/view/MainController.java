@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class GraphicalInterface implements Initializable {
+public class MainController implements Initializable {
     @FXML
     private TextArea outputText;
     @FXML
@@ -27,7 +27,7 @@ public class GraphicalInterface implements Initializable {
         assert inputText != null : "fx:id=\"inputText\" was not injected: check your FXML file 'simple.fxml'.";
         // initialize your logic here: all @FXML variables will have been injected
 
-        Controller.initGraphicalInterface(this);
+        Controller.initMainController(this);
 
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
