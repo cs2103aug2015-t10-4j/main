@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable {
+public class DualViewController implements Initializable {
     @FXML
     private TextArea outputText;
     @FXML
@@ -27,7 +27,7 @@ public class MainController implements Initializable {
         assert inputText != null : "fx:id=\"inputText\" was not injected: check your FXML file 'simple.fxml'.";
         // initialize your logic here: all @FXML variables will have been injected
 
-        Controller.initMainController(this);
+        Controller.initDualViewController(this);
 
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
