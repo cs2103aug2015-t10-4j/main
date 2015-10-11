@@ -9,7 +9,7 @@ import carelender.model.AppSettings;
 import carelender.model.Model;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
-import carelender.view.GraphicalInterface;
+import carelender.view.MainController;
 import carelender.view.parser.InputParser;
 
 import com.joestelmach.natty.*;
@@ -26,7 +26,7 @@ import java.util.List;
 public class Controller {
     private static boolean debugMode = true;
 
-    private static GraphicalInterface graphicalInterface = null;
+    private static MainController mainController = null;
     private static Search search = null;
     private static Model model = null;
     private static InputParser inputParser = null;
@@ -61,9 +61,9 @@ public class Controller {
 
     }
 
-    public static void initGraphicalInterface(GraphicalInterface graphicalInterface) {
-        Controller.graphicalInterface = graphicalInterface;
-        Controller.graphicalInterface.setMessageList(messageList);
+    public static void initMainController(MainController mainController) {
+        Controller.mainController = mainController;
+        Controller.mainController.setMessageList(messageList);
     }
 
 
@@ -92,13 +92,13 @@ public class Controller {
      */
     private static void showPreviousCommand() {
         if ( currentCommand == -1 ) { //Index -1 is an empty command
-            graphicalInterface.setUserInput(incompleteInput);
+            mainController.setUserInput(incompleteInput);
         } else {
             int commandIndex = commandList.size() - currentCommand - 1;
             if (commandIndex < 0 || commandIndex >= commandList.size()) {
                 return;
             }
-            graphicalInterface.setUserInput(commandList.get(commandIndex));
+            mainController.setUserInput(commandList.get(commandIndex));
         }
     }
 
@@ -125,7 +125,7 @@ public class Controller {
 
     /**
      * Processes the user input.
-     * Called by the GraphicalInterface class
+     * Called by the MainController class
      * @param userInput The user input string
      */
     public static void processUserInput(String userInput) {
@@ -181,7 +181,7 @@ public class Controller {
                 showHelp();
                 break;
             case CLEAR:
-                graphicalInterface.clearMessageLog();
+                mainController.clearMessageLog();
                 break;
             case ADD:
                 processAdd((QueryAdd) query);
@@ -219,7 +219,7 @@ public class Controller {
                 processSwitchUI();
                 break;
             default:
-                graphicalInterface.displayMessage("Command accepted.");
+                mainController.displayMessage("Command accepted.");
                 break;
         }
     }
@@ -332,23 +332,23 @@ public class Controller {
 
 
     private static void processError(QueryError queryError) {
-        graphicalInterface.displayMessage(queryError.getMessage());
+        mainController.displayMessage(queryError.getMessage());
         if ( queryError.isHelpDisplayed() ) {
             showHelp();
         }
     }
 
     private static void showHelp() {
-        graphicalInterface.displayMessage("Available Commands:");
-        graphicalInterface.displayMessage(inputParser.showCommandList());
+        mainController.displayMessage("Available Commands:");
+        mainController.displayMessage(inputParser.showCommandList());
     }
 
     public static void printWelcomeMessage() {
         if ( stateManager.isState(AppState.FIRSTSTART) ) {
-            graphicalInterface.displayMessage("CareLender: Maybe the best task manager in the world.");
-            graphicalInterface.displayMessage(FirstStartMessages.askForName());
+            mainController.displayMessage("CareLender: Maybe the best task manager in the world.");
+            mainController.displayMessage(FirstStartMessages.askForName());
         } else {
-            graphicalInterface.displayMessage("Welcome back, <username>");
+            mainController.displayMessage("Welcome back, <username>");
         }
 
     }
@@ -358,7 +358,7 @@ public class Controller {
      * @param message message to be displayed
      */
     public static void displayMessage ( String message ) {
-        graphicalInterface.displayMessage(message);
+        mainController.displayMessage(message);
     }
     /**
      * Prints a message to the screen only in debug mode.
@@ -366,7 +366,7 @@ public class Controller {
      */
     public static void printDebugMessage ( String message ) {
         if ( debugMode ) {
-            graphicalInterface.displayMessage(message);
+            mainController.displayMessage(message);
         }
         System.out.println(message);
     }
