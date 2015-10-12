@@ -10,35 +10,32 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<GridPane alignment="center" hgap="10" prefHeight="441.0" prefWidth="447.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="carelender.view.DualViewController">
+<GridPane alignment="center" hgap="10" prefHeight="600.0" prefWidth="500.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="carelender.view.DualViewController">
     <children>
-      <SplitPane dividerPositions="0.4">
+      <TextArea prefHeight="30.0" prefWidth="500.0" />
+      <SplitPane dividerPositions="0.4" prefHeight="400.0" prefWidth="500.0" GridPane.rowIndex="1">
          <items>
-            <SplitPane dividerPositions="0.4" orientation="VERTICAL">
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
                <items>
-                  <SplitPane dividerPositions="0.5" orientation="VERTICAL">
-                     <items>
-                        <TextArea prefHeight="200.0" prefWidth="200.0" />
-                          <TextArea prefHeight="200.0" prefWidth="200.0" />
-                     </items>
-                  </SplitPane>
+                  <TextArea prefHeight="200.0" prefWidth="200.0" />
                   <TextArea fx:id="outputText" editable="false" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" />
                </items>
             </SplitPane>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL">
                <items>
-                  <Canvas height="200.0" width="200.0" />
-                  <Canvas height="200.0" width="200.0" />
+                  <Canvas height="200.0" width="300.0" />
+                  <Canvas height="200.0" width="300.0" />
                </items>
             </SplitPane>
          </items>
       </SplitPane>
-        <TextField fx:id="inputText" promptText="enter command" GridPane.rowIndex="1" />
+        <TextField fx:id="inputText" promptText="enter command" GridPane.rowIndex="2" />
     </children>
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="100.0" prefWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
       <RowConstraints />
     </rowConstraints>
