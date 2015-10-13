@@ -9,7 +9,7 @@ import carelender.model.AppSettings;
 import carelender.model.Model;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
-import carelender.view.DualViewController;
+import carelender.view.UserInterfaceController;
 import carelender.view.parser.InputParser;
 
 import com.joestelmach.natty.*;
@@ -26,7 +26,7 @@ import java.util.List;
 public class Controller {
     private static boolean debugMode = true;
 
-    private static DualViewController dualViewController = null;
+    private static UserInterfaceController userInterfaceController = null;
     private static Search search = null;
     private static Model model = null;
     private static InputParser inputParser = null;
@@ -61,9 +61,9 @@ public class Controller {
 
     }
 
-    public static void initDualViewController(DualViewController dualViewController) {
-        Controller.dualViewController = dualViewController;
-        Controller.dualViewController.setMessageList(messageList);
+    public static void initDualViewController(UserInterfaceController userInterfaceController) {
+        Controller.userInterfaceController = userInterfaceController;
+        Controller.userInterfaceController.setMessageList(messageList);
     }
 
 
@@ -92,13 +92,13 @@ public class Controller {
      */
     private static void showPreviousCommand() {
         if ( currentCommand == -1 ) { //Index -1 is an empty command
-            dualViewController.setUserInput(incompleteInput);
+            userInterfaceController.setUserInput(incompleteInput);
         } else {
             int commandIndex = commandList.size() - currentCommand - 1;
             if (commandIndex < 0 || commandIndex >= commandList.size()) {
                 return;
             }
-            dualViewController.setUserInput(commandList.get(commandIndex));
+            userInterfaceController.setUserInput(commandList.get(commandIndex));
         }
     }
 
@@ -125,7 +125,7 @@ public class Controller {
 
     /**
      * Processes the user input.
-     * Called by the DualViewController class
+     * Called by the UserInterfaceController class
      * @param userInput The user input string
      */
     public static void processUserInput(String userInput) {
@@ -181,7 +181,7 @@ public class Controller {
                 showHelp();
                 break;
             case CLEAR:
-                dualViewController.clearMessageLog();
+                userInterfaceController.clearMessageLog();
                 break;
             case ADD:
                 processAdd((QueryAdd) query);
@@ -219,7 +219,7 @@ public class Controller {
                 processSwitchUI();
                 break;
             default:
-                dualViewController.displayMessage("Command accepted.");
+                userInterfaceController.displayMessage("Command accepted.");
                 break;
         }
     }
@@ -332,23 +332,23 @@ public class Controller {
 
 
     private static void processError(QueryError queryError) {
-        dualViewController.displayMessage(queryError.getMessage());
+        userInterfaceController.displayMessage(queryError.getMessage());
         if ( queryError.isHelpDisplayed() ) {
             showHelp();
         }
     }
 
     private static void showHelp() {
-        dualViewController.displayMessage("Available Commands:");
-        dualViewController.displayMessage(inputParser.showCommandList());
+        userInterfaceController.displayMessage("Available Commands:");
+        userInterfaceController.displayMessage(inputParser.showCommandList());
     }
 
     public static void printWelcomeMessage() {
         if ( stateManager.isState(AppState.FIRSTSTART) ) {
-            dualViewController.displayMessage("CareLender: Maybe the best task manager in the world.");
-            dualViewController.displayMessage(FirstStartMessages.askForName());
+            userInterfaceController.displayMessage("CareLender: Maybe the best task manager in the world.");
+            userInterfaceController.displayMessage(FirstStartMessages.askForName());
         } else {
-            dualViewController.displayMessage("Welcome back, <username>");
+            userInterfaceController.displayMessage("Welcome back, <username>");
         }
 
     }
@@ -358,7 +358,7 @@ public class Controller {
      * @param message message to be displayed
      */
     public static void displayMessage ( String message ) {
-        dualViewController.displayMessage(message);
+        userInterfaceController.displayMessage(message);
     }
     /**
      * Prints a message to the screen only in debug mode.
@@ -366,7 +366,7 @@ public class Controller {
      */
     public static void printDebugMessage ( String message ) {
         if ( debugMode ) {
-            dualViewController.displayMessage(message);
+            userInterfaceController.displayMessage(message);
         }
         System.out.println(message);
     }
