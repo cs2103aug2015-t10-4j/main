@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
  * Created by JiaXun on 13/10/2015.
  */
 class ResizableCanvas extends Canvas {
-
+    CanvasRenderer renderer;
     public ResizableCanvas() {
         // Redraw canvas when size changes.
         widthProperty().addListener(evt -> draw());
@@ -18,15 +18,23 @@ class ResizableCanvas extends Canvas {
     private void draw() {
         double width = getWidth();
         double height = getHeight();
-
         GraphicsContext gc = getGraphicsContext2D();
-        gc.clearRect(0, 0, width, height);
+        if ( renderer == null ) {
+            //Draw a red cross
+            gc.setStroke(Color.RED);
 
-        gc.setStroke(Color.RED);
-        gc.strokeLine(0, 0, width, height);
-        gc.strokeLine(0, height, width, 0);
+            gc.clearRect(0, 0, width, height);
+            gc.strokeLine(0, 0, width, height);
+            gc.strokeLine(0, height, width, 0);
+        } else {
+            renderer.draw(gc, width, height);
+        }
 
-        System.out.println(width + ", " + height);
+        //System.out.println(width + ", " + height);
+    }
+
+    public void setRenderer(CanvasRenderer renderer) {
+        this.renderer = renderer;
     }
 
     @Override

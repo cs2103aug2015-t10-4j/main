@@ -9,6 +9,8 @@ import carelender.model.AppSettings;
 import carelender.model.Model;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
+import carelender.view.CalenderRenderer;
+import carelender.view.CanvasRenderer;
 import carelender.view.UserInterfaceController;
 import carelender.view.parser.InputParser;
 
@@ -44,6 +46,8 @@ public class Controller {
     //Application state
     private static String userName;
 
+    private static CalenderRenderer canvasRenderer;
+
 
 
     public static void initialize() {
@@ -61,9 +65,11 @@ public class Controller {
 
     }
 
-    public static void initDualViewController(UserInterfaceController userInterfaceController) {
+    public static void initUserInterfaceController(UserInterfaceController userInterfaceController) {
         Controller.userInterfaceController = userInterfaceController;
         Controller.userInterfaceController.setMessageList(messageList);
+        canvasRenderer = new CalenderRenderer();
+        Controller.userInterfaceController.setCanvas1Renderer(canvasRenderer);
     }
 
 
@@ -213,6 +219,13 @@ public class Controller {
                     }
                     displayMessage("      at pos " + column + " from \"" + matchingValue + "\"");
                 }
+                break;
+
+            case DEV1:
+                canvasRenderer.increment();
+                break;
+            case DEV2:
+
                 break;
 
             case SWITCHUI:

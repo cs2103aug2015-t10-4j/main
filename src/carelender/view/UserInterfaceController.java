@@ -28,6 +28,8 @@ public class UserInterfaceController implements Initializable {
     private StackPane canvasHolderBottom;
 
     private ArrayList<String> messageList;
+    ResizableCanvas canvas1;
+    ResizableCanvas canvas2;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -39,28 +41,25 @@ public class UserInterfaceController implements Initializable {
         // initialize your logic here: all @FXML variables will have been injected
 
         //Create canvases using code
-        ResizableCanvas canvas = new ResizableCanvas();
-        canvasHolderTop.getChildren().add(canvas);
+        canvas1 = new ResizableCanvas();
+        canvasHolderTop.getChildren().add(canvas1);
 
         // Bind canvas size to stack pane size.
-        canvas.widthProperty().bind(
+        canvas1.widthProperty().bind(
                 canvasHolderTop.widthProperty());
-        canvas.heightProperty().bind(
+        canvas1.heightProperty().bind(
                 canvasHolderTop.heightProperty());
 
-        canvas = new ResizableCanvas();
-        canvasHolderBottom.getChildren().add(canvas);
+        canvas2 = new ResizableCanvas();
+        canvasHolderBottom.getChildren().add(canvas2);
 
         // Bind canvas size to stack pane size.
-        canvas.widthProperty().bind(
+        canvas2.widthProperty().bind(
                 canvasHolderBottom.widthProperty());
-        canvas.heightProperty().bind(
+        canvas2.heightProperty().bind(
                 canvasHolderBottom.heightProperty());
 
-        Controller.initDualViewController(this);
-
-        canvasSplitPane.lookupAll(".split-pane-divider").stream()
-                .forEach(div ->  div.setMouseTransparent(true) );
+        Controller.initUserInterfaceController(this);
 
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
@@ -89,7 +88,13 @@ public class UserInterfaceController implements Initializable {
                 };
         inputText.setOnKeyPressed( keyEventHandler );
     }
-    
+
+    public void setCanvas1Renderer ( CanvasRenderer renderer ) {
+        canvas1.setRenderer(renderer);
+    }
+    public void setCanvas2Renderer ( CanvasRenderer renderer ) {
+        canvas2.setRenderer(renderer);
+    }
     public void setMessageList( ArrayList<String> messageList ) {
     	this.messageList = messageList;
     }

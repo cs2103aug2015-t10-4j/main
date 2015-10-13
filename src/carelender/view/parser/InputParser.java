@@ -66,6 +66,12 @@ public class InputParser {
         newCommand = new Command("date", QueryType.DATETEST);
         newCommand.setDescription("Does date parse testing");
         commandManager.addCommand(newCommand);
+
+        newCommand = new Command("dev1", QueryType.DEV1);
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("dev2", QueryType.DEV2);
+        commandManager.addCommand(newCommand);
     }
 
     /**
