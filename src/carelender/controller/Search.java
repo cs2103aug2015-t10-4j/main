@@ -14,10 +14,7 @@ import carelender.model.data.*;
 
 public class Search {
 	
-	private Model model = null;
-	
-	public Search (Model modelToSet) {
-		this.model = modelToSet;
+	public Search () {
 	}
 	
 	public EventList parseQuery (QueryBase query) {
@@ -31,8 +28,8 @@ public class Search {
 				
 				QueryDelete queryDelete = (QueryDelete)query;
 				
-				if (this.model.retrieveEvent() != null) {
-					for (EventObject event : this.model.retrieveEvent()) {
+				if (Model.getInstance().retrieveEvent() != null) {
+					for (EventObject event : Model.getInstance().retrieveEvent()) {
 						if (this.isEventNameExact(event, queryDelete.getName())) {
 							returnList.add(event);
 						}
@@ -45,8 +42,8 @@ public class Search {
 				QueryList queryUpdate = (QueryList)query;
 				
 				//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
-				if (this.model.retrieveEvent() != null) {
-					for (EventObject event : this.model.retrieveEvent()) {
+				if (Model.getInstance().retrieveEvent() != null) {
+					for (EventObject event : Model.getInstance().retrieveEvent()) {
 						if (this.eventMatchesParams(event, queryUpdate.getSearchParamsList())) {
 							returnList.add(event);
 						}
@@ -65,8 +62,8 @@ public class Search {
 				QueryList queryList = (QueryList)query;
 				
 				//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
-				if (this.model.retrieveEvent() != null) {
-					for (EventObject event : this.model.retrieveEvent()) {
+				if (Model.getInstance().retrieveEvent() != null) {
+					for (EventObject event : Model.getInstance().retrieveEvent()) {
 						if (this.eventMatchesParams(event, queryList.getSearchParamsList())) {
 							returnList.add(event);
 						}

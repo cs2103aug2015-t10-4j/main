@@ -15,18 +15,26 @@ import carelender.model.data.*;
 
 public class Model {
 	
+	private static Model singleton = null;
+	public static Model getInstance(){
+		if (singleton == null) {
+			singleton = new Model();
+		}
+		return singleton;
+	}
 	private String filename;
 	private EventList events;
 	private ArrayList<EventList> cache;
 	private ArrayList<String> storage;
 	
-	public Model() {
+	private Model() {
 		File file = new File("events.dat");
 		events = new EventList();
 		events = getFromFile();
 	}
 	
 	public boolean addEvent(EventObject eventObj) {
+		//TODO: Add a uniqueID to the EventObject
 		events.add(eventObj);
 		return saveToFile(events);
 	}
