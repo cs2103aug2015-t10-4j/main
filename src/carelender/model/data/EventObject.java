@@ -26,7 +26,11 @@ public class EventObject implements Serializable{
         this.name = nameToSet;
         this.dateRange = dateRangetoSet;
     }
-
+    
+    public void setUid(int uid){
+    	this.uid = uid;
+    }
+    
     public DateRange[] getDateRange () {
         return this.dateRange;
     }
