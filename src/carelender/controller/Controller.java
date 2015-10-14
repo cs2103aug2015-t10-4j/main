@@ -51,7 +51,7 @@ public class Controller {
 
 
 
-    public static void initialize() {
+    public static void initialize() throws Exception {
         search = new Search();
         appSettings = new AppSettings();
         inputParser = new InputParser();
