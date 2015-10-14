@@ -1,13 +1,10 @@
 package carelender.view.parser;
 
 import carelender.model.data.*;
-import com.joestelmach.natty.DateGroup;
-import com.joestelmach.natty.Parser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Parses the user input
@@ -262,7 +259,7 @@ public class InputParser {
             return queryUpdate;
         }
 
-        SimpleDateGroup [] dateGroups = DateTimeParser.parseDateTime(input);
+        SimpleDateGroup [] dateGroups = DateTimeParser.parseDateTimeRaw(input);
         if ( dateGroups != null ) {
             if ( dateGroups.length > 1 && dateGroups.length % 2 != 0) {
                 //Odd number of dates
@@ -370,15 +367,9 @@ public class InputParser {
         String name = queryParts[1]; //First item is the name
         queryAdd.setName(name);
 
-        SimpleDateGroup [] dateGroups = DateTimeParser.parseDateTime(input);
-        if ( dateGroups != null ) {
-            if ( dateGroups.length > 1 && dateGroups.length % 2 != 0) {
-                //Odd number of dates
-                return new QueryError("Please input an even number of date time values", false);
-            }
-
-            queryAdd.setTime(dateGroups[0].dates[0]);
-
+        DateRange [] dateRanges = DateTimeParser.parseDateTime(input);
+        if ( dateRanges != null ) {
+            queryAdd.setDateRange(dateRanges);
         }
 
 

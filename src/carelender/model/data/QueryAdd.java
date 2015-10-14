@@ -7,7 +7,7 @@ import java.util.Date;
  */
 public class QueryAdd extends QueryBase {
     String name;
-    Date time;
+    DateRange [] dateRange;
 
     public QueryAdd() {
         super(QueryType.ADD);
@@ -21,11 +21,15 @@ public class QueryAdd extends QueryBase {
         this.name = name;
     }
 
-    public Date getTime() {
-        return time;
+    public DateRange[] getDateRange() {
+        return dateRange;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setDateRange(DateRange [] dateRange) {
+        this.dateRange = dateRange;
+    }
+    public void setDateRange(DateRange dateRange) {
+        this.dateRange = new DateRange[1];
+        this.dateRange[0] = dateRange;
     }
 }

@@ -70,4 +70,12 @@ public class DateRange implements Serializable{
 	public DateRange copy () {
 		return new DateRange(this);
 	}
+
+	public String toString () {
+		if ( isRange() ) {
+			return start.toString() + " - " + end.toString();
+		} else {
+			return start.toString();
+		}
+	}
 }

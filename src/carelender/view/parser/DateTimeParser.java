@@ -1,5 +1,6 @@
 package carelender.view.parser;
 
+import carelender.model.data.DateRange;
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
@@ -7,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by JiaXun on 10/10/2015.
@@ -100,11 +102,80 @@ public class DateTimeParser {
     }
 
     /**
+     * Removes all the parts of the string referencing dates to make processing easier
+     * @param inputString String to have bits removed from
+     * @return String with dates removed
+     */
+    public static String removeDateParts ( String inputString ) {
+        SimpleDateGroup[] simpleDateGroups = parseDateTimeRaw(inputString);
+        if ( simpleDateGroups != null ) {
+            for (SimpleDateGroup simpleDateGroup : simpleDateGroups) {
+                int length = simpleDateGroup.text.length();
+                inputString = inputString.substring(simpleDateGroup.position, simpleDateGroup.position + length);
+            }
+        }
+        return inputString;
+    }
+    /**
+     * Similar to parseDateTimeRaw, but it tries to detect date ranges in the text.
+     * @param inputString Date string to be parsed
+     * @return Array of DateRange objects
+     */
+    public static DateRange[] parseDateTime(String inputString) {
+        ArrayList<DateRange> dateRanges = new ArrayList<>();
+        //Natty cannot process strings like "mon-tue", it needs the space
+        inputString = inputString.toLowerCase().replaceAll("-", " - ");
+        //Split the string by "and" "," "&"
+        String [] inputParts = inputString.split("(and|,|&)");
+        for ( int i = 0; i < inputParts.length; i++ ) {
+            inputParts[i] = inputParts[i].trim();
+        }
+        SimpleDateGroup[] dateGroups;
+
+        for ( String inputPart : inputParts ) {
+            dateGroups = parseDateTimeRaw(inputPart);
+            if ( dateGroups == null ) continue;
+            //By here, the array should only have one item
+            //This loop is in case it has more than one
+            for ( SimpleDateGroup dateGroup : dateGroups ) {
+                int numberOfDates = dateGroup.dates.length;
+                if ( numberOfDates == 1 ) {
+                    dateRanges.add(new DateRange(dateGroup.dates[0]));
+                } else if ( numberOfDates == 2 ) {
+                    //Should be a range, search for "to" "-"
+                    if ( dateGroup.text.contains("to") ||  dateGroup.text.contains("-") ) {
+                        //Process as a date range
+                        dateRanges.add(new DateRange(dateGroup.dates[0], dateGroup.dates[1]));
+                    } else {
+                        //Add as two separate dates
+                        dateRanges.add(new DateRange(dateGroup.dates[0]));
+                        dateRanges.add(new DateRange(dateGroup.dates[1]));
+                    }
+                } else {
+                    for ( Date date : dateGroup.dates ) {
+                        dateRanges.add(new DateRange(date));
+                    }
+                }
+            }
+        }
+        if ( dateRanges.size() == 0 ) {
+            return null;
+        } else {
+            DateRange[] ranges = new DateRange[dateRanges.size()];
+            int i = 0;
+            for ( DateRange range: dateRanges ) {
+                ranges[i] = range;
+                i++;
+            }
+            return ranges;
+        }
+    }
+    /**
      * Parses the date time string and returns an array of SimpleDateGroup objects
      * @param inputString Date string to be parsed
      * @return SimpleDateGroup object array, null if no dates found
      */
-    public static SimpleDateGroup[] parseDateTime ( String inputString ) {
+    public static SimpleDateGroup[] parseDateTimeRaw (String inputString) {
         Parser parser = new Parser();
         List <DateGroup> groups = parser.parse(inputString);
         if ( groups.size() == 0 ) {
@@ -137,9 +208,9 @@ public class DateTimeParser {
      */
     public static boolean stringHasTime ( String dateString ) {
         //This regex will look for patters like this
-        //   "3pm" "5:20a" "4:20" "13:40" "2044 hrs" "1202h" "at 3"
-        String timeRegex = "((1[0-2]|[0-9])(:[0-5][0-9])?\\s?(a|p)(m)?)|([0-2]?[0-9]:[0-5][0-9])|([0-2][0-9]:?[0-5][0-9]\\s?(hrs|hr|h))|(at\\s(1[0-2]|[0-9])(:[0-5][0-9])?)";
-        return dateString.toLowerCase().matches(timeRegex);
+        //   "3pm" "5:20a" "4:20" "13:40" "2044 hrs" "1202h" "at 3" "morning" "afternoon" "night" "evening" "noon"
+        String timeRegex = "((1[0-2]|[0-9])(:[0-5][0-9])?\\s?(a|p)(m)?)|([0-2]?[0-9]:[0-5][0-9])|([0-2][0-9]:?[0-5][0-9]\\s?(hrs|hr|h))|(at\\s(1[0-2]|[0-9])(:[0-5][0-9])?)|(morning|afternoon|night|evening|noon)";
+        return Pattern.compile(timeRegex).matcher(dateString).find();
     }
 
 }

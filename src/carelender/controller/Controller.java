@@ -12,9 +12,11 @@ import carelender.model.strings.FirstStartMessages;
 import carelender.view.CalenderRenderer;
 import carelender.view.CanvasRenderer;
 import carelender.view.UserInterfaceController;
+import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
 
 import com.joestelmach.natty.*;
+import com.joestelmach.natty.generated.DateParser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -207,21 +209,12 @@ public class Controller {
                 break;
 
             case DATETEST:
-                Parser parser = new Parser();
-                List <DateGroup> groups = parser.parse(userInput);
+                DateRange[] dateRanges = DateTimeParser.parseDateTime(userInput);
                 displayMessage( "User input: [" + userInput + "]" );
-                displayMessage("Matched " + groups.size() + " date groups");
+                displayMessage("Matched " + dateRanges.length + " dates");
 
-                for(DateGroup group:groups) {
-
-                    List<Date> dates = group.getDates();
-                    int line = group.getLine();
-                    int column = group.getPosition();
-                    String matchingValue = group.getText();
-                    for ( Date date : dates ) {
-                        displayMessage("   " + date.toString());
-                    }
-                    displayMessage("      at pos " + column + " from \"" + matchingValue + "\"");
+                for(DateRange range:dateRanges) {
+                    displayMessage("   " + range.toString());
                 }
                 break;
 
@@ -316,10 +309,13 @@ public class Controller {
     }
 
     private static void processAdd(QueryAdd queryAdd ) {
-        String dateString = new SimpleDateFormat("E dd MMM yyyy h:mma Z").format(queryAdd.getTime());
-        displayMessage("Adding new task: ["+queryAdd.getName()+"] at " + dateString);
+        DateRange [] dateRanges = queryAdd.getDateRange();
+        displayMessage("Adding new task: ["+queryAdd.getName()+"] at ");
+        for ( DateRange dateRange : dateRanges ) {
+            displayMessage( "    " + dateRange.toString() );
+        }
 
-        QueryList checkClashesQuery = new QueryList();
+        /*QueryList checkClashesQuery = new QueryList();
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_END, queryAdd.getTime());
         
@@ -329,9 +325,9 @@ public class Controller {
         if (searchResults.size() > 0) {
             displayMessage("Task clashes with:");
             displayMessage(searchResults.toString());
-        } else { //Add the task to the Model.
+        } else { //Add the task to the Model.*/
             Model.getInstance().addEvent(queryAddToEventObject(queryAdd));
-        }
+        //}
     }
 
     /**
@@ -340,10 +336,7 @@ public class Controller {
      * @return
      */
     private static EventObject queryAddToEventObject(QueryAdd queryAdd) {
-        DateRange dateRange = new DateRange(queryAdd.getTime());
-        DateRange[] dateRangeArray = new DateRange[1];
-        dateRangeArray[0] = dateRange;
-        EventObject eventObj = new EventObject(0, queryAdd.getName(), dateRangeArray);
+        EventObject eventObj = new EventObject(0, queryAdd.getName(), queryAdd.getDateRange());
         return eventObj;
     }
 
