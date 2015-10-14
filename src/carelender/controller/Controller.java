@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Does all the logic of the application
@@ -57,10 +59,14 @@ public class Controller {
         commandList = new ArrayList<>();
         stateManager = new StateManager();
         blockingStateController = new BlockingStateController();
+        
+        //Initialize timer for reminder
+        TimerTask reminder = new Reminder();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(reminder,500,1000);
 
         userName = null;
         currentCommand = 0;
-
     }
 
     public static void initUserInterfaceController(UserInterfaceController userInterfaceController) {
