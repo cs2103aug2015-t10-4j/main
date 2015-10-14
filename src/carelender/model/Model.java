@@ -43,7 +43,8 @@ public class Model {
 		eventObj.setUid(currentUid);
 		events.add(eventObj);
 		saveToFile("currentUid.dat", currentUid);
-		return saveToFile("events.dat", events);
+		System.out.println("UID:"+currentUid);
+		return saveToFile("events.dat", events);	
 	}
 	
 	public EventList retrieveEvent() {
@@ -52,7 +53,8 @@ public class Model {
 	
 	public boolean updateEvent(EventObject eventObj) {
 		for (int i = 0; i < events.size(); i++) {
-			if(events.get(i).getName().equals(eventObj.getName())) {
+			System.out.println("  "+ eventObj.getName());
+			if(events.get(i).getUid() == eventObj.getUid()) {
 				events.remove(i);
 				events.add(eventObj);
 				return saveToFile("events.dat", events);
@@ -61,9 +63,9 @@ public class Model {
 		return false;
 	}
 	
-	public void deleteEvent(QueryDelete queryDelete) {
+	public void deleteEvent(EventObject eventObj) {
 		for (int i = 0; i < events.size(); i++) {
-			if(events.get(i).getName().equals(queryDelete.getName())) {
+			if(events.get(i).getUid() == eventObj.getUid()) {
 				events.remove(i);
 			}
 			saveToFile("events.dat", events);

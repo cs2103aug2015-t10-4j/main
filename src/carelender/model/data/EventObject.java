@@ -29,7 +29,9 @@ public class EventObject implements Serializable{
             dateRange[i] = eventObjectDateRange[i].copy();
 
         }
-        dateRecurrence = eventObject.dateRecurrence.copy();
+        if(dateRecurrence != null) {
+        	dateRecurrence = eventObject.dateRecurrence.copy();
+        }
     }
     public EventObject (long uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
         //TODO: Initialize internal fields.

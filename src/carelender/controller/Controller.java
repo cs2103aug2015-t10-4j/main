@@ -246,6 +246,7 @@ public class Controller {
             @Override
             public void onChosen(EventObject selected) {
                 displayMessage ( "Deleting [" + selected.getInfo() + "]" );
+                Model.getInstance().deleteEvent(selected);
             }
         };
 
@@ -278,6 +279,7 @@ public class Controller {
 
             //Call Model updateEvent function
             //this.model.updateEvent ( event );
+            Model.getInstance().updateEvent(event);
             System.out.println ( event.getName() );
         }
     }
