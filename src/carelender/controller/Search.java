@@ -83,7 +83,7 @@ public class Search {
 		
 		if (this.hasNameExact(paramsList)) {
 			Object name = paramsList.get(QueryList.SearchParam.NAME_EXACT);
-			
+			assert ( name != null ) : "NAME_EXACT paired with null object in HashMap.";
 			if (name instanceof String) {
 				match = this.isEventNameExact(eventToCheck, (String)name);
 			}
@@ -91,7 +91,7 @@ public class Search {
 		
 		if (this.hasNameContains(paramsList)) {
 			Object name = paramsList.get(QueryList.SearchParam.NAME_CONTAINS);
-			
+			assert ( name != null ) : "NAME_CONTAINS paired with null object in HashMap.";
 			if (name instanceof String) {
 				match = this.isEventNameMatch(eventToCheck, (String)name);
 			}
@@ -100,20 +100,20 @@ public class Search {
 		if (this.hasDateRange(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
-			
+			assert ( startDate != null && endDate != null ) : "DATE_START or DATE_END paired with null object in HashMap.";
 			if (startDate instanceof Date && endDate instanceof Date) {
 				match = this.isEventInDateRange(eventToCheck, 
 												(Date)startDate, (Date)endDate);
 			}
 		} else if (this.hasStartDate(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
-			
+			assert ( startDate != null ) : "DATE_START paired with null object in HashMap.";
 			if (startDate instanceof Date) {
 				match = this.isEventAfterDate(eventToCheck, (Date)startDate);
 			}
 		} else if (this.hasEndDate(paramsList)) {
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
-			
+			assert ( endDate != null ) : "DATE_END paired with null object in HashMap.";
 			if (endDate instanceof Date) {
 				match = this.isEventBeforeDate(eventToCheck, (Date)endDate);
 			}
