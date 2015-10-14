@@ -32,7 +32,6 @@ public class Controller {
 
     private static UserInterfaceController userInterfaceController = null;
     private static Search search = null;
-    private static Model model = null;
     private static InputParser inputParser = null;
     private static AppSettings appSettings = null;
     private static StateManager stateManager;
@@ -53,8 +52,7 @@ public class Controller {
 
 
     public static void initialize() {
-        model = new Model();
-        search = new Search(model);
+        search = new Search();
         appSettings = new AppSettings();
         inputParser = new InputParser();
         messageList = new ArrayList<>();
@@ -332,7 +330,7 @@ public class Controller {
             displayMessage("Task clashes with:");
             displayMessage(searchResults.toString());
         } else { //Add the task to the Model.
-            model.addEvent(queryAddToEventObject(queryAdd));
+            Model.getInstance().addEvent(queryAddToEventObject(queryAdd));
         }
     }
 
