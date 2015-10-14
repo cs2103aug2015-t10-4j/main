@@ -65,7 +65,7 @@ public class Search {
 				if (Model.getInstance().retrieveEvent() != null) {
 					for (EventObject event : Model.getInstance().retrieveEvent()) {
 						if (this.eventMatchesParams(event, queryList.getSearchParamsList())) {
-							returnList.add(event);
+							returnList.add(event.copy());
 						}
 					}
 				}
