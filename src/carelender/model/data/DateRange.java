@@ -13,6 +13,10 @@ public class DateRange implements Serializable{
 	private Date start;
 	private Date end;
 
+	public DateRange ( DateRange dateRange ) {
+		start = (Date)dateRange.getStart().clone();
+		end = (Date)dateRange.getEnd().clone();
+	}
 	public DateRange (Date date) {
 		start = end = date;
 	}
@@ -62,4 +66,8 @@ public class DateRange implements Serializable{
     public boolean isRange() {
         return start != end;
     }
+
+	public DateRange copy () {
+		return new DateRange(this);
+	}
 }

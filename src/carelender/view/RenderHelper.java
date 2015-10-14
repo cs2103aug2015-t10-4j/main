@@ -6,6 +6,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * This class contains static methods to help to render the calendar view
  */
@@ -34,4 +37,6 @@ public class RenderHelper {
         gc.setTextBaseline(VPos.BOTTOM);
         gc.fillText(text, x + w - dropOffset * 0.5 , y + h - dropOffset * 0.5 );
     }
+
+
 }

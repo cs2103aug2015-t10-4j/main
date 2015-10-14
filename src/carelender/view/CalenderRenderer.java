@@ -10,7 +10,7 @@ import javafx.scene.text.Font;
 public class CalenderRenderer extends CanvasRenderer {
     int squaresToDraw; //Temp, testing purposes only
     public CalenderRenderer() {
-        squaresToDraw = 28;
+        squaresToDraw = 14;
     }
 
     double sidePadding;
@@ -67,7 +67,7 @@ public class CalenderRenderer extends CanvasRenderer {
         calCellWidth = usableWidth / 7.0;
         calCellSpacing = calCellWidth * 0.1; //Make spacing 10% of each cell size
         calCellWidth -= calCellSpacing;
-        calCellHeight = calCellWidth * 0.8;
+        calCellHeight = calCellWidth ;
         calCellShadowOffset = calCellSpacing * 0.7;
     }
 

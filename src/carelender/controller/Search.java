@@ -31,7 +31,7 @@ public class Search {
 				if (Model.getInstance().retrieveEvent() != null) {
 					for (EventObject event : Model.getInstance().retrieveEvent()) {
 						if (this.isEventNameExact(event, queryDelete.getName())) {
-							returnList.add(event);
+							returnList.add(event.copy());
 						}
 					}
 				}
@@ -45,7 +45,7 @@ public class Search {
 				if (Model.getInstance().retrieveEvent() != null) {
 					for (EventObject event : Model.getInstance().retrieveEvent()) {
 						if (this.eventMatchesParams(event, queryUpdate.getSearchParamsList())) {
-							returnList.add(event);
+							returnList.add(event.copy());
 						}
 					}
 				}

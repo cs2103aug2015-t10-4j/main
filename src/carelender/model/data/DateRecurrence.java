@@ -12,7 +12,12 @@ public class DateRecurrence implements Serializable{
 	private int interval;
 	private IntervalType intervalType;
 	private int numberOfRecurrences;
-	
+
+	public DateRecurrence ( DateRecurrence dateRecurrence ) {
+		interval = dateRecurrence.interval;
+		numberOfRecurrences = dateRecurrence.numberOfRecurrences;
+		intervalType = dateRecurrence.getIntervalType();
+	}
 	public DateRecurrence (int interval, IntervalType intervalType, int numberOfRecurrences ) {
 		this.interval = interval;
 		this.intervalType = intervalType;
@@ -31,6 +36,9 @@ public class DateRecurrence implements Serializable{
 		return numberOfRecurrences;
 	}
 
+	public DateRecurrence copy() {
+		return new DateRecurrence(this);
+	}
 	public enum IntervalType {
 		DAY,
 		WEEK,

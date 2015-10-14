@@ -20,17 +20,30 @@ public class EventObject implements Serializable{
     private DateRange[] dateRange;
     private DateRecurrence dateRecurrence;
 
+    public EventObject ( EventObject eventObject ) {
+        uid = eventObject.uid;
+        name = eventObject.name;
+        DateRange [] eventObjectDateRange = eventObject.dateRange;
+        dateRange = new DateRange[eventObjectDateRange.length];
+        for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
+            dateRange[i] = eventObjectDateRange[i].copy();
+
+        }
+        dateRecurrence = eventObject.dateRecurrence.copy();
+    }
     public EventObject (long uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
         //TODO: Initialize internal fields.
         this.uid = uidToSet;
         this.name = nameToSet;
         this.dateRange = dateRangetoSet;
     }
-    
+
+
+
     public void setUid(int uid){
     	this.uid = uid;
     }
-    
+
     public DateRange[] getDateRange () {
         return this.dateRange;
     }
@@ -69,6 +82,10 @@ public class EventObject implements Serializable{
         return firstDate;
     }
 
+    public long getUid() {
+        return uid;
+    }
+
     public String getName () {
         return this.name;
     }
@@ -98,6 +115,9 @@ public class EventObject implements Serializable{
         return dateString + " | " + this.name;
     }
 
+    public EventObject copy () {
+        return new EventObject(this);
+    }
     public enum EventType {
         FLOATING_TASK,
         DEADLINE_TASK,
