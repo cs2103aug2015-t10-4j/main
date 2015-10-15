@@ -156,9 +156,6 @@ public class InputParser {
             case ADD:
                 newQuery = parseAddCommand(queryParts, commandParts, input);
                 break;
-            case EDIT:
-                newQuery = new QueryEdit();
-                break;
             case DELETE:
                 newQuery = parseDeleteCommand(queryParts, commandParts);
                 break;

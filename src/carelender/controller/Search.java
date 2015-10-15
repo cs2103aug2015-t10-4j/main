@@ -13,141 +13,71 @@ import carelender.model.data.*;
  */
 
 public class Search {
-	private static Search singleton = null;
-	public static Search getInstance() {
-		if ( singleton == null ) {
-			singleton = new Search();
-		}
-		return singleton;
-	}
-	private Search () {
-	}
-	
-	public EventList parseQuery (QueryBase query) {
-		EventList returnList = new EventList();
-		switch (query.getQueryType()) {
-			case ADD:
-				break;
-			case CLEAR:
-				break;
-			case DELETE:
-				
-				QueryDelete queryDelete = (QueryDelete)query;
-				
-				if (Model.getInstance().retrieveEvent() != null) {
-					for (EventObject event : Model.getInstance().retrieveEvent()) {
-						if (this.isEventNameExact(event, queryDelete.getName())) {
-							returnList.add(event.copy());
-						}
-					}
-				}
-				
-				break;
-			case UPDATE:
-				
-				QueryList queryUpdate = (QueryList)query;
-				
-				//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
-				if (Model.getInstance().retrieveEvent() != null) {
-					for (EventObject event : Model.getInstance().retrieveEvent()) {
-						if (this.eventMatchesParams(event, queryUpdate.getSearchParamsList())) {
-							returnList.add(event.copy());
-						}
-					}
-				}
-				
-				break;
-			case EDIT:
-				break;
-			case ERROR:
-				break;
-			case HELP:
-				break;
-			case LIST:
-				
-				QueryList queryList = (QueryList)query;
-				
-				//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
-				if (Model.getInstance().retrieveEvent() != null) {
-					for (EventObject event : Model.getInstance().retrieveEvent()) {
-						if (this.eventMatchesParams(event, queryList.getSearchParamsList())) {
-							returnList.add(event.copy());
-						}
-					}
-				}
-				
-				break;
-			default:
-				break;
-		}
-		return returnList;
-	}
-	
-	private boolean eventMatchesParams (EventObject eventToCheck,
+	public static boolean eventMatchesParams (EventObject eventToCheck,
 										HashMap<QueryList.SearchParam, Object> paramsList) {
 		boolean match = false;
 		
-		if (this.hasNameExact(paramsList)) {
+		if (hasNameExact(paramsList)) {
 			Object name = paramsList.get(QueryList.SearchParam.NAME_EXACT);
 			assert ( name != null ) : "NAME_EXACT paired with null object in HashMap.";
 			if (name instanceof String) {
-				match = this.isEventNameExact(eventToCheck, (String)name);
+				match = isEventNameExact(eventToCheck, (String)name);
 			}
 		}
 		
-		if (this.hasNameContains(paramsList)) {
+		if (hasNameContains(paramsList)) {
 			Object name = paramsList.get(QueryList.SearchParam.NAME_CONTAINS);
 			assert ( name != null ) : "NAME_CONTAINS paired with null object in HashMap.";
 			if (name instanceof String) {
-				match = this.isEventNameMatch(eventToCheck, (String)name);
+				match = isEventNameMatch(eventToCheck, (String)name);
 			}
 		}
 		
-		if (this.hasDateRange(paramsList)) {
+		if (hasDateRange(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
 			assert ( startDate != null && endDate != null ) : "DATE_START or DATE_END paired with null object in HashMap.";
 			if (startDate instanceof Date && endDate instanceof Date) {
-				match = this.isEventInDateRange(eventToCheck, 
+				match = isEventInDateRange(eventToCheck, 
 												(Date)startDate, (Date)endDate);
 			}
-		} else if (this.hasStartDate(paramsList)) {
+		} else if (hasStartDate(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			assert ( startDate != null ) : "DATE_START paired with null object in HashMap.";
 			if (startDate instanceof Date) {
-				match = this.isEventAfterDate(eventToCheck, (Date)startDate);
+				match = isEventAfterDate(eventToCheck, (Date)startDate);
 			}
-		} else if (this.hasEndDate(paramsList)) {
+		} else if (hasEndDate(paramsList)) {
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
 			assert ( endDate != null ) : "DATE_END paired with null object in HashMap.";
 			if (endDate instanceof Date) {
-				match = this.isEventBeforeDate(eventToCheck, (Date)endDate);
+				match = isEventBeforeDate(eventToCheck, (Date)endDate);
 			}
 		}
 		return match;
 	}
 	
-	private boolean hasNameExact (HashMap<QueryList.SearchParam, Object> paramsList) {
+	public static boolean hasNameExact (HashMap<QueryList.SearchParam, Object> paramsList) {
 		return paramsList.containsKey(QueryList.SearchParam.NAME_EXACT);
 	}
 	
-	private boolean hasNameContains (HashMap<QueryList.SearchParam, Object> paramsList) {
+	public static boolean hasNameContains (HashMap<QueryList.SearchParam, Object> paramsList) {
 		return paramsList.containsKey(QueryList.SearchParam.NAME_CONTAINS);
 	}
 	
-	private boolean hasStartDate (HashMap<QueryList.SearchParam, Object> paramsList) {
+	public static boolean hasStartDate (HashMap<QueryList.SearchParam, Object> paramsList) {
 		return paramsList.containsKey(QueryList.SearchParam.DATE_START);
 	}
 	
-	private boolean hasEndDate (HashMap<QueryList.SearchParam, Object> paramsList) {
+	public static boolean hasEndDate (HashMap<QueryList.SearchParam, Object> paramsList) {
 		return paramsList.containsKey(QueryList.SearchParam.DATE_END);
 	}
 	
-	private boolean hasDateRange (HashMap<QueryList.SearchParam, Object> paramsList) {
-		return (this.hasStartDate(paramsList) && this.hasEndDate(paramsList));
+	public static boolean hasDateRange (HashMap<QueryList.SearchParam, Object> paramsList) {
+		return (hasStartDate(paramsList) && hasEndDate(paramsList));
 	}
 	
-	private boolean isEventNameMatch (EventObject eventToCheck,
+	public static boolean isEventNameMatch (EventObject eventToCheck,
 										String stringToCheck) {
 		String eventName = eventToCheck.getName();
 		if (eventName != null) {
@@ -158,7 +88,7 @@ public class Search {
 		return false;
 	}
 	
-	private boolean isEventNameExact (EventObject eventToCheck,
+	public static boolean isEventNameExact (EventObject eventToCheck,
 										String stringToCheck) {
 		String eventName = eventToCheck.getName();
 		if (eventName != null) {
@@ -169,7 +99,7 @@ public class Search {
 		return false;
 	}
 	
-	private boolean isEventBeforeDate (EventObject eventToCheck,
+	public static boolean isEventBeforeDate (EventObject eventToCheck,
 										Date startDate) {
 		Date latestDate = eventToCheck.getLatestDate();
 		if (latestDate != null) {
@@ -181,7 +111,7 @@ public class Search {
 		return false;
 	}
 	
-	private boolean isEventAfterDate (EventObject eventToCheck,
+	public static boolean isEventAfterDate (EventObject eventToCheck,
 										Date endDate) {
 		Date earliestDate = eventToCheck.getEarliestDate();
 		if (earliestDate != null) {
@@ -193,7 +123,7 @@ public class Search {
 		return false;
 	}
 	
-	private boolean isEventInDateRange (EventObject eventToCheck,
+	public static boolean isEventInDateRange (EventObject eventToCheck,
 										Date startDate, Date endDate) {
 		Date earliestDate = eventToCheck.getEarliestDate();
 		Date latestDate = eventToCheck.getLatestDate();

@@ -155,7 +155,6 @@ public class Controller {
         }
     }
 
-
     private static void stateFirstStart ( String userInput ) {
         final OnConfirmedCallback confirmNameCallback = new OnConfirmedCallback() {
             @Override
@@ -176,34 +175,14 @@ public class Controller {
         blockingStateController.startConfirmation(FirstStartMessages.confirmation(userName), confirmNameCallback);
     }
 
-
     private static void stateDefault(String userInput) {
-        if ( userInput.length() == 0 ) return;
+        if ( userInput.length() == 0 ) {
+            return;
+        }
         QueryBase query = InputParser.getInstance().parseCompleteInput(userInput);
-
+        query.userInput = userInput;
+        
         switch (query.getQueryType()) {
-            case ERROR:
-                processError((QueryError) query);
-                break;
-            case HELP:
-                showHelp();
-                break;
-            case CLEAR:
-                userInterfaceController.clearMessageLog();
-                break;
-            case ADD:
-                processAdd((QueryAdd) query);
-                break;
-            case DELETE:
-                processDelete((QueryDelete) query);
-                break;
-            case UPDATE:
-                processUpdate((QueryUpdate) query);
-                break;
-            case LIST:
-                processList( (QueryList) query);
-                break;
-
             case DATETEST:
                 DateRange[] dateRanges = DateTimeParser.parseDateTime(userInput);
                 displayMessage( "User input: [" + userInput + "]" );
@@ -213,19 +192,16 @@ public class Controller {
                     displayMessage("   " + range.toString());
                 }
                 break;
-
             case DEV1:
                 canvasRenderer.increment();
                 break;
             case DEV2:
-
                 break;
-
             case SWITCHUI:
                 processSwitchUI();
                 break;
             default:
-                userInterfaceController.displayMessage("Command accepted.");
+                query.controllerExecute();
                 break;
         }
     }
@@ -234,119 +210,19 @@ public class Controller {
         displayMessage("Switching UI");
     }
 
-    private static void processDelete ( QueryDelete queryDelete ) {
-        //TODO: Actually delete something
-        EventList searchResults = Search.getInstance().parseQuery(queryDelete);
-
-        final OnEventSelectedCallback deleteCallback = new OnEventSelectedCallback() {
-            @Override
-            public void onChosen(EventObject selected) {
-                displayMessage ( "Deleting [" + selected.getInfo() + "]" );
-                Model.getInstance().deleteEvent(selected);
-            }
-        };
-
-        if ( searchResults.size() == 0 ) {
-            displayMessage("There is no task called " + queryDelete.getName() );
-        } else if ( searchResults.size() > 1 ) {
-            String message = "There are multiple \""+queryDelete.getName()+"\" tasks, please choose the one to delete.";
-            blockingStateController.startEventSelection(message, searchResults, deleteCallback);
-        } else {
-            deleteCallback.onChosen(searchResults.get(0));
-        }
-    }
-    
-    private static void processUpdate ( QueryUpdate queryUpdate ) {
-        //TODO: Actually update something
-        EventList searchResults = Search.getInstance().parseQuery(queryUpdate);
-        for ( EventObject event : searchResults ) {
-            //TODO: This will have to change if we want to do bulk updating.
-            HashMap<QueryUpdate.UpdateParam, Object> paramList = queryUpdate.getUpdateParamsList();
-
-            if ( paramList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
-                String fromName = (String)paramList.get(QueryUpdate.UpdateParam.NAME);
-                event.setName(fromName);
-            }
-
-            if ( paramList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
-                DateRange[] fromDateRange = (DateRange[])paramList.get(QueryUpdate.UpdateParam.DATE_RANGE);
-                event.setDateRange(fromDateRange);
-            }
-
-            //Call Model updateEvent function
-            //this.model.updateEvent ( event );
-            Model.getInstance().updateEvent(event);
-            System.out.println ( event.getName() );
-        }
-    }
-
-    private static void processList ( QueryList queryList ) {
-        EventList searchResults = Search.getInstance().parseQuery(queryList);
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
-        displayMessage("Listing events");
-        HashMap<QueryList.SearchParam, Object> paramList = queryList.getSearchParamsList();
-        if ( paramList.containsKey(QueryList.SearchParam.DATE_START) ) {
-            Date fromDate = (Date)paramList.get(QueryList.SearchParam.DATE_START);
-            displayMessage("   from " + dateFormat.format(fromDate));
-        }
-        if ( paramList.containsKey(QueryList.SearchParam.DATE_END) ) {
-            Date toDate = (Date)paramList.get(QueryList.SearchParam.DATE_END);
-            displayMessage("   till " + dateFormat.format(toDate));
-        }
-        if ( paramList.containsKey(QueryList.SearchParam.NAME_CONTAINS) ) {
-            String search = (String)paramList.get(QueryList.SearchParam.NAME_CONTAINS);
-            displayMessage("   matching: " + search);
-        }
-        
-        if (searchResults.size() > 0) {
-            displayMessage(searchResults.toString());
-        } else {
-            displayMessage("No results");
-        }
-    }
-
-    private static void processAdd(QueryAdd queryAdd ) {
-        DateRange [] dateRanges = queryAdd.getDateRange();
-        displayMessage("Adding new task: ["+queryAdd.getName()+"] at ");
-        for ( DateRange dateRange : dateRanges ) {
-            displayMessage( "    " + dateRange.toString() );
-        }
-
-        /*QueryList checkClashesQuery = new QueryList();
-        checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
-        checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_END, queryAdd.getTime());
-        
-        EventList searchResults = search.parseQuery(checkClashesQuery);
-        
-        //There is at least one task that clashes with the task to add.
-        if (searchResults.size() > 0) {
-            displayMessage("Task clashes with:");
-            displayMessage(searchResults.toString());
-        } else { //Add the task to the Model.*/
-            Model.getInstance().addEvent(queryAddToEventObject(queryAdd));
-        //}
-    }
-
     /**
      * Converts an add query to an event object
      * @param queryAdd
      * @return
      */
-    private static EventObject queryAddToEventObject(QueryAdd queryAdd) {
+    public static EventObject queryAddToEventObject(QueryAdd queryAdd) {
         EventObject eventObj = new EventObject(0, queryAdd.getName(), queryAdd.getDateRange());
         return eventObj;
     }
 
 
-    private static void processError(QueryError queryError) {
-        userInterfaceController.displayMessage(queryError.getMessage());
-        if ( queryError.isHelpDisplayed() ) {
-            showHelp();
-        }
-    }
 
-    private static void showHelp() {
+    public static void showHelp() {
         userInterfaceController.displayMessage("Available Commands:");
         userInterfaceController.displayMessage(InputParser.getInstance().showCommandList());
     }
@@ -358,7 +234,6 @@ public class Controller {
         } else {
             userInterfaceController.displayMessage("Welcome back, <username>");
         }
-
     }
 
     /**
@@ -377,5 +252,13 @@ public class Controller {
             userInterfaceController.displayMessage(message);
         }
         System.out.println(message);
+    }
+
+    public static BlockingStateController getBlockingStateController() {
+        return blockingStateController;
+    }
+
+    public static UserInterfaceController getGUI() {
+    	return userInterfaceController;
     }
 }

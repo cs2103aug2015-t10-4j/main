@@ -1,5 +1,7 @@
 package carelender.model.data;
 
+import carelender.controller.Controller;
+
 /**
  * Used for queries that cannot be parsed
  */
@@ -24,4 +26,17 @@ public class QueryError extends QueryBase {
     public boolean isHelpDisplayed() {
         return isHelpDisplayed;
     }
+    
+    @Override
+	public void controllerExecute() {
+    	Controller.displayMessage(getMessage());
+        if ( isHelpDisplayed() ) {
+            Controller.showHelp();
+        }
+	}
+
+	@Override
+	public EventList searchExecute() {
+		return null;
+	}
 }

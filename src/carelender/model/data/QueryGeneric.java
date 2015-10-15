@@ -7,4 +7,13 @@ public class QueryGeneric extends QueryBase {
     public QueryGeneric(QueryType queryType) {
         super(queryType);
     }
+    
+    @Override
+	public void controllerExecute() {
+	}
+
+	@Override
+	public EventList searchExecute() {
+		return null;
+	}
 }
