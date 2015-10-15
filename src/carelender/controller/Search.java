@@ -13,8 +13,14 @@ import carelender.model.data.*;
  */
 
 public class Search {
-	
-	public Search () {
+	private static Search singleton = null;
+	public static Search getInstance() {
+		if ( singleton == null ) {
+			singleton = new Search();
+		}
+		return singleton;
+	}
+	private Search () {
 	}
 	
 	public EventList parseQuery (QueryBase query) {

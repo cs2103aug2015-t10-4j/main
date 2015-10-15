@@ -33,8 +33,6 @@ public class Controller {
     private static boolean debugMode = true;
 
     private static UserInterfaceController userInterfaceController = null;
-    private static Search search = null;
-    private static InputParser inputParser = null;
     private static AppSettings appSettings = null;
     private static StateManager stateManager;
     private static BlockingStateController blockingStateController;
@@ -54,9 +52,7 @@ public class Controller {
 
 
     public static void initialize() throws Exception {
-        search = new Search();
         appSettings = new AppSettings();
-        inputParser = new InputParser();
         messageList = new ArrayList<>();
         commandList = new ArrayList<>();
         stateManager = new StateManager();
@@ -183,7 +179,7 @@ public class Controller {
 
     private static void stateDefault(String userInput) {
         if ( userInput.length() == 0 ) return;
-        QueryBase query = inputParser.parseCompleteInput(userInput);
+        QueryBase query = InputParser.getInstance().parseCompleteInput(userInput);
 
         switch (query.getQueryType()) {
             case ERROR:
@@ -240,7 +236,7 @@ public class Controller {
 
     private static void processDelete ( QueryDelete queryDelete ) {
         //TODO: Actually delete something
-        EventList searchResults = search.parseQuery(queryDelete);
+        EventList searchResults = Search.getInstance().parseQuery(queryDelete);
 
         final OnEventSelectedCallback deleteCallback = new OnEventSelectedCallback() {
             @Override
@@ -262,7 +258,7 @@ public class Controller {
     
     private static void processUpdate ( QueryUpdate queryUpdate ) {
         //TODO: Actually update something
-        EventList searchResults = search.parseQuery(queryUpdate);
+        EventList searchResults = Search.getInstance().parseQuery(queryUpdate);
         for ( EventObject event : searchResults ) {
             //TODO: This will have to change if we want to do bulk updating.
             HashMap<QueryUpdate.UpdateParam, Object> paramList = queryUpdate.getUpdateParamsList();
@@ -285,7 +281,7 @@ public class Controller {
     }
 
     private static void processList ( QueryList queryList ) {
-        EventList searchResults = search.parseQuery(queryList);
+        EventList searchResults = Search.getInstance().parseQuery(queryList);
         
         SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
         displayMessage("Listing events");
@@ -352,7 +348,7 @@ public class Controller {
 
     private static void showHelp() {
         userInterfaceController.displayMessage("Available Commands:");
-        userInterfaceController.displayMessage(inputParser.showCommandList());
+        userInterfaceController.displayMessage(InputParser.getInstance().showCommandList());
     }
 
     public static void printWelcomeMessage() {

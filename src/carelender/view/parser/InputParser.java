@@ -10,9 +10,16 @@ import java.util.Date;
  * Parses the user input
  */
 public class InputParser {
+	private static InputParser singleton = null;
+	public static InputParser getInstance() {
+		if ( singleton == null ) {
+			singleton = new InputParser();
+		}
+		return singleton;
+	}
     CommandManager commandManager;
 
-    public InputParser () {
+    private InputParser () {
         commandManager = new CommandManager();
         defineDefaultCommands();
     }
@@ -79,6 +86,7 @@ public class InputParser {
      * @return String array with each part in it's own entry
      */
     public String [] splitQuery ( String input ) {
+    	assert input.length() != 0 : "Cannot parse empty input";
         String [] queryParts = input.split(" ");
         ArrayList<String> processingList = new ArrayList<>(queryParts.length);
         int startString = 0;
@@ -130,6 +138,7 @@ public class InputParser {
 
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
+        
         String [] queryParts = splitQuery(input);
 
         String commandString = queryParts[0];

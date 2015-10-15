@@ -176,6 +176,8 @@ public class DateTimeParser {
      * @return SimpleDateGroup object array, null if no dates found
      */
     public static SimpleDateGroup[] parseDateTimeRaw (String inputString) {
+    	assert inputString.length() != 0 : "Cannot parse empty input";
+    	
         Parser parser = new Parser();
         List <DateGroup> groups = parser.parse(inputString);
         if ( groups.size() == 0 ) {
