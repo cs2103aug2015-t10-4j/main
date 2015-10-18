@@ -38,6 +38,15 @@ public class CalenderRenderer extends CanvasRenderer {
                                         calCellWidth, calCellHeight,
                                         calCellShadowOffset, "F99", (i+1)+"", font);
         }
+        
+        TextRenderer textTest = new TextRenderer (gc, ( calCellWidth + calCellSpacing ) + sidePadding, ( calCellHeight + calCellSpacing ) + sidePadding,
+								7*offsetX, height, 0, 0,
+								font, 20, 12, 10 );
+        textTest.addText("This is a test string for like, stuff and stuff.\n");
+        textTest.addText("Give me the thing that I love.\n");
+        textTest.addText("Do I really wrap? Is this how a burrito feels like. The twice fried beans, the painted faces.\n");
+        
+        textTest.drawText();
     }
 
     private void calculateScaledDimensions(double width, double height) {
@@ -81,6 +90,7 @@ public class CalenderRenderer extends CanvasRenderer {
 
     public void increment() {
         squaresToDraw++;
+        
         redraw();
     }
 }
