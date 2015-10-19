@@ -5,7 +5,7 @@ import carelender.controller.callbacks.OnConfirmedCallback;
 import carelender.controller.callbacks.OnEventSelectedCallback;
 import carelender.controller.callbacks.OnSelectedCallback;
 import carelender.model.data.EventList;
-import carelender.model.data.EventObject;
+import carelender.model.data.Event;
 import carelender.model.strings.ErrorMessages;
 
 /**
@@ -136,7 +136,7 @@ public class BlockingStateController {
             if ( chosen < 1 || chosen > selectionList.size() ) {
                 Controller.displayMessage(ErrorMessages.invalidNumberRange(1, selectionList.size()));
             } else {
-                EventObject selectedObject = selectionList.get(chosen-1);
+                Event selectedObject = selectionList.get(chosen-1);
                 blockingState = BlockingState.NONE;
                 if ( onEventSelectedCallback != null ) {
                     onEventSelectedCallback.onChosen(selectedObject);

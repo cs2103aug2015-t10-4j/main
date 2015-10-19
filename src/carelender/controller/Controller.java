@@ -215,8 +215,8 @@ public class Controller {
      * @param queryAdd
      * @return
      */
-    public static EventObject queryAddToEventObject(QueryAdd queryAdd) {
-        EventObject eventObj = new EventObject(0, queryAdd.getName(), queryAdd.getDateRange());
+    public static Event queryAddToEventObject(QueryAdd queryAdd) {
+        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange());
         return eventObj;
     }
 

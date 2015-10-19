@@ -12,7 +12,7 @@ import java.util.Date;
  * 			EventList
  */
 
-public class EventObject implements Serializable{
+public class Event implements Serializable{
     private long uid;
     private String name;
     //If timeRange is null, task is a FLOATING_TASK.
@@ -20,7 +20,7 @@ public class EventObject implements Serializable{
     private DateRange[] dateRange;
     private DateRecurrence dateRecurrence;
 
-    public EventObject ( EventObject eventObject ) {
+    public Event ( Event eventObject ) {
         uid = eventObject.uid;
         name = eventObject.name;
         DateRange [] eventObjectDateRange = eventObject.dateRange;
@@ -33,7 +33,7 @@ public class EventObject implements Serializable{
         	dateRecurrence = eventObject.dateRecurrence.copy();
         }
     }
-    public EventObject (long uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
+    public Event (long uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
         //TODO: Initialize internal fields.
         this.uid = uidToSet;
         this.name = nameToSet;
@@ -117,8 +117,8 @@ public class EventObject implements Serializable{
         return dateString + " | " + this.name;
     }
 
-    public EventObject copy () {
-        return new EventObject(this);
+    public Event copy () {
+        return new Event(this);
     }
     public enum EventType {
         FLOATING_TASK,

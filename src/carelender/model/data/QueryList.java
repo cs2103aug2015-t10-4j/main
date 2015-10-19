@@ -73,7 +73,7 @@ public class QueryList extends QueryBase {
 		
 		//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
 		if (Model.getInstance().retrieveEvent() != null) {
-			for (EventObject event : Model.getInstance().retrieveEvent()) {
+			for (Event event : Model.getInstance().retrieveEvent()) {
 				if (Search.eventMatchesParams(event, getSearchParamsList())) {
 					returnList.add(event.copy());
 				}

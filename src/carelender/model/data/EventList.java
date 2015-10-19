@@ -9,13 +9,13 @@ import java.util.ArrayList;
  * 			Logic
  */
 
-public class EventList extends ArrayList<EventObject> {
+public class EventList extends ArrayList<Event> {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         String breakline = "";
         int count = 0;
-        for ( EventObject eventObject : this ) {
+        for ( Event eventObject : this ) {
             count++;
             stringBuilder.append(breakline);
             breakline = System.lineSeparator();

@@ -13,7 +13,7 @@ import carelender.model.data.*;
  */
 
 public class Search {
-	public static boolean eventMatchesParams (EventObject eventToCheck,
+	public static boolean eventMatchesParams (Event eventToCheck,
 										HashMap<QueryList.SearchParam, Object> paramsList) {
 		boolean match = false;
 		
@@ -77,7 +77,7 @@ public class Search {
 		return (hasStartDate(paramsList) && hasEndDate(paramsList));
 	}
 	
-	public static boolean isEventNameMatch (EventObject eventToCheck,
+	public static boolean isEventNameMatch (Event eventToCheck,
 										String stringToCheck) {
 		String eventName = eventToCheck.getName();
 		if (eventName != null) {
@@ -88,7 +88,7 @@ public class Search {
 		return false;
 	}
 	
-	public static boolean isEventNameExact (EventObject eventToCheck,
+	public static boolean isEventNameExact (Event eventToCheck,
 										String stringToCheck) {
 		String eventName = eventToCheck.getName();
 		if (eventName != null) {
@@ -99,7 +99,7 @@ public class Search {
 		return false;
 	}
 	
-	public static boolean isEventBeforeDate (EventObject eventToCheck,
+	public static boolean isEventBeforeDate (Event eventToCheck,
 										Date startDate) {
 		Date latestDate = eventToCheck.getLatestDate();
 		if (latestDate != null) {
@@ -111,7 +111,7 @@ public class Search {
 		return false;
 	}
 	
-	public static boolean isEventAfterDate (EventObject eventToCheck,
+	public static boolean isEventAfterDate (Event eventToCheck,
 										Date endDate) {
 		Date earliestDate = eventToCheck.getEarliestDate();
 		if (earliestDate != null) {
@@ -123,7 +123,7 @@ public class Search {
 		return false;
 	}
 	
-	public static boolean isEventInDateRange (EventObject eventToCheck,
+	public static boolean isEventInDateRange (Event eventToCheck,
 										Date startDate, Date endDate) {
 		Date earliestDate = eventToCheck.getEarliestDate();
 		Date latestDate = eventToCheck.getLatestDate();

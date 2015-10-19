@@ -34,7 +34,7 @@ public class QueryUpdate extends QueryList {
 	@Override
 	public void controllerExecute() {
 		EventList searchResults = searchExecute();
-		for ( EventObject event : searchResults ) {
+		for ( Event event : searchResults ) {
 			//TODO: This will have to change if we want to do bulk updating.
 			HashMap<QueryUpdate.UpdateParam, Object> paramList = getUpdateParamsList();
 
@@ -60,7 +60,7 @@ public class QueryUpdate extends QueryList {
 		EventList returnList = new EventList();
 		//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
 		if (Model.getInstance().retrieveEvent() != null) {
-			for (EventObject event : Model.getInstance().retrieveEvent()) {
+			for (Event event : Model.getInstance().retrieveEvent()) {
 				if (Search.eventMatchesParams(event, getSearchParamsList())) {
 					returnList.add(event.copy());
 				}
