@@ -1,10 +1,10 @@
 package carelender.controller.callbacks;
 
-import carelender.model.data.EventObject;
+import carelender.model.data.Event;
 
 /**
  * Used for the event selection input blocking state
  */
 public interface OnEventSelectedCallback {
-    void onChosen(EventObject selected);
+    void onChosen(Event selected);
 }

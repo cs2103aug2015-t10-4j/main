@@ -15,7 +15,7 @@ public class QueryDelete extends QueryBase {
         super(QueryType.DELETE);
     }
 
-	private EventObject selectedObject; // Used for confirmation
+	private Event selectedObject; // Used for confirmation
 
     public String getName() {
         return name;
@@ -41,7 +41,7 @@ public class QueryDelete extends QueryBase {
 
 		final OnEventSelectedCallback deleteCallback = new OnEventSelectedCallback() {
 			@Override
-			public void onChosen(EventObject selected) {
+			public void onChosen(Event selected) {
 				selectedObject = selected;
 				Controller.getBlockingStateController()
 						.startConfirmation("Are you sure you want to delete \"" + selected.getName() + "\"? [Y/N]", deleteConfirmedCallback);
@@ -65,7 +65,7 @@ public class QueryDelete extends QueryBase {
 		EventList returnList = new EventList();
 		
 		if (Model.getInstance().retrieveEvent() != null) {
-			for (EventObject event : Model.getInstance().retrieveEvent()) {
+			for (Event event : Model.getInstance().retrieveEvent()) {
 				if (Search.isEventNameExact(event, getName())) {
 					returnList.add(event.copy());
 				}
