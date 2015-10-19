@@ -79,7 +79,7 @@ public class TextRenderer {
 					this.textLines.add(lineToAppendTo);
 				} else if ( wordToAdd.length() < freeCharsOnLine ) {
 					lineToAppendTo += wordToAdd + " ";
-					freeCharsOnLine -= wordToAdd.length();
+					freeCharsOnLine = this.charsPerLine - lineToAppendTo.length();
 					this.textLines.set(this.textLines.size() - 1, lineToAppendTo);
 				} else {
 					freeCharsOnLine = this.charsPerLine;
