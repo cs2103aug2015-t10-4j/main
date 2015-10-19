@@ -39,6 +39,7 @@ public class CalenderRenderer extends CanvasRenderer {
                                         calCellShadowOffset, "F99", (i+1)+"", font);
         }
         
+        /*
         TextRenderer textTest = new TextRenderer (gc, ( calCellWidth + calCellSpacing ) + sidePadding, ( calCellHeight + calCellSpacing ) + sidePadding,
 								7*offsetX, height, 0, 0,
 								font, 20, 12, 10 );
@@ -47,6 +48,7 @@ public class CalenderRenderer extends CanvasRenderer {
         textTest.addText("Do I really wrap? Is this how a burrito feels like. The twice fried beans, the painted faces.\n");
         
         textTest.drawText();
+        */
     }
 
     private void calculateScaledDimensions(double width, double height) {
