@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="libs/antlr-runtime-3.5.2.jar"/>
 	<classpathentry kind="lib" path="libs/ical4j-1.0.6.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-api-1.7.12.jar"/>
-	<classpathentry kind="lib" path="libs/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/gson-2.4.jar"/>
 	<classpathentry kind="output" path="out/production/CareLender"/>
 </classpath>
