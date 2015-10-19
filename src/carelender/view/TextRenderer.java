@@ -55,8 +55,6 @@ public class TextRenderer {
 		
 		this.charsPerLine = Math.floor ((this.width - (this.xPadding * 2)) / this.charWidth);
 		this.textLines = new ArrayList<String>();
-		
-		System.out.println ( this.charsPerLine + "    " + this.charWidth + "     " + this.width);
 	}
 	
 	public void addText ( String textToAdd ) {

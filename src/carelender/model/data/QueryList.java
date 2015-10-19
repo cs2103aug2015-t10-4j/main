@@ -1,6 +1,7 @@
 package carelender.model.data;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import carelender.controller.Controller;
 import carelender.controller.Search;
 import carelender.model.Model;
+import carelender.view.TaskRenderer;
 
 /**
  * Used for list queries
@@ -63,24 +65,29 @@ public class QueryList extends QueryBase {
 		DATE_END,
 		NAME_CONTAINS,
 		NAME_EXACT,
-		TYPE,
+		CATEGORY,
 		LIMIT,
 		SORT
 	};
 	
 	public enum SortParam {
 		NAME,
-		DATE,
-		CATEGORY,
-		COMPLETE
+		DATE
 	};
 	
 	@Override
 	public void controllerExecute() {
 		EventList searchResults = searchExecute();
 		
+		//TODO: THIS IS TEST CODE INJECTION.
+		TaskRenderer taskTest = new TaskRenderer();
+		taskTest.addEvents(searchResults);
+		taskTest.drawTasks();
+		//END OF TEST.
+		
 		if ( this.searchParamsList.containsKey(SearchParam.SORT) ) {
-			
+			SortParam sortType = (SortParam)this.searchParamsList.get(SearchParam.SORT);
+			Collections.sort(searchResults, this.sortComparators.get(sortType));
 		}
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");

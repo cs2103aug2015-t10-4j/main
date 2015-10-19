@@ -138,4 +138,14 @@ public class Search {
 		}
 		return false;
 	}
+	
+	public static boolean isDateInEvent (Event eventToCheck, Date date) {
+		for ( DateRange dateRange : eventToCheck.getDateRange() ) {
+			if ((date.before(dateRange.getEnd()) || date.equals(dateRange.getEnd()))
+				&& (date.after(dateRange.getStart()) || date.equals(dateRange.getStart()))) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
