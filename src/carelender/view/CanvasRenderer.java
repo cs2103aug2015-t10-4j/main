@@ -12,6 +12,7 @@ public abstract class CanvasRenderer {
     double height = 0;
 
     public CanvasRenderer() {}
+
     void draw ( GraphicsContext gc, double width, double height ) {
         this.gc = gc;
         this.width = width;

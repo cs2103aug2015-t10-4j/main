@@ -66,7 +66,7 @@ public class Controller {
         Controller.userInterfaceController = userInterfaceController;
         Controller.userInterfaceController.setMessageList(messageList);
         canvasRenderer = new CalenderRenderer();
-        Controller.userInterfaceController.setCanvas1Renderer(canvasRenderer);
+        Controller.userInterfaceController.setCanvasRenderer(canvasRenderer);
     }
 
 
