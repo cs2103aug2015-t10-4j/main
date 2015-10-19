@@ -33,27 +33,25 @@ public class InputParser {
 
         newCommand = new Command("add", QueryType.ADD);
         newCommand.setDescription("Adds a new event/task\n    Usage: add \"event name\" [tomorrow/today/etc...] [morning/noon/etc...]");
-        /*newCommand.addKeywords("timedelimeter", "at,on,by");
-        newCommand.addKeywords("rangedelimiter", "from,to");
-        newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday");
-        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon");*/
+        newCommand.addKeywords("category", "category,cat", CommandKeyword.DataPosition.AFTER);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("search", QueryType.LIST);
-        newCommand.setDescription("Search for events/tasks\n    Usage: search \"event name\"");
+        newCommand.setDescription("Search for events/tasks\n    Usage: search \"event name\" <date range> category <category>");
+        newCommand.addKeywords("category", "category,cat", CommandKeyword.DataPosition.AFTER);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("list", QueryType.LIST);
         newCommand.setDescription("List all your future events/tasks\n    Usage: list [past/today/tomorrow/future]");
-        newCommand.addKeywords("range", "past,today,tomorrow,future");
+        newCommand.addKeywords("range", "past,today,tomorrow,future", CommandKeyword.DataPosition.NONE);
         commandManager.addCommand(newCommand);
 
         
         newCommand = new Command("update", QueryType.UPDATE);
         newCommand.setDescription("Update events/tasks\n    Usage: update \"event name\" into \"new name\" [tomorrow/today/etc...] [morning/noon/etc...]");
-        newCommand.addKeywords("delimiter", "into");
-        newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday");
-        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon");
+        newCommand.addKeywords("delimiter", "into", CommandKeyword.DataPosition.NONE);
+        newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday", CommandKeyword.DataPosition.NONE);
+        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon", CommandKeyword.DataPosition.NONE);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("delete", QueryType.DELETE );
@@ -85,6 +83,7 @@ public class InputParser {
 
     /**
      * Splits up the query into it's individual parts.
+     * Also splits by |DATE| string
      * Takes into account "" strings.
      *   e.g. "Hello world" will be converted into one string excluding the "
      * @param input The user input
@@ -92,17 +91,17 @@ public class InputParser {
      */
     public String [] splitQuery ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
-        String [] queryParts = input.split(" ");
+        String[] queryParts = input.split("( |\\|DATE\\|)");
         ArrayList<String> processingList = new ArrayList<>(queryParts.length);
         int startString = 0;
         int endString;
         boolean isProcessingString = false;
 
-        for ( int i = 0; i < queryParts.length; i++ ) {
+        for (int i = 0; i < queryParts.length; i++) {
             String part = queryParts[i];
             if (!isProcessingString) {
                 //Search for the start of a string
-                if ( part.startsWith("\"") ) {
+                if (part.startsWith("\"")) {
                     startString = i;
                     isProcessingString = true;
                 } else {
@@ -110,28 +109,28 @@ public class InputParser {
                 }
             }
 
-            if ( isProcessingString ){
+            if (isProcessingString) {
                 //Search for the end of a string
-                if ( part.endsWith("\"") ) {
+                if (part.endsWith("\"")) {
                     endString = i;
                     isProcessingString = false;
                     String extracted = extractString(queryParts, startString, endString);
                     //Add to list and remove the "" wrapping characters.
-                    processingList.add(extracted.substring(1,extracted.length()-1));
+                    processingList.add(extracted.substring(1, extracted.length() - 1));
                 }
             }
 
-            if ( isProcessingString && i == queryParts.length - 1 ) {
+            if (isProcessingString && i == queryParts.length - 1) {
                 //Unmatched string close. Automatically close
                 endString = i;
                 isProcessingString = false;
                 String extracted = extractString(queryParts, startString, endString);
                 //Add to list and remove the initial " characters.
-                processingList.add(extracted.substring(1,extracted.length()));
+                processingList.add(extracted.substring(1, extracted.length()));
             }
         }
-        for ( int i = 0; i < queryParts.length; i++ ) {
-            if ( i >= processingList.size() ) {
+        for (int i = 0; i < queryParts.length; i++) {
+            if (i >= processingList.size()) {
                 queryParts[i] = "";
             } else {
                 queryParts[i] = processingList.get(i);
@@ -141,11 +140,17 @@ public class InputParser {
         return queryParts;
     }
 
+
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
-        
+
         String [] queryParts = splitQuery(input);
         String commandString = queryParts[0];
+        DateRange [] dateRanges = DateTimeParser.parseDateTime(input);
+        input = DateTimeParser.replaceDateParts(input, "|DATE|");
+        String [] queryPartsNoDate = splitQuery(input);
+
+
 
         Command matchedCommand = commandManager.matchCommand(commandString);
 
@@ -153,24 +158,25 @@ public class InputParser {
             return new QueryError("[" + commandString + "] is not a valid command.");
         }
 
+        CommandPart[] commandPartsNoDate = matchedCommand.processKeywords(queryPartsNoDate);
         CommandPart[] commandParts = matchedCommand.processKeywords(queryParts);
 
         QueryBase newQuery;
         switch (matchedCommand.getType()) {
             case ADD:
-                newQuery = parseAddCommand(queryParts, commandParts, input);
+                newQuery = parseAddCommand(commandPartsNoDate, dateRanges);
                 break;
             case DELETE:
-                newQuery = parseDeleteCommand(queryParts, commandParts);
+                newQuery = parseDeleteCommand(commandParts);
                 break;
             case UPDATE:
-                newQuery = parseUpdateCommand(queryParts, commandParts, input);
+                newQuery = parseUpdateCommand(queryPartsNoDate, commandPartsNoDate, input);
                 break;
             case LIST:
                 if ( matchedCommand.getCommand().equalsIgnoreCase("search") ) {
-                    newQuery = parseSearchCommand(input);
+                    newQuery = parseSearchCommand(dateRanges, commandPartsNoDate);
                 } else {
-                    newQuery = parseListCommand(queryParts, commandParts);
+                    newQuery = parseListCommand(queryPartsNoDate, commandParts);
                 }
                 break;
             case HELP:
@@ -184,18 +190,18 @@ public class InputParser {
         return newQuery;
     }
 
-    public QueryBase parseSearchCommand ( String input ) {
-        DateRange[] dateRanges = DateTimeParser.parseDateTime(input);
-        input = DateTimeParser.removeDateParts(input);
-        String [] queryParts = splitQuery(input);
-
+    public QueryBase parseSearchCommand ( DateRange[] dateRanges, CommandPart [] commandParts ) {
         QueryList queryList = new QueryList();
 
         boolean pass = false;
-        if (queryParts.length >= 2 ) {
-            queryList.addSearchParam(QueryList.SearchParam.NAME_CONTAINS, queryParts[1]);
-            pass = true;
+        //Get name data
+        if (commandParts.length >= 1 ) { //First item should be the name if it's not a keyword
+            if ( !commandParts[0].isKeyword() ) {
+                queryList.addSearchParam(QueryList.SearchParam.NAME_CONTAINS, commandParts[0].getQueryPart());
+                pass = true;
+            }
         }
+        //Date date data
         if (dateRanges != null ) {
             if ( dateRanges.length == 1 ) {
                 if ( dateRanges[0].hasTime() ) {
@@ -268,8 +274,8 @@ public class InputParser {
 
     }
     
-    public QueryBase parseDeleteCommand ( String[] queryParts, CommandPart [] commandParts ) {
-        if ( queryParts.length < 2 ) {
+    public QueryBase parseDeleteCommand ( CommandPart [] commandParts ) {
+        if ( commandParts.length < 1 ) {
             return new QueryError("What do you want to delete?");
         }
         if ( displayedList == null ) {
@@ -278,7 +284,7 @@ public class InputParser {
 
 
 
-        ArrayList<Integer> indexList = extractIndices(queryParts[1]);
+        ArrayList<Integer> indexList = extractIndices(commandParts[0].getQueryPart());
 
         if ( indexList == null ) {
             return new QueryError("Error parsing indices");
@@ -411,15 +417,27 @@ public class InputParser {
         return queryUpdate;
     }
 
-    public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts, String input ) {
+    public QueryBase parseAddCommand ( CommandPart [] commandParts, DateRange [] dateRanges ) {
         QueryAdd queryAdd = new QueryAdd();
 
-        String name = queryParts[1]; //First item is the name
+        if ( commandParts.length == 0 ) {
+            return new QueryError("Type something to add");
+        }
+        String name = commandParts[0].getQueryPart(); //First item should be the name
         queryAdd.setName(name);
 
-        DateRange [] dateRanges = DateTimeParser.parseDateTime(input);
         if ( dateRanges != null ) {
             queryAdd.setDateRange(dateRanges);
+        }
+
+        for ( CommandPart commandPart : commandParts ) {
+            if ( "category".equals(commandPart.getKeywordType())) {
+                String category = commandPart.getKeywordData();
+                if ( category != null ) {
+                    queryAdd.setCategory(category);
+                    break;
+                }
+            }
         }
 
         return queryAdd;

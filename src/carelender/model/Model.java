@@ -71,8 +71,15 @@ public class Model {
 		return false;
 	}
 
-	public void deleteEvent(EventList eventObj) {
-
+	public void deleteEvent(EventList eventList) {
+		for (int i = 0; i < events.size(); i++) {
+			for ( Event eventObj : eventList) {
+				if (events.get(i).getUid() == eventObj.getUid()) {
+					events.remove(i);
+				}
+			}
+		}
+		saveToFile("events.dat", events);
 	}
 
 	public void deleteEvent(Event eventObj) {

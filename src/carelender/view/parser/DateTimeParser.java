@@ -107,13 +107,23 @@ public class DateTimeParser {
      * @return String with dates removed
      */
     public static String removeDateParts ( String inputString ) {
+        return replaceDateParts(inputString, "");
+    }
+
+    /**
+     * Replaces all the parts of the string referencing dates to make processing easier
+     * @param inputString  String to have bits removed from
+     * @param replace String to replace with
+     * @return String with dates replaced
+     */
+    public static String replaceDateParts ( String inputString, String replace ) {
         SimpleDateGroup[] simpleDateGroups = parseDateTimeRaw(inputString);
         if ( simpleDateGroups != null ) {
             for (SimpleDateGroup simpleDateGroup : simpleDateGroups) {
                 int length = simpleDateGroup.text.length();
                 String part1 = inputString.substring(0, simpleDateGroup.position - 1 );
                 String part2 = inputString.substring(simpleDateGroup.position + length - 1);
-                inputString = part1 + part2;
+                inputString = part1 + replace + part2;
             }
         }
         return inputString;
