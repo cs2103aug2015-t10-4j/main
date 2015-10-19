@@ -50,7 +50,7 @@ public class TextRenderer {
 		
 		this.font = font;
 		this.charHeight = this.font.getSize();
-		this.charWidth = this.font.getSize() * 0.5;
+		this.charWidth = this.font.getSize() * 0.6;
 		this.lineSpace = lineSpace;
 		
 		this.charsPerLine = Math.floor ((this.width - (this.xPadding * 2)) / this.charWidth);
@@ -84,8 +84,8 @@ public class TextRenderer {
 					freeCharsOnLine = this.charsPerLine - lineToAppendTo.length();
 					this.textLines.set(this.textLines.size() - 1, lineToAppendTo);
 				} else {
-					freeCharsOnLine = this.charsPerLine;
 					lineToAppendTo = wordToAdd + " ";
+					freeCharsOnLine = this.charsPerLine - lineToAppendTo.length();
 					this.textLines.add(lineToAppendTo);
 				}
 			}
