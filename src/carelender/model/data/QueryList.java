@@ -64,6 +64,7 @@ public class QueryList extends QueryBase {
 		NAME_CONTAINS,
 		NAME_EXACT,
 		TYPE,
+		CATEGORY,
 		LIMIT,
 		SORT
 	};
