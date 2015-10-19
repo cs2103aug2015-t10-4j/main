@@ -55,6 +55,8 @@ public class TextRenderer {
 		
 		this.charsPerLine = Math.floor ((this.width - (this.xPadding * 2)) / this.charWidth);
 		this.textLines = new ArrayList<String>();
+		
+		System.out.println ( this.charsPerLine + "    " + this.charWidth + "     " + this.width);
 	}
 	
 	public void addText ( String textToAdd ) {
@@ -77,8 +79,8 @@ public class TextRenderer {
 					freeCharsOnLine = this.charsPerLine;
 					lineToAppendTo = "";
 					this.textLines.add(lineToAppendTo);
-				} else if ( wordToAdd.length() < freeCharsOnLine ) {
-					lineToAppendTo += wordToAdd + " ";
+				} else if ( wordToAdd.length() <= freeCharsOnLine ) {
+					lineToAppendTo += (wordToAdd + " ");
 					freeCharsOnLine = this.charsPerLine - lineToAppendTo.length();
 					this.textLines.set(this.textLines.size() - 1, lineToAppendTo);
 				} else {
