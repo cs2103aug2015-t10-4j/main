@@ -56,7 +56,7 @@ public class Event implements Serializable{
 
     public Date getLatestDate () {
         Date lastDate = null;
-
+        if ( this.dateRange == null ) return null;
         for (DateRange dateR : this.dateRange) {
             if (lastDate == null) {
                 lastDate = dateR.getEnd();
@@ -71,7 +71,7 @@ public class Event implements Serializable{
 
     public Date getEarliestDate () {
         Date firstDate = null;
-
+        if ( this.dateRange == null ) return null;
         for (DateRange dateR : this.dateRange) {
             if (firstDate == null) {
                 firstDate = dateR.getStart();

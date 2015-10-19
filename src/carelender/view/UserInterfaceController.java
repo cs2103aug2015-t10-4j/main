@@ -83,6 +83,7 @@ public class UserInterfaceController implements Initializable {
     public void displayMessage( String message ) {
         messageList.add(message);
         //refreshOutputField();
+        System.out.println(message);
     }
 
     public void setUserInput ( String inputText ) {

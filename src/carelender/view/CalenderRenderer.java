@@ -28,7 +28,7 @@ public class CalenderRenderer extends CanvasRenderer {
         calculateScaledDimensions(width, height);
         calulateCellProperties();
 
-        Font font = new Font("Arial", calCellHeight / 3.0);
+        Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight / 3.0);
         for (int i = 0; i < squaresToDraw; i++ ) {
             double actualX = i%7 * ( calCellWidth + calCellSpacing ) + sidePadding;
             double actualY = (i/7) * ( calCellHeight + calCellSpacing ) + sidePadding;
@@ -39,10 +39,12 @@ public class CalenderRenderer extends CanvasRenderer {
                                         calCellShadowOffset, "F99", (i+1)+"", font);
         }
         
+<<<<<<< HEAD
         /*
-        TextRenderer textTest = new TextRenderer (gc, ( calCellWidth + calCellSpacing ) + sidePadding, ( calCellHeight + calCellSpacing ) + sidePadding,
-								7*offsetX, height, 0, 0,
-								font, 20, 12, 10 );
+        TextRenderer textTest = new TextRenderer (gc, sidePadding + offsetX, sidePadding + offsetY,
+                    scaledWidth * 0.6 , scaledHeight * 0.6 , 10, 10,
+                font, calCellHeight / 3.0, calCellHeight / 6.0, 0 );
+
         textTest.addText("This is a test string for like, stuff and stuff.\n");
         textTest.addText("Give me the thing that I love.\n");
         textTest.addText("Do I really wrap? Is this how a burrito feels like. The twice fried beans, the painted faces.\n");
