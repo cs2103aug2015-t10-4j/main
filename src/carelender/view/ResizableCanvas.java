@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * Created by JiaXun on 13/10/2015.
+ * Canvas to extend the resizable component of
  */
 class ResizableCanvas extends Canvas {
     CanvasRenderer renderer;

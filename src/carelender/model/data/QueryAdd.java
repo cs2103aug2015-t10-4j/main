@@ -38,6 +38,7 @@ public class QueryAdd extends QueryBase {
 
 	@Override
 	public void controllerExecute() {
+        Controller.clearMessages();
         if ( dateRanges == null ) {
             Controller.displayMessage("Adding new task: ["+name+"]");
         } else {

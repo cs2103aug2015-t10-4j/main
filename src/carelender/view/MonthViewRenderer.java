@@ -8,7 +8,9 @@ public class MonthViewRenderer extends CanvasRenderer {
 	//CalenderRenderer
 	//MessageboxRenderer
 	//SelectionPopupRenderer
-	
+
+	TextRenderer messageBox;
+	String messageText;
 	public MonthViewRenderer() {
 	}
 	
@@ -17,22 +19,28 @@ public class MonthViewRenderer extends CanvasRenderer {
 		super.draw(gc, width, height);
 		
 		//Todo: 20 -> meaningful expression
-		Font font = new Font("Arial", 20);
+		double fontSize = width / 60.0; //Temporary
+		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
 
 		/* Todo
 		 * replace magic numbers;
 		 * create specific class for these renderers;
 		 */
-		TextRenderer announcementBox = new TextRenderer (gc, 0, height/4,
-														width*3/10, height*3/10, 0, 0,
-														font, 20, 12, 10);
+		TextRenderer announcementBox = new TextRenderer (gc, 0, height/7,
+														width*4/10, height*3/10, 0, 0,
+														font, 0.6, fontSize*0.05);
 		announcementBox.addText("This is a announcementRenderer.\n");
 		announcementBox.drawText();
 		
-        TextRenderer messageBox = new TextRenderer (gc, 0, height*3/5,
-        											width*3/10, height*2/5, 0, 0,
-													font, 20, 12, 10);
-        messageBox.addText("This is a messageBoxRenderer.\n");
+        messageBox = new TextRenderer (gc, 0, height/7 + height*3/10,
+        											width*4/10, height*5/10, 0, 0,
+													font, 0.6, fontSize*0.05);
+        messageBox.addText(messageText);
         messageBox.drawText();
+	}
+
+	public void setMessageBoxText(String text) {
+		messageText = text;
+		redraw();
 	}
 }

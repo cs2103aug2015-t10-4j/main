@@ -37,8 +37,6 @@ public class Controller {
     //Application state
     private static String userName;
 
-    private static MonthViewRenderer canvasRenderer;
-
     private static QueryList currentListQuery;
 
 
@@ -57,6 +55,8 @@ public class Controller {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(reminder,500,1000);
 
+
+
         userName = null;
         currentCommand = 0;
     }
@@ -65,8 +65,8 @@ public class Controller {
     public static void initUserInterfaceController(UserInterfaceController userInterfaceController) {
         Controller.userInterfaceController = userInterfaceController;
         Controller.userInterfaceController.setMessageList(messageList);
-        canvasRenderer = new MonthViewRenderer();
-        Controller.userInterfaceController.setCanvasRenderer(canvasRenderer);
+        /*canvasRenderer = new MonthViewRenderer();
+        Controller.userInterfaceController.setCanvasRenderer(canvasRenderer);*/
     }
 
 
@@ -247,7 +247,7 @@ public class Controller {
             currentListQuery = new QueryList();
             currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
         }
-        //userInterfaceController.clearMessageLog();
+
         currentListQuery.controllerExecute();
     }
 
@@ -257,6 +257,10 @@ public class Controller {
      */
     public static void displayMessage ( String message ) {
         userInterfaceController.displayMessage(message);
+    }
+
+    public static void clearMessages ( ) {
+        userInterfaceController.clearMessageLog();
     }
     /**
      * Prints a message to the screen only in debug mode.

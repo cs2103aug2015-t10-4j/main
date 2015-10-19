@@ -36,7 +36,7 @@ public class TextRenderer {
 	
 	public TextRenderer ( GraphicsContext gc, double x, double y,
 							double w, double h, double xPad, double yPad,
-							Font font, double charH, double charW, double lineSpace ) {
+							Font font, double widthRatio, double lineSpace ) {
 		this.gc = gc;
 		
 		this.xPosition = x;
@@ -50,7 +50,7 @@ public class TextRenderer {
 		
 		this.font = font;
 		this.charHeight = this.font.getSize();
-		this.charWidth = this.font.getSize() * 0.5;
+		this.charWidth = this.font.getSize() * widthRatio;
 		this.lineSpace = lineSpace;
 		
 		this.charsPerLine = Math.floor ((this.width - (this.xPadding * 2)) / this.charWidth);
@@ -90,6 +90,10 @@ public class TextRenderer {
 				}
 			}
 		}
+	}
+
+	public void clearText() {
+		this.textLines.clear();
 	}
 	
 	public void drawText () {

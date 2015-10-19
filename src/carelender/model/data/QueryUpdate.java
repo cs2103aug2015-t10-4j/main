@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.Date;
 import java.util.HashMap;
 
+import carelender.controller.Controller;
 import carelender.controller.Search;
 import carelender.model.Model;
 import carelender.model.data.QueryList.SearchParam;
@@ -33,6 +34,7 @@ public class QueryUpdate extends QueryList {
 
 	@Override
 	public void controllerExecute() {
+		Controller.clearMessages();
 		EventList searchResults = searchExecute();
 		for ( Event event : searchResults ) {
 			//TODO: This will have to change if we want to do bulk updating.

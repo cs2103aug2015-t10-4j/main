@@ -64,6 +64,7 @@ public class BlockingStateController {
         stringSelectionList = choices;
         onSelectedCallback = callback;
 
+        Controller.clearMessages();
         Controller.displayMessage(message);
         StringBuilder stringBuilder = new StringBuilder();
         String breakline = "";
@@ -89,7 +90,7 @@ public class BlockingStateController {
         blockingState = BlockingState.EVENTSELECTION;
         selectionList = choices;
         onEventSelectedCallback = callback;
-        Controller.displayMessage(message);
+        Controller.clearMessages();
         Controller.displayMessage(selectionList.toString());
     }
 
@@ -100,7 +101,7 @@ public class BlockingStateController {
     public void startConfirmation ( String message, OnConfirmedCallback callback ) {
         blockingState = BlockingState.CONFIRMING;
         onConfirmedCallback = callback;
-
+        Controller.clearMessages();
         Controller.displayMessage(message);
     }
 

@@ -13,6 +13,7 @@ public class QueryHelp extends QueryBase {
     
     @Override
 	public void controllerExecute() {
+		Controller.clearMessages();
     	Controller.showHelp();
 	}
 

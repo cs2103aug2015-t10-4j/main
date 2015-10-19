@@ -29,6 +29,7 @@ public class QueryError extends QueryBase {
     
     @Override
 	public void controllerExecute() {
+        Controller.clearMessages();
     	Controller.displayMessage(getMessage());
         if ( isHelpDisplayed() ) {
             Controller.showHelp();

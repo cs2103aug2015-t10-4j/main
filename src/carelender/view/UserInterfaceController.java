@@ -22,6 +22,8 @@ public class UserInterfaceController implements Initializable {
     private ArrayList<String> messageList;
     ResizableCanvas canvas;
 
+    private MonthViewRenderer canvasRenderer;
+
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
         assert inputText != null : "fx:id=\"inputText\" was not injected: check your FXML file 'userinterface.fxml'.";
@@ -39,6 +41,9 @@ public class UserInterfaceController implements Initializable {
                 canvasPane.heightProperty());
 
         Controller.initUserInterfaceController(this);
+
+        canvasRenderer = new MonthViewRenderer();
+        canvas.setRenderer(canvasRenderer);
 
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
@@ -68,9 +73,9 @@ public class UserInterfaceController implements Initializable {
         inputText.setOnKeyPressed( keyEventHandler );
     }
 
-    public void setCanvasRenderer ( CanvasRenderer renderer ) {
+    /*public void setCanvasRenderer ( CanvasRenderer renderer ) {
         canvas.setRenderer(renderer);
-    }
+    }*/
     
     public void setMessageList( ArrayList<String> messageList ) {
     	this.messageList = messageList;
@@ -78,24 +83,25 @@ public class UserInterfaceController implements Initializable {
 
     public void clearMessageLog() {
         messageList.clear();
-        //refreshOutputField();
+        refreshOutputField();
     }
     public void displayMessage( String message ) {
         messageList.add(message);
-        //refreshOutputField();
-        System.out.println(message);
+        refreshOutputField();
+        //System.out.println(message);
     }
 
     public void setUserInput ( String inputText ) {
         this.inputText.setText(inputText);
     }
-    /*
+
     public void refreshOutputField() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < messageList.size(); i++ ) {
             stringBuilder.append(messageList.get(i));
             stringBuilder.append("\n");
         }
+        canvasRenderer.setMessageBoxText(stringBuilder.toString());
     }
-    */
+
 }
