@@ -22,6 +22,9 @@ public class MonthViewRenderer extends CanvasRenderer {
 		double fontSize = width / 60.0; //Temporary
 		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
 
+		TabRenderer tab = new TabRenderer();
+		tab.draw(gc, 0, 0, width, height/8);
+
 		/* Todo
 		 * replace magic numbers;
 		 * create specific class for these renderers;
