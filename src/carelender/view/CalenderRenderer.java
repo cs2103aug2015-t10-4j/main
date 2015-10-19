@@ -38,8 +38,7 @@ public class CalenderRenderer extends CanvasRenderer {
                                         calCellWidth, calCellHeight,
                                         calCellShadowOffset, "F99", (i+1)+"", font);
         }
-        
-<<<<<<< HEAD
+
         /*
         TextRenderer textTest = new TextRenderer (gc, sidePadding + offsetX, sidePadding + offsetY,
                     scaledWidth * 0.6 , scaledHeight * 0.6 , 10, 10,
