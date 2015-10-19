@@ -10,6 +10,7 @@ import carelender.model.Model;
  */
 public class QueryAdd extends QueryBase {
     String name;
+    String category;
     DateRange [] dateRanges;
 
     public QueryAdd() {
@@ -22,6 +23,14 @@ public class QueryAdd extends QueryBase {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public DateRange[] getDateRange() {
