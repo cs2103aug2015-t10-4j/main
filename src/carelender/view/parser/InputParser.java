@@ -1,6 +1,7 @@
 package carelender.view.parser;
 
 import carelender.model.data.*;
+import net.fortuna.ical4j.model.DateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +47,7 @@ public class InputParser {
         newCommand.setDescription("List all your future events/tasks\n    Usage: list [past/today/tomorrow/future]");
         newCommand.addKeywords("range", "past,today,tomorrow,future");
         commandManager.addCommand(newCommand);
+
         
         newCommand = new Command("update", QueryType.UPDATE);
         newCommand.setDescription("Update events/tasks\n    Usage: update \"event name\" into \"new name\" [tomorrow/today/etc...] [morning/noon/etc...]");
@@ -143,7 +145,6 @@ public class InputParser {
         assert input.length() != 0 : "Cannot parse empty input";
         
         String [] queryParts = splitQuery(input);
-
         String commandString = queryParts[0];
 
         Command matchedCommand = commandManager.matchCommand(commandString);
@@ -167,7 +168,7 @@ public class InputParser {
                 break;
             case LIST:
                 if ( matchedCommand.getCommand().equalsIgnoreCase("search") ) {
-                    newQuery = parseSearchCommand(queryParts, commandParts);
+                    newQuery = parseSearchCommand(input);
                 } else {
                     newQuery = parseListCommand(queryParts, commandParts);
                 }
@@ -183,14 +184,37 @@ public class InputParser {
         return newQuery;
     }
 
-    public QueryBase parseSearchCommand ( String[] queryParts, CommandPart [] commandParts ) {
+    public QueryBase parseSearchCommand ( String input ) {
+        DateRange[] dateRanges = DateTimeParser.parseDateTime(input);
+        input = DateTimeParser.removeDateParts(input);
+        String [] queryParts = splitQuery(input);
+
         QueryList queryList = new QueryList();
-        //WZ: Prevent array index out of bounds.
-        if (queryParts.length == 1) {
-            return new QueryError("Please enter a parameter to search by!");
+
+        boolean pass = false;
+        if (queryParts.length >= 2 ) {
+            queryList.addSearchParam(QueryList.SearchParam.NAME_CONTAINS, queryParts[1]);
+            pass = true;
         }
-        //WZ: END
-        queryList.addSearchParam(QueryList.SearchParam.NAME_CONTAINS, queryParts[1]);
+        if (dateRanges != null ) {
+            if ( dateRanges.length == 1 ) {
+                if ( dateRanges[0].hasTime() ) {
+                    queryList.addSearchParam(QueryList.SearchParam.DATE_START, dateRanges[0].getStart());
+                    queryList.addSearchParam(QueryList.SearchParam.DATE_END, dateRanges[0].getEnd());
+                } else {
+                    queryList.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.startOfDay(dateRanges[0].getStart()));
+                    queryList.addSearchParam(QueryList.SearchParam.DATE_END, DateTimeParser.endOfDay(dateRanges[0].getEnd()));
+                }
+                pass = true;
+            } else {
+                return new QueryError("Please input at most one date range");
+            }
+        }
+
+        if ( !pass ) {
+            return new QueryError("Please input something to search");
+        }
+
         return queryList;
     }
 
@@ -292,7 +316,7 @@ public class InputParser {
                 return new QueryError("Please input an even number of date time values", false);
             }
 
-            DateRange[] dr = new DateRange[]{new DateRange(dateGroups[0].dates[0])};
+            DateRange[] dr = new DateRange[]{new DateRange(dateGroups[0].dates[0], dateGroups[0].hasTime)};
             queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.DATE_RANGE, dr);
 
         }
@@ -397,8 +421,6 @@ public class InputParser {
         if ( dateRanges != null ) {
             queryAdd.setDateRange(dateRanges);
         }
-
-
 
         return queryAdd;
     }
@@ -596,8 +618,10 @@ public class InputParser {
         Collections.sort(indexList);
 
         if ( displayedList.size() > 0 ) {
-            for (int i : indexList) {
-                if (i < 0 || i >= displayedList.size()) {
+            for (int i = 0; i < indexList.size(); i++) {
+                int index = indexList.get(i) - 1;
+                indexList.set(i, index);
+                if (index < 0 || index >= displayedList.size()) {
                     //errorMessage += "Selection is out of bounds\n";
                     pass = false;
                     break;

@@ -247,7 +247,7 @@ public class Controller {
             currentListQuery = new QueryList();
             currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
         }
-        userInterfaceController.clearMessageLog();
+        //userInterfaceController.clearMessageLog();
         currentListQuery.controllerExecute();
     }
 

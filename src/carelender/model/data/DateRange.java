@@ -12,16 +12,19 @@ import java.util.Date;
 public class DateRange implements Serializable{
 	private Date start;
 	private Date end;
+	private boolean hasTime;
 
 	public DateRange ( DateRange dateRange ) {
 		start = (Date)dateRange.getStart().clone();
 		end = (Date)dateRange.getEnd().clone();
+		hasTime = dateRange.hasTime;
 	}
-	public DateRange (Date date) {
+	public DateRange (Date date, boolean hasTime) {
 		start = end = date;
+		this.hasTime = hasTime;
 	}
 
-	public DateRange (Date startToSet, Date endToSet) {
+	public DateRange (Date startToSet, Date endToSet, boolean hasTime) {
 		if (!endToSet.after(startToSet)) {
 			this.start = endToSet;
 			this.end = startToSet;
@@ -29,7 +32,9 @@ public class DateRange implements Serializable{
 			this.start = startToSet;
 			this.end = endToSet;
 		}
+		this.hasTime = hasTime;
 	}
+
 	
 	public Date getEnd () {
 		return end;
@@ -77,5 +82,9 @@ public class DateRange implements Serializable{
 		} else {
 			return start.toString();
 		}
+	}
+
+	public boolean hasTime() {
+		return hasTime;
 	}
 }
