@@ -13,16 +13,16 @@ public abstract class CanvasRenderer {
 
     public CanvasRenderer() {}
 
-    void draw ( GraphicsContext gc, double width, double height ) {
+    void draw ( GraphicsContext gc, double x, double y, double width, double height ) {
         this.gc = gc;
         this.width = width;
         this.height = height;
-        gc.clearRect(0, 0, width, height);
+        gc.clearRect(x, y, width, height);
     }
     void redraw() {
         if ( gc == null ) {
             return;
         }
-        draw(gc,width,height);
+        draw(gc, 0, 0, width,height);
     }
 }
