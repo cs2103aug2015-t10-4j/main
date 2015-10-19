@@ -1,28 +1,18 @@
 package carelender.controller;
 
 import carelender.controller.callbacks.OnConfirmedCallback;
-import carelender.controller.callbacks.OnEventSelectedCallback;
 import carelender.controller.states.AppState;
 import carelender.controller.states.BlockingStateController;
 import carelender.controller.states.StateManager;
 import carelender.model.AppSettings;
-import carelender.model.Model;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
 import carelender.view.CalenderRenderer;
-import carelender.view.CanvasRenderer;
 import carelender.view.UserInterfaceController;
 import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
 
-import com.joestelmach.natty.*;
-import com.joestelmach.natty.generated.DateParser;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -48,6 +38,8 @@ public class Controller {
     private static String userName;
 
     private static CalenderRenderer canvasRenderer;
+
+    private static QueryList currentListQuery;
 
 
 
@@ -167,9 +159,7 @@ public class Controller {
                     displayMessage(FirstStartMessages.confirmed(userName));
                     stateManager.changeState(AppState.DEFAULT);
 
-                    QueryList list = new QueryList();
-                    list.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
-                    list.controllerExecute();
+                    refreshDisplay();
                 } else {
                     displayMessage(FirstStartMessages.askForNameAgain());
                     userName = null;
@@ -207,8 +197,13 @@ public class Controller {
             case SWITCHUI:
                 processSwitchUI();
                 break;
+            case LIST:
+                currentListQuery = (QueryList)query;
+                refreshDisplay();
+                break;
             default:
                 query.controllerExecute();
+                refreshDisplay();
                 break;
         }
     }
@@ -241,6 +236,19 @@ public class Controller {
         } else {
             userInterfaceController.displayMessage("Welcome back, <username>");
         }
+    }
+
+    /**
+     * Refreshes the list of events.
+     * It is called after every query the user inputs
+     */
+    private static void refreshDisplay () {
+        if ( currentListQuery == null) {
+            currentListQuery = new QueryList();
+            currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
+        }
+        userInterfaceController.clearMessageLog();
+        currentListQuery.controllerExecute();
     }
 
     /**

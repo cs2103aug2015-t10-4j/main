@@ -4,19 +4,20 @@ import carelender.model.data.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 /**
  * Parses the user input
  */
 public class InputParser {
-	private static InputParser singleton = null;
-	public static InputParser getInstance() {
-		if ( singleton == null ) {
-			singleton = new InputParser();
-		}
-		return singleton;
-	}
+    private static InputParser singleton = null;
+    public static InputParser getInstance() {
+        if ( singleton == null ) {
+            singleton = new InputParser();
+        }
+        return singleton;
+    }
     CommandManager commandManager;
     //List of displayed events
     private EventList displayedList;
@@ -88,7 +89,7 @@ public class InputParser {
      * @return String array with each part in it's own entry
      */
     public String [] splitQuery ( String input ) {
-    	assert input.length() != 0 : "Cannot parse empty input";
+        assert input.length() != 0 : "Cannot parse empty input";
         String [] queryParts = input.split(" ");
         ArrayList<String> processingList = new ArrayList<>(queryParts.length);
         int startString = 0;
@@ -247,8 +248,25 @@ public class InputParser {
         if ( queryParts.length < 2 ) {
             return new QueryError("What do you want to delete?");
         }
+        if ( displayedList == null ) {
+            return new QueryError("Nothing displayed");
+        }
+
+
+
+        ArrayList<Integer> indexList = extractIndices(queryParts[1]);
+
+        if ( indexList == null ) {
+            return new QueryError("Error parsing indices");
+        }
         QueryDelete queryDelete = new QueryDelete();
-        queryDelete.setName(queryParts[1]);
+        for ( int i : indexList ) {
+            Event event = displayedList.get(i);
+            if ( event != null ) {
+                queryDelete.addEvent(event);
+            }
+        }
+
         return queryDelete;
     }
     
@@ -513,6 +531,88 @@ public class InputParser {
         return stringBuilder.toString();
     }
 
+    /**
+     * Takes an index string and converts it into a list of indices
+     * Example: "1,13,5-8" will give a list [1,5,6,7,8,13]
+     * @param indexString String containing indices
+     * @return null if there is an error in parsing
+     */
+    private ArrayList<Integer> extractIndices ( String indexString ) {
+        //String errorMessage = "";
+        boolean pass = true;
+        ArrayList<Integer> indexList = new ArrayList<>();
+        final String numberRegex = "^[0-9]+$";
+        //Parse indices
+        String[] indexPartArray = indexString.split(",");
+        for ( String indexPart : indexPartArray ) {
+            if ( indexPart.contains("-") ) { //Range
+                String [] rangeArray = indexPart.split("-");
+                if ( rangeArray.length != 2 ) {
+                    //errorMessage += "Did not understand: [" + indexPart + "]\n";
+                    pass = false;
+                } else {
+                    int start = -1;
+                    int end = -1;
+                    if ( !rangeArray[0].matches(numberRegex) ) {
+                        //errorMessage += "Not an integer: [" + rangeArray[0] + "]\n";
+                        pass = false;
+                    } else {
+                        start = Integer.parseInt(rangeArray[0]);
+                    }
+                    if ( !rangeArray[1].matches(numberRegex) ) {
+                        //errorMessage += "Not an integer: [" + rangeArray[1] + "]\n";
+                        pass = false;
+                    } else {
+                        end = Integer.parseInt(rangeArray[1]);
+                    }
+
+                    //Indices are valid
+                    if ( start != -1 && end != -1 ) {
+                        if ( start > end ) {
+                            int t = start;
+                            start = end;
+                            end = t;
+                        }
+                        for ( int i = start; i < end; i++ ) {
+                            indexList.add(i);
+                        }
+                    }
+                }
+            } else { //Single index
+                int index = -1;
+                if ( !indexPart.matches(numberRegex) ) {
+                    //errorMessage += "Not an integer: [" + indexPart + "]\n";
+                    pass = false;
+                } else {
+                    index = Integer.parseInt(indexPart);
+                }
+
+                if ( index != -1 ) {
+                    indexList.add(index);
+                }
+            }
+        }
+
+        Collections.sort(indexList);
+
+        if ( displayedList.size() > 0 ) {
+            for (int i : indexList) {
+                if (i < 0 || i >= displayedList.size()) {
+                    //errorMessage += "Selection is out of bounds\n";
+                    pass = false;
+                    break;
+                }
+            }
+        } else {
+            //errorMessage += "Selection is out of bounds\n";
+            pass = false;
+        }
+
+        if ( pass ) {
+            return indexList;
+        }
+        return null;
+    }
     public String showCommandList() {
         StringBuilder stringBuilder = new StringBuilder();
         String newLine = "  ";

@@ -10,67 +10,75 @@ import carelender.model.Model;
  * Used for delete queries
  */
 public class QueryDelete extends QueryBase {
-    private String name;
+    private EventList events;
     public QueryDelete() {
         super(QueryType.DELETE);
+        events = null;
     }
 
-	private Event selectedObject; // Used for confirmation
+	//private Event selectedObject; // Used for confirmation
 
-    public String getName() {
-        return name;
+    public void addEvent ( Event e ) {
+        if ( events == null ) {
+            events = new EventList();
+        }
+        events.add(e);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEventList ( EventList e ) {
+        events = e;
     }
     
     @Override
 	public void controllerExecute() {
-		EventList searchResults = searchExecute();
-
 		final OnConfirmedCallback deleteConfirmedCallback = new OnConfirmedCallback() {
 			@Override
 			public void onConfirmed(boolean confirmed) {
 				if ( confirmed ) {
-					Controller.displayMessage("Deleting [" + selectedObject.getInfo() + "]");
-					Model.getInstance().deleteEvent(selectedObject);
+					Controller.displayMessage("Deleting " + events.size() + " tasks");
+					Model.getInstance().deleteEvent(events);
 				}
 			}
 		};
 
-		final OnEventSelectedCallback deleteCallback = new OnEventSelectedCallback() {
+        if ( events != null && events.size() > 0) {
+            Controller.getBlockingStateController()
+                    .startConfirmation("Are you sure you want to delete " + events.size() + " events? [Y/N]", deleteConfirmedCallback);
+        }
+
+
+		/*final OnEventSelectedCallback deleteCallback = new OnEventSelectedCallback() {
 			@Override
 			public void onChosen(Event selected) {
 				selectedObject = selected;
 				Controller.getBlockingStateController()
 						.startConfirmation("Are you sure you want to delete \"" + selected.getName() + "\"? [Y/N]", deleteConfirmedCallback);
-
 			}
-		};
+		};*/
 
-
-		if ( searchResults.size() == 0 ) {
+		/*if ( searchResults.size() == 0 ) {
 			Controller.displayMessage("There is no task called " + getName());
 		} else if ( searchResults.size() > 1 ) {
 			String message = "There are multiple \""+ getName()+"\" tasks, please choose the one to delete.";
 			Controller.getBlockingStateController().startEventSelection(message, searchResults, deleteCallback);
 		} else {
 			deleteCallback.onChosen(searchResults.get(0));
-		}
+		}*/
+
+
 	}
 
 	@Override
 	public EventList searchExecute() {
 		EventList returnList = new EventList();
 		
-		if (Model.getInstance().retrieveEvent() != null) {
+		/*if (Model.getInstance().retrieveEvent() != null) {
 			for (Event event : Model.getInstance().retrieveEvent()) {
 				if (Search.isEventNameExact(event, getName())) {
 					returnList.add(event.copy());
 				}
 			}
-		}
+		}*/
 		return returnList;
 	}
 }
