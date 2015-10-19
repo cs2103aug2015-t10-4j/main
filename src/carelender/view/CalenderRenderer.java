@@ -41,7 +41,7 @@ public class CalenderRenderer extends CanvasRenderer {
         
         TextRenderer textTest = new TextRenderer (gc, ( calCellWidth + calCellSpacing ) + sidePadding, ( calCellHeight + calCellSpacing ) + sidePadding,
 								7*offsetX, height, 0, 0,
-								font, 20, 12, 10 );
+								new Font("Monaco", 12), 12, 6, 10 );
         textTest.addText("This is a test string for like, stuff and stuff.\n");
         textTest.addText("Give me the thing that I love.\n");
         textTest.addText("Do I really wrap? Is this how a burrito feels like. The twice fried beans, the painted faces.\n");
