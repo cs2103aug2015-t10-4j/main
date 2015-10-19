@@ -239,6 +239,7 @@ public class Controller {
             userInterfaceController.displayMessage(FirstStartMessages.askForName());
         } else {
             userInterfaceController.displayMessage("Welcome back, " + userName);
+            stateManager.changeState(AppState.DEFAULT);
         }
     }
 
