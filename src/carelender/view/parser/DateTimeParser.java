@@ -111,7 +111,9 @@ public class DateTimeParser {
         if ( simpleDateGroups != null ) {
             for (SimpleDateGroup simpleDateGroup : simpleDateGroups) {
                 int length = simpleDateGroup.text.length();
-                inputString = inputString.substring(simpleDateGroup.position, simpleDateGroup.position + length);
+                String part1 = inputString.substring(0, simpleDateGroup.position - 1 );
+                String part2 = inputString.substring(simpleDateGroup.position + length - 1);
+                inputString = part1 + part2;
             }
         }
         return inputString;
@@ -140,20 +142,20 @@ public class DateTimeParser {
             for ( SimpleDateGroup dateGroup : dateGroups ) {
                 int numberOfDates = dateGroup.dates.length;
                 if ( numberOfDates == 1 ) {
-                    dateRanges.add(new DateRange(dateGroup.dates[0]));
+                    dateRanges.add(new DateRange(dateGroup.dates[0], dateGroup.hasTime));
                 } else if ( numberOfDates == 2 ) {
                     //Should be a range, search for "to" "-"
                     if ( dateGroup.text.contains("to") ||  dateGroup.text.contains("-") ) {
                         //Process as a date range
-                        dateRanges.add(new DateRange(dateGroup.dates[0], dateGroup.dates[1]));
+                        dateRanges.add(new DateRange(dateGroup.dates[0], dateGroup.dates[1], dateGroup.hasTime));
                     } else {
                         //Add as two separate dates
-                        dateRanges.add(new DateRange(dateGroup.dates[0]));
-                        dateRanges.add(new DateRange(dateGroup.dates[1]));
+                        dateRanges.add(new DateRange(dateGroup.dates[0], dateGroup.hasTime));
+                        dateRanges.add(new DateRange(dateGroup.dates[1], dateGroup.hasTime));
                     }
-                } else {
+                } else { //Individual dates
                     for ( Date date : dateGroup.dates ) {
-                        dateRanges.add(new DateRange(date));
+                        dateRanges.add(new DateRange(date, dateGroup.hasTime));
                     }
                 }
             }
@@ -216,6 +218,34 @@ public class DateTimeParser {
     }
 
     /**
+     * Sets date object to 00:00hrs
+     * @return Date object
+     */
+    public static Date startOfDay ( Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        return calendar.getTime();
+    }
+
+    /**
+     * Sets date object to 23:59hrs
+     * @return Date object
+     */
+    public static Date endOfDay ( Date date ) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 999);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        return calendar.getTime();
+    }
+
+    /**
      * Gets the date object with times set to 0
      * @param dayOffset Offset the number of days
      * @return Date object
@@ -224,6 +254,7 @@ public class DateTimeParser {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.add(Calendar.DATE, dayOffset);
         return calendar.getTime();

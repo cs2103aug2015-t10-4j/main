@@ -38,10 +38,15 @@ public class QueryAdd extends QueryBase {
 
 	@Override
 	public void controllerExecute() {
-        Controller.displayMessage("Adding new task: ["+name+"] at ");
-        for ( DateRange dateRange : dateRanges ) {
-            Controller.displayMessage( "    " + dateRange.toString() );
+        if ( dateRanges == null ) {
+            Controller.displayMessage("Adding new task: ["+name+"]");
+        } else {
+            Controller.displayMessage("Adding new task: ["+name+"] at ");
+            for ( DateRange dateRange : dateRanges ) {
+                Controller.displayMessage( "    " + dateRange.toString() );
+            }
         }
+
 
         /*QueryList checkClashesQuery = new QueryList();
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
