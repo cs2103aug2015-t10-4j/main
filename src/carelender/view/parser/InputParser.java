@@ -81,64 +81,7 @@ public class InputParser {
         commandManager.addCommand(newCommand);
     }
 
-    /**
-     * Splits up the query into it's individual parts.
-     * Also splits by |DATE| string
-     * Takes into account "" strings.
-     *   e.g. "Hello world" will be converted into one string excluding the "
-     * @param input The user input
-     * @return String array with each part in it's own entry
-     */
-    public String [] splitQuery ( String input ) {
-        assert input.length() != 0 : "Cannot parse empty input";
-        String[] queryParts = input.split("( |\\|DATE\\|)");
-        ArrayList<String> processingList = new ArrayList<>(queryParts.length);
-        int startString = 0;
-        int endString;
-        boolean isProcessingString = false;
 
-        for (int i = 0; i < queryParts.length; i++) {
-            String part = queryParts[i];
-            if (!isProcessingString) {
-                //Search for the start of a string
-                if (part.startsWith("\"")) {
-                    startString = i;
-                    isProcessingString = true;
-                } else {
-                    processingList.add(part);
-                }
-            }
-
-            if (isProcessingString) {
-                //Search for the end of a string
-                if (part.endsWith("\"")) {
-                    endString = i;
-                    isProcessingString = false;
-                    String extracted = extractString(queryParts, startString, endString);
-                    //Add to list and remove the "" wrapping characters.
-                    processingList.add(extracted.substring(1, extracted.length() - 1));
-                }
-            }
-
-            if (isProcessingString && i == queryParts.length - 1) {
-                //Unmatched string close. Automatically close
-                endString = i;
-                isProcessingString = false;
-                String extracted = extractString(queryParts, startString, endString);
-                //Add to list and remove the initial " characters.
-                processingList.add(extracted.substring(1, extracted.length()));
-            }
-        }
-        for (int i = 0; i < queryParts.length; i++) {
-            if (i >= processingList.size()) {
-                queryParts[i] = "";
-            } else {
-                queryParts[i] = processingList.get(i);
-            }
-        }
-        queryParts = removeEmptyEntries(queryParts);
-        return queryParts;
-    }
 
 
     public QueryBase parseCompleteInput ( String input ) {
@@ -149,8 +92,6 @@ public class InputParser {
         DateRange [] dateRanges = DateTimeParser.parseDateTime(input);
         input = DateTimeParser.replaceDateParts(input, "|DATE|");
         String [] queryPartsNoDate = splitQuery(input);
-
-
 
         Command matchedCommand = commandManager.matchCommand(commandString);
 
@@ -201,7 +142,7 @@ public class InputParser {
                 pass = true;
             }
         }
-        //Date date data
+        //Get date data
         if (dateRanges != null ) {
             if ( dateRanges.length == 1 ) {
                 if ( dateRanges[0].hasTime() ) {
@@ -214,6 +155,16 @@ public class InputParser {
                 pass = true;
             } else {
                 return new QueryError("Please input at most one date range");
+            }
+        }
+
+        //Get category data
+        CommandPart commandPart = getCommandPart("category", commandParts);
+        if ( commandPart != null ) {
+            String category = commandPart.getKeywordData();
+            if ( category != null ) {
+                queryList.addSearchParam(QueryList.SearchParam.CATEGORY, category);
+                pass = true;
             }
         }
 
@@ -282,8 +233,6 @@ public class InputParser {
             return new QueryError("Nothing displayed");
         }
 
-
-
         ArrayList<Integer> indexList = extractIndices(commandParts[0].getQueryPart());
 
         if ( indexList == null ) {
@@ -326,93 +275,6 @@ public class InputParser {
             queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.DATE_RANGE, dr);
 
         }
-        
-        //Check if a relative day keyword exists
-        /*String relativeDay = null;
-        for ( CommandPart commandPart :commandParts ) {
-            if ( commandPart.getKeywordType() != null &&
-                 commandPart.getKeywordType().equalsIgnoreCase("relativeday") ) {
-                relativeDay = commandPart.getQueryPart();
-            }
-        }
-
-        Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-
-
-        if ( relativeDay != null ) {
-            switch ( relativeDay ) {
-                case "tomorrow":
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    break;
-                case "monday":
-                    calendar = nextDayOfWeek(Calendar.MONDAY);
-                    break;
-                case "tuesday":
-                    calendar = nextDayOfWeek(Calendar.TUESDAY);
-                    break;
-                case "wednesday":
-                    calendar = nextDayOfWeek(Calendar.WEDNESDAY);
-                    break;
-                case "thursday":
-                    calendar = nextDayOfWeek(Calendar.THURSDAY);
-                    break;
-                case "friday":
-                    calendar = nextDayOfWeek(Calendar.FRIDAY);
-                    break;
-                case "saturday":
-                    calendar = nextDayOfWeek(Calendar.SATURDAY);
-                    break;
-                case "sunday":
-                    calendar = nextDayOfWeek(Calendar.SUNDAY);
-                    break;
-            }
-        }
-        
-        //WZ: I added these so they aren't random values floating around spoiling my equals.
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.set(Calendar.SECOND, 0);
-        //WZ: END
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-
-        //Check if a time of day keyword exists
-        String timeOfDay = null;
-        for ( CommandPart commandPart :commandParts ) {
-            if ( commandPart.getKeywordType() != null &&
-                    commandPart.getKeywordType().equalsIgnoreCase("timeofday") ) {
-                timeOfDay = commandPart.getQueryPart();
-            }
-        }
-
-        if ( timeOfDay != null ) {
-            switch ( timeOfDay ) {
-                case "later":
-                    calendar.add(Calendar.HOUR, 3);
-                    break;
-                case "tonight":
-                case "night":
-                    calendar.set(Calendar.HOUR_OF_DAY, 20);
-                    break;
-                case "afternoon":
-                    calendar.set(Calendar.HOUR_OF_DAY, 14);
-                    break;
-                case "noon":
-                    calendar.set(Calendar.HOUR_OF_DAY, 12);
-                    break;
-                case "morning":
-                    calendar.set(Calendar.HOUR_OF_DAY, 9);
-                    break;
-                case "evening":
-                    calendar.set(Calendar.HOUR_OF_DAY, 18);
-                    break;
-            }
-        }
-
-        Date newTime = calendar.getTime();
-        DateRange[] dr = new DateRange[]{new DateRange(newTime)};
-        queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.DATE_RANGE, dr);*/
 
         return queryUpdate;
     }
@@ -430,112 +292,16 @@ public class InputParser {
             queryAdd.setDateRange(dateRanges);
         }
 
-        for ( CommandPart commandPart : commandParts ) {
-            if ( "category".equals(commandPart.getKeywordType())) {
-                String category = commandPart.getKeywordData();
-                if ( category != null ) {
-                    queryAdd.setCategory(category);
-                    break;
-                }
+        CommandPart commandPart = getCommandPart("category", commandParts);
+        if ( commandPart != null ) {
+            String category = commandPart.getKeywordData();
+            if ( category != null ) {
+                queryAdd.setCategory(category);
             }
         }
 
         return queryAdd;
     }
-
-    /*public QueryBase parseAddCommand ( String [] queryParts, CommandPart [] commandParts ) {
-        QueryAdd queryAdd = new QueryAdd();
-
-        String name = queryParts[1]; //First item is the name
-        queryAdd.setName(name);
-
-        //Check if a relative day keyword exists
-        String relativeDay = null;
-        for ( CommandPart commandPart :commandParts ) {
-            if ( commandPart.getKeywordType() != null &&
-                 commandPart.getKeywordType().equalsIgnoreCase("relativeday") ) {
-                relativeDay = commandPart.getQueryPart();
-            }
-        }
-
-        Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-
-
-        if ( relativeDay != null ) {
-            switch ( relativeDay ) {
-                case "tomorrow":
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    break;
-                case "monday":
-                    calendar = nextDayOfWeek(Calendar.MONDAY);
-                    break;
-                case "tuesday":
-                    calendar = nextDayOfWeek(Calendar.TUESDAY);
-                    break;
-                case "wednesday":
-                    calendar = nextDayOfWeek(Calendar.WEDNESDAY);
-                    break;
-                case "thursday":
-                    calendar = nextDayOfWeek(Calendar.THURSDAY);
-                    break;
-                case "friday":
-                    calendar = nextDayOfWeek(Calendar.FRIDAY);
-                    break;
-                case "saturday":
-                    calendar = nextDayOfWeek(Calendar.SATURDAY);
-                    break;
-                case "sunday":
-                    calendar = nextDayOfWeek(Calendar.SUNDAY);
-                    break;
-            }
-        }
-
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-
-        //Check if a time of day keyword exists
-        String timeOfDay = null;
-        for ( CommandPart commandPart :commandParts ) {
-            if ( commandPart.getKeywordType() != null &&
-                    commandPart.getKeywordType().equalsIgnoreCase("timeofday") ) {
-                timeOfDay = commandPart.getQueryPart();
-            }
-        }
-
-        if ( timeOfDay != null ) {
-            switch ( timeOfDay ) {
-                case "later":
-                    calendar.add(Calendar.HOUR, 3);
-                    break;
-                case "tonight":
-                case "night":
-                    calendar.set(Calendar.HOUR_OF_DAY, 20);
-                    break;
-                case "afternoon":
-                    calendar.set(Calendar.HOUR_OF_DAY, 14);
-                    break;
-                case "noon":
-                    calendar.set(Calendar.HOUR_OF_DAY, 12);
-                    break;
-                case "morning":
-                    calendar.set(Calendar.HOUR_OF_DAY, 9);
-                    break;
-                case "evening":
-                    calendar.set(Calendar.HOUR_OF_DAY, 18);
-                    break;
-            }
-        }
-
-
-        Date newTime = calendar.getTime();
-        queryAdd.setTime(newTime);
-
-        return queryAdd;
-    }*/
 
     /**
      * Gets the date of the next day of the week
@@ -571,6 +337,79 @@ public class InputParser {
         return stringBuilder.toString();
     }
 
+    /**
+     * Splits up the query into it's individual parts.
+     * Also splits by |DATE| string
+     * Takes into account "" strings.
+     *   e.g. "Hello world" will be converted into one string excluding the "
+     * @param input The user input
+     * @return String array with each part in it's own entry
+     */
+    public String [] splitQuery ( String input ) {
+        assert input.length() != 0 : "Cannot parse empty input";
+        String[] queryParts = input.split("( |\\|DATE\\|)");
+        ArrayList<String> processingList = new ArrayList<>(queryParts.length);
+        int startString = 0;
+        int endString;
+        boolean isProcessingString = false;
+
+        for (int i = 0; i < queryParts.length; i++) {
+            String part = queryParts[i];
+            if (!isProcessingString) {
+                //Search for the start of a string
+                if (part.startsWith("\"")) {
+                    startString = i;
+                    isProcessingString = true;
+                } else {
+                    processingList.add(part);
+                }
+            }
+
+            if (isProcessingString) {
+                //Search for the end of a string
+                if (part.endsWith("\"")) {
+                    endString = i;
+                    isProcessingString = false;
+                    String extracted = extractString(queryParts, startString, endString);
+                    //Add to list and remove the "" wrapping characters.
+                    processingList.add(extracted.substring(1, extracted.length() - 1));
+                }
+            }
+
+            if (isProcessingString && i == queryParts.length - 1) {
+                //Unmatched string close. Automatically close
+                endString = i;
+                isProcessingString = false;
+                String extracted = extractString(queryParts, startString, endString);
+                //Add to list and remove the initial " characters.
+                processingList.add(extracted.substring(1, extracted.length()));
+            }
+        }
+        for (int i = 0; i < queryParts.length; i++) {
+            if (i >= processingList.size()) {
+                queryParts[i] = "";
+            } else {
+                queryParts[i] = processingList.get(i);
+            }
+        }
+        queryParts = removeEmptyEntries(queryParts);
+        return queryParts;
+    }
+
+    /**
+     * Gets a command part based on the type
+     * @param type Type of keyword
+     * @param commandParts commandPart array
+     * @return null if it doesn't exist
+     */
+    private CommandPart getCommandPart ( String type, CommandPart [] commandParts ) {
+        for ( CommandPart commandPart : commandParts ) {
+            if ( type.equals(commandPart.getKeywordType())) {
+                return commandPart;
+            }
+        }
+        return null;
+    }
     /**
      * Takes an index string and converts it into a list of indices
      * Example: "1,13,5-8" will give a list [1,5,6,7,8,13]

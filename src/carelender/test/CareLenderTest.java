@@ -1,4 +1,4 @@
-package carelender.test;
+/*package carelender.test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import carelender.model.AppSettings;
@@ -14,3 +14,4 @@ public class CareLenderTest extends AppSettings{
 	}
 
 }
+*/

@@ -2,6 +2,7 @@ package carelender.model.data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /*
  * Data object to help with managing task time ranges.
@@ -62,6 +63,15 @@ public class DateRange implements Serializable{
 			}
 		}
 		this.start = start;
+	}
+	
+	public long getDaysBetween () {
+		if ( isRange() ) {
+			long difference = this.end.getTime() - this.start.getTime();
+			long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+		    return days <= 0 ? 1 : days;
+		}
+		return 1;
 	}
 
     /**
