@@ -5,6 +5,8 @@ import carelender.controller.states.AppState;
 import carelender.controller.states.BlockingStateController;
 import carelender.controller.states.StateManager;
 import carelender.model.AppSettings;
+import carelender.model.AppSettings.DataType;
+import carelender.model.AppSettings.SettingName;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
 import carelender.view.MonthViewRenderer;
@@ -54,10 +56,12 @@ public class Controller {
         TimerTask reminder = new Reminder();
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(reminder,500,1000);
-
-
-
+        
         userName = null;
+        if(appSettings.getStringSetting(SettingName.USERNAME) != null){
+        	userName = appSettings.getStringSetting(SettingName.USERNAME);
+        	System.out.println("Username: " + userName);
+        }
         currentCommand = 0;
     }
 
@@ -151,14 +155,14 @@ public class Controller {
     }
 
     private static void stateFirstStart ( String userInput ) {
-        final OnConfirmedCallback confirmNameCallback = new OnConfirmedCallback() {
+    	final OnConfirmedCallback confirmNameCallback = new OnConfirmedCallback() {
             @Override
             public void onConfirmed(boolean confirmed) {
                 System.out.println("Confirmed: " + confirmed);
                 if ( confirmed ) {
                     displayMessage(FirstStartMessages.confirmed(userName));
                     stateManager.changeState(AppState.DEFAULT);
-
+                    appSettings.setStringSetting(SettingName.USERNAME, userInput);
                     refreshDisplay();
                 } else {
                     displayMessage(FirstStartMessages.askForNameAgain());
@@ -230,11 +234,11 @@ public class Controller {
     }
 
     public static void printWelcomeMessage() {
-        if ( stateManager.isState(AppState.FIRSTSTART) ) {
+        if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
             userInterfaceController.displayMessage("CareLender: Maybe the best task manager in the world.");
             userInterfaceController.displayMessage(FirstStartMessages.askForName());
         } else {
-            userInterfaceController.displayMessage("Welcome back, <username>");
+            userInterfaceController.displayMessage("Welcome back, " + userName);
         }
     }
 
