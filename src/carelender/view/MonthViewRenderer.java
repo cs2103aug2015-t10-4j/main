@@ -15,8 +15,8 @@ public class MonthViewRenderer extends CanvasRenderer {
 	}
 	
 	@Override
-	public void draw( GraphicsContext gc, double width, double height ) {
-		super.draw(gc, width, height);
+	public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
+		super.draw(gc, 0, 0, width, height);
 		
 		//Todo: 20 -> meaningful expression
 		double fontSize = width / 60.0; //Temporary
@@ -37,6 +37,9 @@ public class MonthViewRenderer extends CanvasRenderer {
 													font, 0.6, fontSize*0.05);
         messageBox.addText(messageText);
         messageBox.drawText();
+        
+        CalenderRenderer calender = new CalenderRenderer();
+        calender.draw(gc, width*2/5, height*3/10, width*3/5, height*7/10);
 	}
 
 	public void setMessageBoxText(String text) {

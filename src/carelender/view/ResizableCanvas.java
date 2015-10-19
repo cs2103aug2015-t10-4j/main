@@ -27,7 +27,7 @@ class ResizableCanvas extends Canvas {
             gc.strokeLine(0, 0, width, height);
             gc.strokeLine(0, height, width, 0);
         } else {
-            renderer.draw(gc, width, height);
+            renderer.draw(gc, 0, 0, width, height);
         }
 
         //System.out.println(width + ", " + height);

@@ -23,15 +23,15 @@ public class CalenderRenderer extends CanvasRenderer {
     double offsetX, offsetY;
 
     @Override
-    public void draw(GraphicsContext gc, double width, double height) {
-        super.draw(gc,width,height);
+    public void draw(GraphicsContext gc, double x, double y, double width, double height) {
+        super.draw(gc, x, y, width,height);
         calculateScaledDimensions(width, height);
         calulateCellProperties();
 
         Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight / 3.0);
         for (int i = 0; i < squaresToDraw; i++ ) {
-            double actualX = i%7 * ( calCellWidth + calCellSpacing ) + sidePadding;
-            double actualY = (i/7) * ( calCellHeight + calCellSpacing ) + sidePadding;
+            double actualX = x + i%7 * ( calCellWidth + calCellSpacing ) + sidePadding;
+            double actualY = y + (i/7) * ( calCellHeight + calCellSpacing ) + sidePadding;
             actualX += offsetX;
             actualY += offsetY;
             RenderHelper.calendarSquare(gc, actualX, actualY,
@@ -46,6 +46,7 @@ public class CalenderRenderer extends CanvasRenderer {
 
         textTest.addText("This is a test string for like, stuff and stuff.\n");
         textTest.addText("Give me the thing that I love.\n");
+        textTest.addText("aaaaaaaaaaaaaaaaaaaaaaa\n");
         textTest.addText("Do I really wrap? Is this how a burrito feels like. The twice fried beans, the painted faces.\n");
         
         textTest.drawText();
