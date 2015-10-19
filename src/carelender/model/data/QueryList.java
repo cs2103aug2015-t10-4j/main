@@ -1,6 +1,7 @@
 package carelender.model.data;
 
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -14,22 +15,47 @@ import carelender.model.Model;
 
 public class QueryList extends QueryBase {
 	
+	private HashMap<SortParam, Comparator<Event>> sortComparators = new HashMap<SortParam, Comparator<Event>>();
 	private HashMap<SearchParam, Object> searchParamsList = new HashMap<SearchParam, Object>();
+	
+	private void defineComparators () {
+		sortComparators.put(SortParam.NAME, new Comparator<Event>() {
+			@Override
+			public int compare(Event eventAgainst, Event eventTo) {
+				// TODO Auto-generated method stub
+				return eventAgainst.getName().compareTo(eventTo.getName());
+			}
+        });
+        sortComparators.put(SortParam.DATE, new Comparator<Event>() {
+			@Override
+			public int compare(Event eventAgainst, Event eventTo) {
+				// TODO Auto-generated method stub
+				if (eventAgainst.getEarliestDate().before(eventTo.getEarliestDate())) {
+					return 1;
+				} else if (eventAgainst.getEarliestDate().after(eventTo.getEarliestDate())) {
+					return -1;
+				}
+				return 0;
+			}
+        });
+	}
 	
 	public QueryList() {
         super(QueryType.LIST);
+        this.defineComparators();
     }
 	
 	public QueryList (QueryType type) {
         super(type);
-    }
+        this.defineComparators();
+	}
 	
 	public void addSearchParam (SearchParam key, Object value) {
 		this.searchParamsList.put(key, value);
 	}
 	
 	public HashMap<SearchParam, Object> getSearchParamsList () {
-		return searchParamsList;
+		return this.searchParamsList;
 	}
 	
 	public enum SearchParam {
@@ -37,26 +63,39 @@ public class QueryList extends QueryBase {
 		DATE_END,
 		NAME_CONTAINS,
 		NAME_EXACT,
-		TYPE
+		TYPE,
+		LIMIT,
+		SORT
+	};
+	
+	public enum SortParam {
+		NAME,
+		DATE,
+		CATEGORY,
+		COMPLETE
 	};
 	
 	@Override
 	public void controllerExecute() {
 		EventList searchResults = searchExecute();
+		
+		if ( this.searchParamsList.containsKey(SearchParam.SORT) ) {
+			
+		}
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
 		Controller.displayMessage("Listing events");
-		HashMap<QueryList.SearchParam, Object> paramList = getSearchParamsList();
-		if ( paramList.containsKey(QueryList.SearchParam.DATE_START) ) {
-			Date fromDate = (Date)paramList.get(QueryList.SearchParam.DATE_START);
+		
+		if ( this.searchParamsList.containsKey(SearchParam.DATE_START) ) {
+			Date fromDate = (Date)this.searchParamsList.get(SearchParam.DATE_START);
 			Controller.displayMessage("   from " + dateFormat.format(fromDate));
 		}
-		if ( paramList.containsKey(QueryList.SearchParam.DATE_END) ) {
-			Date toDate = (Date)paramList.get(QueryList.SearchParam.DATE_END);
+		if ( this.searchParamsList.containsKey(SearchParam.DATE_END) ) {
+			Date toDate = (Date)this.searchParamsList.get(SearchParam.DATE_END);
 			Controller.displayMessage("   till " + dateFormat.format(toDate));
 		}
-		if ( paramList.containsKey(QueryList.SearchParam.NAME_CONTAINS) ) {
-			String search = (String)paramList.get(QueryList.SearchParam.NAME_CONTAINS);
+		if ( this.searchParamsList.containsKey(SearchParam.NAME_CONTAINS) ) {
+			String search = (String)this.searchParamsList.get(SearchParam.NAME_CONTAINS);
 			Controller.displayMessage("   matching: " + search);
 		}
 
