@@ -44,6 +44,7 @@ public class CalenderRenderer extends CanvasRenderer {
                 font, calCellHeight / 3.0, calCellHeight / 6.0, 0 );
         textTest.addText("This is a test string for like, stuff and stuff.\n");
         textTest.addText("Give me the thing that I love.\n");
+        textTest.addText("aaaaaaaaaaaaaaaaaaaaaaa\n");
         textTest.addText("Do I really wrap? Is this how a burrito feels like. The twice fried beans, the painted faces.\n");
         
         textTest.drawText();
