@@ -49,12 +49,14 @@ public class TextRenderer {
 		this.yPadding = yPad;
 		
 		this.font = font;
-		this.charHeight = charH;
-		this.charWidth = charW;
+		this.charHeight = this.font.getSize();
+		this.charWidth = this.font.getSize() * 0.5;
 		this.lineSpace = lineSpace;
 		
 		this.charsPerLine = Math.floor ((this.width - (this.xPadding * 2)) / this.charWidth);
 		this.textLines = new ArrayList<String>();
+		
+		System.out.println ( this.charsPerLine + "    " + this.charWidth + "     " + this.width);
 	}
 	
 	public void addText ( String textToAdd ) {
@@ -78,8 +80,8 @@ public class TextRenderer {
 					lineToAppendTo = "";
 					this.textLines.add(lineToAppendTo);
 				} else if ( wordToAdd.length() <= freeCharsOnLine ) {
-					lineToAppendTo += wordToAdd + " ";
-					freeCharsOnLine -= wordToAdd.length();
+					lineToAppendTo += (wordToAdd + " ");
+					freeCharsOnLine = this.charsPerLine - lineToAppendTo.length();
 					this.textLines.set(this.textLines.size() - 1, lineToAppendTo);
 				} else {
 					freeCharsOnLine = this.charsPerLine;
