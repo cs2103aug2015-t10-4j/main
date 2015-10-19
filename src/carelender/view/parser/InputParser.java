@@ -18,6 +18,8 @@ public class InputParser {
 		return singleton;
 	}
     CommandManager commandManager;
+    //List of displayed events
+    private EventList displayedList;
 
     private InputParser () {
         commandManager = new CommandManager();
@@ -544,5 +546,9 @@ public class InputParser {
             }
         }
         return trimmedArray;
+    }
+
+    public void setDisplayedList(EventList displayedList) {
+        this.displayedList = displayedList;
     }
 }

@@ -40,7 +40,6 @@ public class BlockingStateController {
             case EVENTSELECTION:
                 stateEventSelection(userInput);
                 break;
-
             case SELECTION:
                 stateSelection(userInput);
                 break;

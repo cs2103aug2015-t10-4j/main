@@ -65,6 +65,8 @@ public class QueryList extends QueryBase {
 		} else {
 			Controller.displayMessage("No results");
 		}
+
+		Controller.setDisplayedList(searchResults);
 	}
 
 	@Override

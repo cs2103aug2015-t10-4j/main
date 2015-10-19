@@ -215,4 +215,26 @@ public class DateTimeParser {
         return Pattern.compile(timeRegex).matcher(dateString).find();
     }
 
+    /**
+     * Gets the date object with times set to 0
+     * @param dayOffset Offset the number of days
+     * @return Date object
+     */
+    public static Date getDate ( int dayOffset ) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.add(Calendar.DATE, dayOffset);
+        return calendar.getTime();
+    }
+
+    /**
+     * Gets the date object with times set to 0
+     * @return Date object with today's date
+     */
+    public static Date getDate () {
+        return getDate(0);
+    }
+
 }

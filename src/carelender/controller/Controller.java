@@ -51,6 +51,8 @@ public class Controller {
 
 
 
+
+
     public static void initialize() throws Exception {
         appSettings = new AppSettings();
         messageList = new ArrayList<>();
@@ -66,6 +68,7 @@ public class Controller {
         userName = null;
         currentCommand = 0;
     }
+
 
     public static void initUserInterfaceController(UserInterfaceController userInterfaceController) {
         Controller.userInterfaceController = userInterfaceController;
@@ -163,6 +166,10 @@ public class Controller {
                 if ( confirmed ) {
                     displayMessage(FirstStartMessages.confirmed(userName));
                     stateManager.changeState(AppState.DEFAULT);
+
+                    QueryList list = new QueryList();
+                    list.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
+                    list.controllerExecute();
                 } else {
                     displayMessage(FirstStartMessages.askForNameAgain());
                     userName = null;
@@ -252,6 +259,10 @@ public class Controller {
             userInterfaceController.displayMessage(message);
         }
         System.out.println(message);
+    }
+
+    public static void setDisplayedList(EventList displayedList) {
+        InputParser.getInstance().setDisplayedList(displayedList);
     }
 
     public static BlockingStateController getBlockingStateController() {
