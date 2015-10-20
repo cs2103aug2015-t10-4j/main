@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
- * Created by JiaXun on 14/10/2015.
+ * Renders the calendar view
  */
 public class CalenderRenderer extends CanvasRenderer {
     int squaresToDraw; //Temp, testing purposes only

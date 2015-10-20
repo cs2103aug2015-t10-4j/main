@@ -22,7 +22,7 @@ public class UserInterfaceController implements Initializable {
     private ArrayList<String> messageList;
     ResizableCanvas canvas;
 
-    private MonthViewRenderer canvasRenderer;
+    private MonthViewRenderer monthViewRenderer;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -42,8 +42,8 @@ public class UserInterfaceController implements Initializable {
 
         Controller.initUserInterfaceController(this);
 
-        canvasRenderer = new MonthViewRenderer();
-        canvas.setRenderer(canvasRenderer);
+        monthViewRenderer = new MonthViewRenderer();
+        canvas.setRenderer(monthViewRenderer);
 
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
@@ -54,7 +54,7 @@ public class UserInterfaceController implements Initializable {
                                 case ENTER:
                                     String text = inputText.getText();
                                     inputText.setText("");
-                                    Controller.processUserInput(text);
+                                    Controller.processCompleteInput(text);
                                     break;
                                 case UP:
                                     Controller.processUpPress();
@@ -62,23 +62,31 @@ public class UserInterfaceController implements Initializable {
                                 case DOWN:
                                     Controller.processDownPress();
                                     break;
+                            }
+                        } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
+                            switch ( keyEvent.getCode() ) {
+                                case ENTER:
+                                case UP:
+                                case DOWN:
+                                    break;
                                 default:
                                     Controller.processIncompleteInput(inputText.getText());
                                     break;
                             }
-
                         }
                     }
                 };
         inputText.setOnKeyPressed( keyEventHandler );
+        inputText.setOnKeyReleased(keyEventHandler);
     }
 
-    /*public void setCanvasRenderer ( CanvasRenderer renderer ) {
-        canvas.setRenderer(renderer);
-    }*/
     
     public void setMessageList( ArrayList<String> messageList ) {
-    	this.messageList = messageList;
+        this.messageList = messageList;
+    }
+
+    public void setAutocompleteOptions( String[] autocompleteOptions ) {
+        monthViewRenderer.setAutocompleteOptions(autocompleteOptions);
     }
 
     public void clearMessageLog() {
@@ -101,7 +109,7 @@ public class UserInterfaceController implements Initializable {
             stringBuilder.append(messageList.get(i));
             stringBuilder.append("\n");
         }
-        canvasRenderer.setMessageBoxText(stringBuilder.toString());
+        monthViewRenderer.setMessageBoxText(stringBuilder.toString());
     }
 
 }

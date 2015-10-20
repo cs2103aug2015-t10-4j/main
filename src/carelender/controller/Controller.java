@@ -13,6 +13,7 @@ import carelender.view.MonthViewRenderer;
 import carelender.view.UserInterfaceController;
 import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
+import jdk.internal.util.xml.impl.Input;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -109,13 +110,7 @@ public class Controller {
         }
     }
 
-    /**
-     * Called by UI while user is typing
-     * @param userInput the incomplete user input
-     */
-    public static void processIncompleteInput(String userInput) {
-        incompleteInput = userInput;
-    }
+
 
     /**
      * Saves the user's command. Removes duplicates and empty commands
@@ -131,11 +126,32 @@ public class Controller {
     }
 
     /**
+     * Called by UI while user is typing
+     * @param userInput the incomplete user input
+     */
+    public static void processIncompleteInput(String userInput) {
+        incompleteInput = userInput;
+        if ( stateManager.getAppState() == AppState.DEFAULT && !blockingStateController.isBlocked() ) {
+            String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput);
+            if ( autocompleteOptions != null ) {
+                System.out.println("Autocomplete size: " + autocompleteOptions.length);
+            } else {
+                System.out.println("No match");
+            }
+            userInterfaceController.setAutocompleteOptions(autocompleteOptions);
+        } else {
+            userInterfaceController.setAutocompleteOptions(null);
+        }
+
+    }
+
+    /**
      * Processes the user input.
      * Called by the UserInterfaceController class
      * @param userInput The user input string
      */
-    public static void processUserInput(String userInput) {
+    public static void processCompleteInput(String userInput) {
+        userInterfaceController.setAutocompleteOptions(null);
         userInput = userInput.trim();
         saveUserCommand(userInput);
 

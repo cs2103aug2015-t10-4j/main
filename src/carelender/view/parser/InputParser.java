@@ -32,23 +32,27 @@ public class InputParser {
         Command newCommand;
 
         newCommand = new Command("add", QueryType.ADD);
-        newCommand.setDescription("Adds a new event/task\n    Usage: add \"event name\" [tomorrow/today/etc...] [morning/noon/etc...]");
+        newCommand.setDescription("Adds a new event/task");
+        newCommand.setUsage("add \"event name\" [tomorrow/today/etc...] [morning/noon/etc...]");
         newCommand.addKeywords("category", "category,cat", CommandKeyword.DataPosition.AFTER);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("search", QueryType.LIST);
-        newCommand.setDescription("Search for events/tasks\n    Usage: search \"event name\" <date range> category <category>");
+        newCommand.setDescription("Search for events/tasks");
+        newCommand.setUsage("search \"event name\" <date range> category <category>");
         newCommand.addKeywords("category", "category,cat", CommandKeyword.DataPosition.AFTER);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("list", QueryType.LIST);
-        newCommand.setDescription("List all your future events/tasks\n    Usage: list [past/today/tomorrow/future]");
+        newCommand.setDescription("List all your future events/tasks");
+        newCommand.setUsage("list [past/today/tomorrow/future]");
         newCommand.addKeywords("range", "past,today,tomorrow,future", CommandKeyword.DataPosition.NONE);
         commandManager.addCommand(newCommand);
 
         
         newCommand = new Command("update", QueryType.UPDATE);
-        newCommand.setDescription("Update events/tasks\n    Usage: update \"event name\" into \"new name\" [tomorrow/today/etc...] [morning/noon/etc...]");
+        newCommand.setDescription("Update events/tasks");
+        newCommand.setUsage("update \"event name\" into \"new name\" [tomorrow/today/etc...] [morning/noon/etc...]");
         newCommand.addKeywords("delimiter", "into", CommandKeyword.DataPosition.NONE);
         newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday", CommandKeyword.DataPosition.NONE);
         newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon", CommandKeyword.DataPosition.NONE);
@@ -62,10 +66,14 @@ public class InputParser {
         newCommand.setDescription("Shows the list of commands");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("?", QueryType.HELP);
+        newCommand.setDescription("Shows the list of commands");
+        commandManager.addCommand(newCommand);
+
         newCommand = new Command("clear", QueryType.CLEAR);
         newCommand.setDescription("Clears the screen");
         commandManager.addCommand(newCommand);
-        
+
         newCommand = new Command("switch", QueryType.SWITCHUI);
         newCommand.setDescription("Switches the screen");
         commandManager.addCommand(newCommand);
@@ -74,15 +82,47 @@ public class InputParser {
         newCommand.setDescription("Does date parse testing");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("undo", QueryType.UNDO);
+        newCommand.setDescription("Undoes the last command");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("settings", QueryType.SETTINGS);
+        newCommand.setDescription("Go to the settings page");
+        commandManager.addCommand(newCommand);
+
         newCommand = new Command("dev1", QueryType.DEV1);
+        newCommand.setDescription("Developer thing");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("dev2", QueryType.DEV2);
+        newCommand.setDescription("Developer command");
         commandManager.addCommand(newCommand);
     }
 
 
+    public String[] getAutocompleteOptions(String userInput) {
+        ArrayList <String> matches = new ArrayList<>();
+        String [] queryParts = splitQuery(userInput);
 
+        if ( queryParts.length == 1 ) {
+            //Still on first word
+            for ( Command command: commandManager.commands ) {
+                if ( command.getCommand().toLowerCase().startsWith(userInput.toLowerCase()) ) {
+                    matches.add(command.getCommand() + " - " + command.getDescription());
+                }
+            }
+            if ( matches.size() == 0 ) {
+                return null;
+            } else {
+                return matches.toArray(new String[matches.size()]);
+            }
+        } else if ( queryParts.length > 1 ) {
+            return null; //TODO: Something more intelligent
+        } else {
+            return null;
+        }
+
+    }
 
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
@@ -532,4 +572,6 @@ public class InputParser {
     public void setDisplayedList(EventList displayedList) {
         this.displayedList = displayedList;
     }
+
+
 }

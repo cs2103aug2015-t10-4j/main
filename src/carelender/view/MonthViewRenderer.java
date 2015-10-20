@@ -10,8 +10,10 @@ public class MonthViewRenderer extends CanvasRenderer {
 	//SelectionPopupRenderer
 
 	TextRenderer messageBox;
+    AutocompleteRenderer autocompleteRenderer;
 	String messageText;
 	public MonthViewRenderer() {
+        autocompleteRenderer = new AutocompleteRenderer();
 	}
 	
 	@Override
@@ -22,31 +24,52 @@ public class MonthViewRenderer extends CanvasRenderer {
 		double fontSize = width / 60.0; //Temporary
 		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
 
-		TabRenderer tab = new TabRenderer();
-		tab.draw(gc, 0, 0, width, height/8);
+		double windowPadding = 8;
+		double textboxInnerPadding = 8;
+		double topBarHeight = height * 0.13;
+		double remainderHeight = height - topBarHeight;
+		double announcementBoxH = remainderHeight * 0.3 - windowPadding;
+		double messageBoxH = remainderHeight * 0.7 - windowPadding;
+
+		double announcementBoxY = topBarHeight + windowPadding;
+		double messageBoxY = announcementBoxY + announcementBoxH + windowPadding;
+
+
+		TabRenderer tab = new TabRenderer(); //TODO: Move this out of draw
+		tab.draw(gc, 0, 0, width, topBarHeight);
+
+
 
 		/* Todo
 		 * replace magic numbers;
 		 * create specific class for these renderers;
 		 */
-		TextRenderer announcementBox = new TextRenderer (gc, 0, height/7,
-														width*4/10, height*3/10, 0, 0,
-														font, 0.6, fontSize*0.05);
+
+        //TODO: Move all new TextRenderers out of draw
+		TextRenderer announcementBox = new TextRenderer (gc, 0, announcementBoxY,
+														width*4/10, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
+														font, 0.6, 0.05);
 		announcementBox.addText("This is a announcementRenderer.\n");
 		announcementBox.drawText();
 		
-        messageBox = new TextRenderer (gc, 0, height/7 + height*3/10,
-        											width*4/10, height*5/10, 0, 0,
-													font, 0.6, fontSize*0.05);
+        messageBox = new TextRenderer (gc, 0, messageBoxY,
+        											width*4/10, messageBoxH, textboxInnerPadding, textboxInnerPadding,
+													font, 0.6, 0.05);
         messageBox.addText(messageText);
         messageBox.drawText();
         
         CalenderRenderer calender = new CalenderRenderer();
         calender.draw(gc, width*2/5, height*3/10, width*3/5, height*7/10);
+
+        autocompleteRenderer.draw(gc, 0, height, width, 0);
 	}
 
 	public void setMessageBoxText(String text) {
 		messageText = text;
 		redraw();
 	}
+    public void setAutocompleteOptions ( String [] options ) {
+        autocompleteRenderer.setAutocompleteOptions(options);
+        redraw();
+    }
 }

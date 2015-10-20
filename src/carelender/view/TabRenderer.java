@@ -21,19 +21,19 @@ public class TabRenderer extends CanvasRenderer {
 		
 		TextRenderer weekTab = new TextRenderer (gc, 0, 0,
 												width/4, height, 0, 0,
-												new Font("Bold", 18), 0.6, 18*0.05);
+												new Font("Bold", 18), 0.6, 0.05);
 		weekTab.addText("Week");
 		weekTab.drawText();
 
 		TextRenderer monthTab = new TextRenderer (gc, width/3, 0,
 												width/4, height, 0, 0,
-												new Font("Bold", 18), 0.6, 18*0.05);
+												new Font("Bold", 18), 0.6, 0.05);
 		monthTab.addText("Month");
 		monthTab.drawText();
 		
 		TextRenderer settingTab = new TextRenderer (gc, width*2/3, 0,
 												width/4, height, 0, 0,
-												new Font("Bold", 18), 0.6, 18*0.05);
+												new Font("Bold", 18), 0.6, 0.05);
 		settingTab.addText("Setting");
 		settingTab.drawText();
 	}

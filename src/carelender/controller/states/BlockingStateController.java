@@ -165,5 +165,11 @@ public class BlockingStateController {
     }
 
 
+    public BlockingState getBlockingState() {
+        return blockingState;
+    }
 
+    public boolean isBlocked () {
+        return blockingState != BlockingState.NONE;
+    }
 }

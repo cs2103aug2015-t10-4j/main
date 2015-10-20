@@ -8,6 +8,8 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public abstract class CanvasRenderer {
     GraphicsContext gc = null;
+    double x = 0;
+    double y = 0;
     double width = 0;
     double height = 0;
 
@@ -15,6 +17,8 @@ public abstract class CanvasRenderer {
 
     void draw ( GraphicsContext gc, double x, double y, double width, double height ) {
         this.gc = gc;
+        this.x = x;
+        this.y = y;
         this.width = width;
         this.height = height;
         gc.clearRect(x, y, width, height);
@@ -23,6 +27,6 @@ public abstract class CanvasRenderer {
         if ( gc == null ) {
             return;
         }
-        draw(gc, 0, 0, width,height);
+        draw(gc, x, y, width,height);
     }
 }
