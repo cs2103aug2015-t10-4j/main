@@ -19,22 +19,16 @@ public class TabRenderer extends CanvasRenderer {
 		//Calculate height and width
 		//Background color
 		
-		TextRenderer weekTab = new TextRenderer (gc, 0, 0,
-												width/4, height, 0, 0,
-												new Font("Bold", 18), 0.6, 0.05);
-		weekTab.addText("Week");
-		weekTab.drawText();
-
-		TextRenderer monthTab = new TextRenderer (gc, width/3, 0,
-												width/4, height, 0, 0,
-												new Font("Bold", 18), 0.6, 0.05);
-		monthTab.addText("Month");
-		monthTab.drawText();
+		gc.setFill(Color.web("#999"));
+		gc.fillRect(x, y, width, height);
 		
-		TextRenderer settingTab = new TextRenderer (gc, width*2/3, 0,
-												width/4, height, 0, 0,
-												new Font("Bold", 18), 0.6, 0.05);
-		settingTab.addText("Setting");
-		settingTab.drawText();
+		double fontSize = width / 20.0; //Temporary
+		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+		
+		gc.setFill(Color.web("#555"));
+		gc.setFont(font);
+		gc.fillText("Week", width/6, height, width/5);
+		gc.fillText("Month", width/2, height, width/5);
+		gc.fillText("Setting", width*5/6, height, width/5);
 	}
 }
