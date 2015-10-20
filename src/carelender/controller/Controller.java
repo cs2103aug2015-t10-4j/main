@@ -5,7 +5,6 @@ import carelender.controller.states.AppState;
 import carelender.controller.states.BlockingStateController;
 import carelender.controller.states.StateManager;
 import carelender.model.AppSettings;
-import carelender.model.AppSettings.DataType;
 import carelender.model.AppSettings.SettingName;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
@@ -26,7 +25,6 @@ public class Controller {
     private static boolean debugMode = true;
 
     private static UserInterfaceController userInterfaceController = null;
-    private static AppSettings appSettings = null;
     private static StateManager stateManager;
     private static BlockingStateController blockingStateController;
 
@@ -47,7 +45,6 @@ public class Controller {
 
 
     public static void initialize() throws Exception {
-        appSettings = new AppSettings();
         messageList = new ArrayList<>();
         commandList = new ArrayList<>();
         stateManager = new StateManager();
@@ -59,8 +56,8 @@ public class Controller {
         timer.scheduleAtFixedRate(reminder,500,1000);
         
         userName = null;
-        if(appSettings.getStringSetting(SettingName.USERNAME) != null){
-        	userName = appSettings.getStringSetting(SettingName.USERNAME);
+        if(AppSettings.getInstance().getStringSetting(SettingName.USERNAME) != null){
+        	userName = AppSettings.getInstance().getStringSetting(SettingName.USERNAME);
         	System.out.println("Username: " + userName);
         }
         currentCommand = 0;
@@ -178,7 +175,7 @@ public class Controller {
                 if ( confirmed ) {
                     displayMessage(FirstStartMessages.confirmed(userName));
                     stateManager.changeState(AppState.DEFAULT);
-                    appSettings.setStringSetting(SettingName.USERNAME, userInput);
+                    AppSettings.getInstance().setStringSetting(SettingName.USERNAME, userInput);
                     refreshDisplay();
                 } else {
                     displayMessage(FirstStartMessages.askForNameAgain());
@@ -186,8 +183,6 @@ public class Controller {
                 }
             }
         };
-        //TODO: Save user's name to memory
-
         userName = userInput;
         blockingStateController.startConfirmation(FirstStartMessages.confirmation(userName), confirmNameCallback);
     }

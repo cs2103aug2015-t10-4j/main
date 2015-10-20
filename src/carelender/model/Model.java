@@ -5,18 +5,13 @@ import java.io.BufferedReader;
  * Handles all database and file saving
  */
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.logging.*;
-
 import com.google.gson.Gson;
-
+import carelender.model.AppSettings.SettingName;
 import carelender.model.data.*;
 
 public class Model {
@@ -41,16 +36,19 @@ public class Model {
 	private Model() {
 		log = Logger.getLogger(Model.class.getName());
 		File file = new File("events.dat");
-		File currentUidFile = new File("currentUid");
 		events = new EventList();
 		events = getFromFile("events.dat");
-		currentUid = getFromFile("currentUid.dat", 1);
+		currentUid = 1;
+		if (AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX) != null) {
+			currentUid = AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX);
+		}
+		System.out.println("CurrentID" + currentUid);
 	}
 
 	public boolean addEvent(Event eventObj) {
 		eventObj.setUid(currentUid += 1);// Set incremented UID to Event
 		events.add(eventObj);
-		saveToFile("currentUid.dat", currentUid);
+		AppSettings.getInstance().setIntSetting(SettingName.CURRENT_INDEX, currentUid);
 		System.out.println("Added UID:" + currentUid + "Event Name: " + eventObj.getName());
 		return saveToFile("events.dat", events);
 	}
@@ -71,6 +69,17 @@ public class Model {
 		return false;
 	}
 
+	//Delete single Event
+	public void deleteEvent(Event eventObj) {
+		for (int i = 0; i < events.size(); i++) {
+			if (events.get(i).getUid() == eventObj.getUid()) {
+				events.remove(i);
+			}
+			saveToFile("events.dat", events);
+		}
+	}
+
+	//Delete multiple Events
 	public void deleteEvent(EventList eventList) {
 		for (int i = 0; i < events.size(); i++) {
 			for ( Event eventObj : eventList) {
@@ -82,14 +91,6 @@ public class Model {
 		saveToFile("events.dat", events);
 	}
 
-	public void deleteEvent(Event eventObj) {
-		for (int i = 0; i < events.size(); i++) {
-			if (events.get(i).getUid() == eventObj.getUid()) {
-				events.remove(i);
-			}
-			saveToFile("events.dat", events);
-		}
-	}
 
 	private boolean saveToFile(String filename, EventList eventList) {
 		try {
@@ -104,22 +105,6 @@ public class Model {
 			return true;
 		} catch (IOException ioe) {
 			log.log(Level.FINE, "Failed to save event to file");
-			return false;
-		}
-	}
-
-	private boolean saveToFile(String filename, int num) {
-		try {
-			FileOutputStream fos = new FileOutputStream(filename);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-			oos.writeObject(num);
-			oos.close();
-			fos.close();
-
-			return true;
-		} catch (IOException ioe) {
-			log.log(Level.FINE, "Failed to add event");
 			return false;
 		}
 	}
@@ -143,24 +128,4 @@ public class Model {
 		}
 		return new EventList();
 	}
-
-	private int getFromFile(String filename, int num) {
-		try {
-			FileInputStream fis = new FileInputStream(filename);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-
-			int number = (int) ois.readObject();
-			ois.close();
-			fis.close();
-			return number;
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (ClassNotFoundException c) {
-			System.out.println("Class not found");
-			c.printStackTrace();
-		} catch (Exception e) {
-		}
-		return 0;
-	}
-
 }
