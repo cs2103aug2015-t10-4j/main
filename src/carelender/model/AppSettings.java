@@ -16,11 +16,20 @@ import com.google.gson.Gson;
 
 public class AppSettings {
 	
+	private static AppSettings singleton = null;
+
+	public static AppSettings getInstance() {
+		if (singleton == null) {
+			singleton = new AppSettings();
+		}
+		return singleton;
+	}
+
 	private HashMap<SettingName, DataType> typeHash;
 	private HashMap<DataType, HashMap<SettingName, Object>> appSettingsHash;
 	private static Logger log;
 
-	public AppSettings() {
+	private AppSettings() {
 		File file = new File("settings.dat");
 		log = Logger.getLogger(Model.class.getName());
 		
@@ -59,8 +68,13 @@ public class AppSettings {
 		return typeHash.get(name) == type;
 	}
 	
-	public int getIntSetting(SettingName name) {
+	public Integer getIntSetting(SettingName name) {
+		try {
 		return (int) appSettingsHash.get(DataType.INTEGER).get(name);
+		} catch(Exception e) {
+			log.log(Level.FINE, "Failed to get integer setting");
+			return null;
+		}
 	}
 	
 	public boolean getBooleanSetting(SettingName name) {
