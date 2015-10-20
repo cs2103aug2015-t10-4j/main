@@ -23,6 +23,7 @@ public class UserInterfaceController implements Initializable {
     ResizableCanvas canvas;
 
     private MonthViewRenderer monthViewRenderer;
+    private SettingViewRenderer settingViewRenderer;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -43,6 +44,7 @@ public class UserInterfaceController implements Initializable {
         Controller.initUserInterfaceController(this);
 
         monthViewRenderer = new MonthViewRenderer();
+        settingViewRenderer = new SettingViewRenderer();
         canvas.setRenderer(monthViewRenderer);
 
         Controller.printWelcomeMessage();

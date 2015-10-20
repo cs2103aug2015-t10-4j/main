@@ -27,8 +27,8 @@ public class TabRenderer extends CanvasRenderer {
 		
 		gc.setFill(Color.web("#555"));
 		gc.setFont(font);
-		gc.fillText("Week", width/6, height, width/5);
-		gc.fillText("Month", width/2, height, width/5);
-		gc.fillText("Setting", width*5/6, height, width/5);
+		gc.fillText("Week", width/12, height*5/6, width*2/9);
+		gc.fillText("Month", width*7/18, height*5/6, width*2/9);
+		gc.fillText("Setting", width*25/36, height*5/6, width*2/9);
 	}
 }
