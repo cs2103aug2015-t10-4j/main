@@ -25,6 +25,7 @@ public class UserInterfaceController implements Initializable {
     private UIType uiType;
 
     private MonthViewRenderer monthViewRenderer;
+    private WeekViewRenderer weekViewRenderer;
     private SettingViewRenderer settingViewRenderer;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
@@ -46,10 +47,11 @@ public class UserInterfaceController implements Initializable {
         Controller.initUserInterfaceController(this);
 
         monthViewRenderer = new MonthViewRenderer();
+        weekViewRenderer = new WeekViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
-        canvas.setRenderer(monthViewRenderer);
 
         uiType = UIType.MONTH;
+        this.setUI(uiType);
 
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
@@ -118,9 +120,17 @@ public class UserInterfaceController implements Initializable {
         monthViewRenderer.setMessageBoxText(stringBuilder.toString());
     }
 
-    //TODO
     public void setUI(UIType type) {
-
+    	uiType = type;
+    	if( uiType == UIType.MONTH ) {
+    		canvas.setRenderer(monthViewRenderer);
+    	} else if ( uiType == UIType.WEEK ) {
+    		canvas.setRenderer(weekViewRenderer);
+    	} else if ( uiType == UIType.SETTING ) {
+    		canvas.setRenderer(settingViewRenderer);
+    	} else {
+    		System.out.println("Incorrect UI type");
+    	}
     }
 
     /**
