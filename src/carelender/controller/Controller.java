@@ -40,10 +40,6 @@ public class Controller {
 
     private static QueryList currentListQuery;
 
-
-
-
-
     public static void initialize() throws Exception {
         messageList = new ArrayList<>();
         commandList = new ArrayList<>();
@@ -53,7 +49,7 @@ public class Controller {
         //Initialize timer for reminder
         TimerTask reminder = new Reminder();
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(reminder,500,1000);
+        timer.scheduleAtFixedRate(reminder,5000,1000);
         
         userName = null;
         if(AppSettings.getInstance().getStringSetting(SettingName.USERNAME) != null){
