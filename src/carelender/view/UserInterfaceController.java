@@ -54,6 +54,7 @@ public class UserInterfaceController implements Initializable {
 
         uiType = UIType.MONTH;
         this.setUI(uiType);
+        //canvas.setPopupRenderer(popupRenderer);
         
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
@@ -149,13 +150,13 @@ public class UserInterfaceController implements Initializable {
     	uiType = type;
         switch ( uiType ) {
             case MONTH:
-                canvas.setRenderer(monthViewRenderer);
+                canvas.setMainRenderer(monthViewRenderer);
                 break;
             case WEEK:
-                canvas.setRenderer(weekViewRenderer);
+                canvas.setMainRenderer(weekViewRenderer);
                 break;
             case SETTING:
-                canvas.setRenderer(settingViewRenderer);
+                canvas.setMainRenderer(settingViewRenderer);
                 break;
         }
     }

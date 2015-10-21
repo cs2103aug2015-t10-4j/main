@@ -8,7 +8,8 @@ import javafx.scene.paint.Color;
  * Canvas to extend the resizable component of
  */
 class ResizableCanvas extends Canvas {
-    CanvasRenderer renderer;
+    CanvasRenderer mainRenderer;
+    CanvasRenderer popupRenderer;
     public ResizableCanvas() {
         // Redraw canvas when size changes.
         widthProperty().addListener(evt -> draw());
@@ -22,7 +23,7 @@ class ResizableCanvas extends Canvas {
             return;
         }
         GraphicsContext gc = getGraphicsContext2D();
-        if ( renderer == null ) {
+        if ( mainRenderer == null ) {
             //Draw a red cross
             gc.setStroke(Color.RED);
 
@@ -30,14 +31,20 @@ class ResizableCanvas extends Canvas {
             gc.strokeLine(0, 0, width, height);
             gc.strokeLine(0, height, width, 0);
         } else {
-            renderer.draw(gc, 0, 0, width, height);
+            mainRenderer.draw(gc, 0, 0, width, height);
+            popupRenderer.draw(gc, width/3.0, height/3.0, width/3.0, height/3.0);
         }
 
         //System.out.println(width + ", " + height);
     }
 
-    public void setRenderer(CanvasRenderer renderer) {
-        this.renderer = renderer;
+    public void setMainRenderer(CanvasRenderer renderer) {
+        this.mainRenderer = renderer;
+        draw();
+    }
+
+    public void setPopupRenderer(CanvasRenderer renderer) {
+        this.popupRenderer = renderer;
         draw();
     }
 

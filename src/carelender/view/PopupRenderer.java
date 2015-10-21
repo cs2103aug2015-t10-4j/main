@@ -10,12 +10,13 @@ public class PopupRenderer extends CanvasRenderer {
 
 	@Override
 	public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
-		System.out.println("Popup");
 		gc.setFill(Color.web("Black"));
-		gc.strokeRoundRect(x, y, width, height, 4, 4);
+		gc.strokeRoundRect(x, y, width, height, 10.0, 10.0);
 		gc.setFill(Color.web("BLUE"));
-		gc.fillRoundRect(x+4, y+4, width/6, height/6, 4, 4);
+		gc.fillRoundRect(x, y, width, height/6.0, 10.0, 10.0);
+		gc.setFill(Color.web("WHITE"));
+		gc.fillRoundRect(x, y+height/6.0, width, height*5.0/6.0, 10.0, 10.0);
 		gc.setFill(Color.web("BLACK"));
-		gc.fillText("Hello", width/2, height/2);
+		gc.fillText("Something", x+width*2.0/3.0, y+height/3.0);
 	}
 }
