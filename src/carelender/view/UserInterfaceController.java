@@ -24,6 +24,7 @@ public class UserInterfaceController implements Initializable {
 
     private UIType uiType;
 
+    private PopupRenderer popupRenderer;
     private MonthViewRenderer monthViewRenderer;
     private WeekViewRenderer weekViewRenderer;
     private SettingViewRenderer settingViewRenderer;
@@ -49,10 +50,11 @@ public class UserInterfaceController implements Initializable {
         monthViewRenderer = new MonthViewRenderer();
         weekViewRenderer = new WeekViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
+        popupRenderer = new PopupRenderer();
 
         uiType = UIType.MONTH;
         this.setUI(uiType);
-
+        
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
                 new EventHandler<KeyEvent>() {
