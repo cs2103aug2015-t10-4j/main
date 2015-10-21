@@ -94,7 +94,5 @@ public class CalenderRenderer extends CanvasRenderer {
 
     public void increment() {
         squaresToDraw++;
-        
-        redraw();
     }
 }

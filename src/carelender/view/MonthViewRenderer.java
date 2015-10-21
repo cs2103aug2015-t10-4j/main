@@ -68,10 +68,8 @@ public class MonthViewRenderer extends CanvasRenderer {
 
 	public void setMessageBoxText(String text) {
 		messageText = text;
-		redraw();
 	}
     public void setAutocompleteOptions ( String [] options ) {
         autocompleteRenderer.setAutocompleteOptions(options);
-        redraw();
     }
 }

@@ -63,10 +63,15 @@ public class TextRenderer {
 		gc.setTextAlign(TextAlignment.LEFT);
     }
 
+	/**
+	 * Add text to the message box in a single line with ellipsis
+	 * @param textLine Line of text to add. Breaklines will be removed
+	 */
     public void addTextEllipsis ( String textLine ) {
     	if (this.gc == null) {
     		System.out.println("Error");
     	} else {
+			textLine = textLine.replace("\n", " ");
 	        double freeCharsOnLine = this.charsPerLine - 4 ;// Size of "... "
 	        String [] wordsToAdd = textLine.split(" ");
 	        StringBuilder stringBuilder = new StringBuilder();
