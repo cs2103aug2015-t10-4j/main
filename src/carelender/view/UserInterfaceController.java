@@ -107,7 +107,7 @@ public class UserInterfaceController implements Initializable {
 
     public void refreshOutputField() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < messageList.size(); i++ ) {
+        for (int i = 0; i < messageList.size(); i++) {
             stringBuilder.append(messageList.get(i));
             stringBuilder.append("\n");
         }

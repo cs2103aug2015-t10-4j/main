@@ -5,6 +5,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class SettingViewRenderer extends CanvasRenderer {
+	TabRenderer tab = new TabRenderer();
+	
 	public SettingViewRenderer() {
 		//User profile
 			//User name
@@ -22,7 +24,6 @@ public class SettingViewRenderer extends CanvasRenderer {
 		double settingFieldY = windowPadding + topBarHeight;
 		double wordPaddingH = 8;
 		
-		TabRenderer tab = new TabRenderer(); //TODO: Move this out of draw
 		tab.draw(gc, 0, 0, width, topBarHeight);
 		
 		gc.setFill(Color.web("BLUE"));
