@@ -33,13 +33,13 @@ public class InputParser {
 
         newCommand = new Command("add", QueryType.ADD);
         newCommand.setDescription("Adds a new event/task");
-        newCommand.setUsage("add \"event name\" [tomorrow/today/etc...] [morning/noon/etc...]");
+        newCommand.setUsage("add \"event name\" \"dates\" [cat \"category\"]");
         newCommand.addKeywords("category", "category,cat", CommandKeyword.DataPosition.AFTER);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("search", QueryType.LIST);
         newCommand.setDescription("Search for events/tasks");
-        newCommand.setUsage("search \"event name\" <date range> category <category>");
+        newCommand.setUsage("search \"event name\" \"date/daterange\" [cat \"category\"]");
         newCommand.addKeywords("category", "category,cat", CommandKeyword.DataPosition.AFTER);
         commandManager.addCommand(newCommand);
 
@@ -59,6 +59,7 @@ public class InputParser {
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("delete", QueryType.DELETE );
+        newCommand.setUsage("delete <id>");
         newCommand.setDescription("Deletes a specified event/task");
         commandManager.addCommand(newCommand);
 
@@ -78,16 +79,16 @@ public class InputParser {
         newCommand.setDescription("Switches the screen");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("settings", QueryType.SWITCHUI);
+        newCommand.setDescription("Go to the settings page");
+        commandManager.addCommand(newCommand);
+
         newCommand = new Command("date", QueryType.DATETEST);
         newCommand.setDescription("Does date parse testing");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("undo", QueryType.UNDO);
         newCommand.setDescription("Undoes the last command");
-        commandManager.addCommand(newCommand);
-
-        newCommand = new Command("settings", QueryType.SETTINGS);
-        newCommand.setDescription("Go to the settings page");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("dev1", QueryType.DEV1);
@@ -99,7 +100,11 @@ public class InputParser {
         commandManager.addCommand(newCommand);
     }
 
-
+    /**
+     * Gets the list of helper options
+     * @param userInput
+     * @return
+     */
     public String[] getAutocompleteOptions(String userInput) {
         ArrayList <String> matches = new ArrayList<>();
         String [] queryParts = splitQuery(userInput);
@@ -124,6 +129,11 @@ public class InputParser {
 
     }
 
+    /**
+     * Parses the complete user input
+     * @param input
+     * @return
+     */
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
 
@@ -156,14 +166,20 @@ public class InputParser {
             case LIST:
                 if ( matchedCommand.getCommand().equalsIgnoreCase("search") ) {
                     newQuery = parseSearchCommand(dateRanges, commandPartsNoDate);
-                } else {
+                } else { //List command
                     newQuery = parseListCommand(queryPartsNoDate, commandParts);
                 }
                 break;
             case HELP:
                 newQuery = new QueryHelp();
                 break;
-
+            case SWITCHUI:
+                if ( matchedCommand.getCommand().equalsIgnoreCase("switch") ) {
+                    newQuery = new QuerySwitchUI(false);
+                } else { //Go to settings
+                    newQuery = new QuerySwitchUI(true);
+                }
+                break;
             default:
                 newQuery = new QueryGeneric(matchedCommand.getType());
                 break;
