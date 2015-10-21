@@ -3,11 +3,13 @@ package carelender.view;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class SettingViewRenderer extends CanvasRenderer {
-	TabRenderer tab = new TabRenderer();
+	TabRenderer tab;
 	
 	public SettingViewRenderer() {
+        tab = new TabRenderer();
 		//User profile
 			//User name
 		//System setting
@@ -24,8 +26,11 @@ public class SettingViewRenderer extends CanvasRenderer {
 		double settingFieldY = windowPadding + topBarHeight;
 		double wordPaddingH = 8;
 		
+        
 		tab.draw(gc, 0, 0, width, topBarHeight);
-		
+
+        gc.setTextAlign(TextAlignment.LEFT);
+
 		gc.setFill(Color.web("BLUE"));
 		gc.fillRect(0, settingFieldY, width, height-settingFieldY);
 		

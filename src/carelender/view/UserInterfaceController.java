@@ -22,6 +22,8 @@ public class UserInterfaceController implements Initializable {
     private ArrayList<String> messageList;
     ResizableCanvas canvas;
 
+    private UIType uiType;
+
     private MonthViewRenderer monthViewRenderer;
     private SettingViewRenderer settingViewRenderer;
 
@@ -46,6 +48,8 @@ public class UserInterfaceController implements Initializable {
         monthViewRenderer = new MonthViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
         canvas.setRenderer(monthViewRenderer);
+
+        uiType = UIType.MONTH;
 
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
@@ -79,7 +83,7 @@ public class UserInterfaceController implements Initializable {
                     }
                 };
         inputText.setOnKeyPressed( keyEventHandler );
-        inputText.setOnKeyReleased(keyEventHandler);
+        inputText.setOnKeyReleased( keyEventHandler );
     }
 
     
@@ -112,6 +116,31 @@ public class UserInterfaceController implements Initializable {
             stringBuilder.append("\n");
         }
         monthViewRenderer.setMessageBoxText(stringBuilder.toString());
+    }
+
+    //TODO
+    public void setUI(UIType type) {
+
+    }
+
+    /**
+     * Changes the UI back to month view if in settings
+     * If not toggle between month and week
+     */
+    public void toggleUI() {
+        if ( uiType == UIType.SETTING ) {
+            uiType = UIType.MONTH;
+        } else {
+            if (uiType == UIType.MONTH ) {
+                uiType = UIType.WEEK;
+            } else {
+                uiType = UIType.MONTH;
+            }
+        }
+    }
+
+    public enum UIType {
+        MONTH, WEEK, SETTING
     }
 
 }

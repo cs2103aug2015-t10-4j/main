@@ -34,7 +34,7 @@ public class TextRenderer {
     private ArrayList<String> textLines;
     private double charsPerLine;
 
-   
+
     public TextRenderer() {
         this.gc = null;
     }
@@ -60,6 +60,7 @@ public class TextRenderer {
 
         this.charsPerLine = Math.floor ((this.width - (this.xPadding * 2)) / this.charWidth);
         this.textLines = new ArrayList<String>();
+		gc.setTextAlign(TextAlignment.LEFT);
     }
 
     public void addTextEllipsis ( String textLine ) {

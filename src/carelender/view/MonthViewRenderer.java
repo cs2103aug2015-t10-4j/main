@@ -3,6 +3,7 @@ package carelender.view;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class MonthViewRenderer extends CanvasRenderer {
 	//CalenderRenderer
@@ -38,6 +39,7 @@ public class MonthViewRenderer extends CanvasRenderer {
 
 
 		TabRenderer tab = new TabRenderer(); //TODO: Move this out of draw
+		System.out.println("MonthViewRenderer " + x + " " + y + " " + width + " " + height );
 		tab.draw(gc, 0, 0, width, topBarHeight);
 
 
