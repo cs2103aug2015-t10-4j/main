@@ -83,10 +83,12 @@ public class TaskRenderer {
 			DateRange [] dateRange = event.getDateRange();
 			for ( DateRange date : dateRange ) {
 				Date currentDay = date.getStart();
-				for (int dayIterator = 0; dayIterator < date.getDaysBetween(); dayIterator++) {
+				while (!currentDay.after(date.getEnd())) {
 					String day = dateFormat.format(currentDay);
 					if (this.taskDisplay.containsKey(day)) {
-						this.taskDisplay.get(day).add(event);
+						if (!this.taskDisplay.get(day).contains(event)) {
+							this.taskDisplay.get(day).add(event);
+						}
 					} else {
 						EventList tasksOnDay = new EventList();
 						tasksOnDay.add(event);
@@ -94,7 +96,7 @@ public class TaskRenderer {
 					}
 					currentDay = this.addDays(currentDay, 1);
 				}
-                if ( !date.getStart().equals(date.getEnd()) ) {
+                if (!dateFormat.format(date.getStart()).equals(dateFormat.format(date.getEnd()))) {
                     String day = dateFormat.format(date.getEnd());
                     System.out.println(day);
                     if (this.taskDisplay.containsKey(day)) {
