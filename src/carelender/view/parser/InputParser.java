@@ -163,7 +163,9 @@ public class InputParser {
             case HELP:
                 newQuery = new QueryHelp();
                 break;
-
+            case UNDO:
+            	newQuery = new QueryUndo();
+            	break;
             default:
                 newQuery = new QueryGeneric(matchedCommand.getType());
                 break;
