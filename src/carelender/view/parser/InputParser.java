@@ -180,6 +180,9 @@ public class InputParser {
                     newQuery = new QuerySwitchUI(true);
                 }
                 break;
+            case UNDO:
+            	newQuery = new QueryUndo();
+            	break;
             default:
                 newQuery = new QueryGeneric(matchedCommand.getType());
                 break;
