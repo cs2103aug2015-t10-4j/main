@@ -213,6 +213,9 @@ public class Controller {
                 currentListQuery = (QueryList)query;
                 refreshDisplay();
                 break;
+            case EXIT:
+                System.exit(0);
+                break;
             default:
                 query.controllerExecute();
                 refreshDisplay();

@@ -95,6 +95,18 @@ public class InputParser {
         newCommand.setDescription("Undoes the last command");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("exit", QueryType.EXIT);
+        newCommand.setDescription("Closes the program");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("quit", QueryType.EXIT);
+        newCommand.setDescription("Closes the program");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("close", QueryType.EXIT);
+        newCommand.setDescription("Closes the program");
+        commandManager.addCommand(newCommand);
+
         newCommand = new Command("dev1", QueryType.DEV1);
         newCommand.setDescription("Developer thing");
         commandManager.addCommand(newCommand);
@@ -110,23 +122,68 @@ public class InputParser {
      * @return
      */
     public String[] getAutocompleteOptions(String userInput) {
-        ArrayList <String> matches = new ArrayList<>();
+        ArrayList <String> options = new ArrayList<>();
         String [] queryParts = splitQuery(userInput);
 
-        if ( queryParts.length == 1 ) {
+        if ( (queryParts.length == 1 && userInput.endsWith(" ")) || queryParts.length > 1 ) {
+            Command command = commandManager.matchCommand(queryParts[0]);
+            CommandPart [] commandParts = command.processKeywords(queryParts);
+
+            String usage = command.getUsage();
+            if ( usage != null && usage.length() > 0 ) {
+                options.add(usage);
+            }
+
+            if ( userInput.endsWith(" ") ) {
+                //User is not midway through typing a word
+                for ( CommandKeyword keyword : command.keywords  ) {
+                    CommandPart commandPart = getCommandPart(keyword.getType(), commandParts);
+                    if ( commandPart == null ) {
+                        //This keyword doesn't exist in the string
+                        options.add(userInput + keyword.getKeyword());
+                    }
+                }
+            } else {
+                String lastWord = queryParts[queryParts.length-1];
+                queryParts[queryParts.length-1] = "";
+                for ( CommandKeyword keyword : command.keywords  ) {
+                    CommandPart commandPart = getCommandPart(keyword.getType(), commandParts);
+                    if ( commandPart == null ) {
+                        //This keyword doesn't exist in the string
+                        if ( keyword.getKeyword().startsWith(lastWord) ) {
+                            String inputWithoutLastWord = String.join(" ", queryParts);
+                            options.add(inputWithoutLastWord + keyword.getKeyword());
+                        }
+                    }
+
+                }
+            }
+
+
+            /*for ( CommandKeyword keyword : command.keywords  ) {
+                CommandPart commandPart = getCommandPart(keyword.getKeyword(), commandParts);
+                if ( commandPart == null ) {
+                    //This keyword doesn't exist in the string
+                    options.add();
+                }
+            }*/
+            if ( options.size() == 0 ) {
+                return null;
+            } else {
+                return options.toArray(new String[options.size()]);
+            }
+        } else if ( queryParts.length == 1 ) {
             //Still on first word
             for ( Command command: commandManager.commands ) {
                 if ( command.getCommand().toLowerCase().startsWith(userInput.toLowerCase()) ) {
-                    matches.add(command.getCommand() + " - " + command.getDescription());
+                    options.add(command.getCommand() + " - " + command.getDescription());
                 }
             }
-            if ( matches.size() == 0 ) {
+            if ( options.size() == 0 ) {
                 return null;
             } else {
-                return matches.toArray(new String[matches.size()]);
+                return options.toArray(new String[options.size()]);
             }
-        } else if ( queryParts.length > 1 ) {
-            return null; //TODO: Something more intelligent
         } else {
             return null;
         }
@@ -185,8 +242,8 @@ public class InputParser {
                 }
                 break;
             case UNDO:
-            	newQuery = new QueryUndo();
-            	break;
+                newQuery = new QueryUndo();
+                break;
             default:
                 newQuery = new QueryGeneric(matchedCommand.getType());
                 break;
@@ -430,7 +487,7 @@ public class InputParser {
 
             if (isProcessingString) {
                 //Search for the end of a string
-                if (part.endsWith("\"")) {
+                if (part.endsWith("\"") && part.length() > 1) {
                     endString = i;
                     isProcessingString = false;
                     String extracted = extractString(queryParts, startString, endString);

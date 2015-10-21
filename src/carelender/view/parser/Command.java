@@ -86,7 +86,7 @@ public class Command {
      * Does not include the command itself.
      * @return Merged string array
      */
-    public String [] concatenateQueryParts(String[] queryParts) {
+    private String [] concatenateQueryParts(String[] queryParts) {
         ArrayList <String> parts = new ArrayList<>();
         int startingIndex = 1;
         int i = 1;

@@ -15,5 +15,6 @@ public enum QueryType {
     SWITCHUI,
     DATETEST,       //Used for testing date parsing
     DEV1,           //Used for whatever
-    DEV2            //Used for whatever
+    DEV2,            //Used for whatever
+    EXIT
 }
