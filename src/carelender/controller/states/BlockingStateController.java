@@ -99,10 +99,11 @@ public class BlockingStateController {
      * @param message Message to show user
      */
     public void startConfirmation ( String message, OnConfirmedCallback callback ) {
+        Controller.getGUI().displayPopup(message);
         blockingState = BlockingState.CONFIRMING;
         onConfirmedCallback = callback;
-        Controller.clearMessages();
-        Controller.displayMessage(message);
+        /*Controller.clearMessages();
+        Controller.displayMessage(message);*/
     }
 
 
@@ -154,13 +155,15 @@ public class BlockingStateController {
             if ( onConfirmedCallback != null ) {
                 onConfirmedCallback.onConfirmed(true);
             }
+            Controller.getGUI().clearPopup();
         } else if ( userInput.startsWith("n") ) {
             blockingState = BlockingState.NONE;
             if ( onConfirmedCallback != null ) {
                 onConfirmedCallback.onConfirmed(false);
             }
+            Controller.getGUI().clearPopup();
         } else {
-            Controller.displayMessage(ErrorMessages.invalidConfirmation());
+            Controller.getGUI().displayPopup(ErrorMessages.invalidConfirmation());
         }
     }
 

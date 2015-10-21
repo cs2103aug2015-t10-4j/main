@@ -73,6 +73,10 @@ public class TaskRenderer {
                                         this.xPadding, this.yPadding, 0.2, 0.4);
     }
 
+    public void clearEvents () {
+        this.taskDisplay.clear();
+    }
+
 	public void addEvents ( EventList toDisplay ) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("d EEE");
 		for ( Event event : toDisplay ) {
@@ -88,8 +92,19 @@ public class TaskRenderer {
 						tasksOnDay.add(event);
 						this.taskDisplay.put (day, tasksOnDay);
 					}
-					currentDay = this.addDays(currentDay, dayIterator + 1);
+					currentDay = this.addDays(currentDay, 1);
 				}
+                if ( !date.getStart().equals(date.getEnd()) ) {
+                    String day = dateFormat.format(date.getEnd());
+                    System.out.println(day);
+                    if (this.taskDisplay.containsKey(day)) {
+                        this.taskDisplay.get(day).add(event);
+                    } else {
+                        EventList tasksOnDay = new EventList();
+                        tasksOnDay.add(event);
+                        this.taskDisplay.put(day, tasksOnDay);
+                    }
+                }
 			}
 		}
 	}

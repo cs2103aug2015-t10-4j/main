@@ -25,10 +25,13 @@ public class UserInterfaceController implements Initializable {
 
     private UIType uiType;
 
-    private PopupRenderer popupRenderer;
+
     private MonthViewRenderer monthViewRenderer;
     private WeekViewRenderer weekViewRenderer;
     private SettingViewRenderer settingViewRenderer;
+
+    private PopupRenderer popupRenderer;
+    private UserInterfaceRenderer userInterfaceRenderer;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -39,6 +42,11 @@ public class UserInterfaceController implements Initializable {
         //Create canvases using code
         canvas = new ResizableCanvas();
         canvasPane.getChildren().add(canvas);
+
+        popupRenderer = new PopupRenderer();
+
+        userInterfaceRenderer = new UserInterfaceRenderer();
+        canvas.setRenderer(userInterfaceRenderer);
 
         // Bind canvas size to stack pane size.
         canvas.widthProperty().bind(
@@ -51,7 +59,7 @@ public class UserInterfaceController implements Initializable {
         monthViewRenderer = new MonthViewRenderer();
         weekViewRenderer = new WeekViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
-        popupRenderer = new PopupRenderer("Hello");
+
 
         uiType = UIType.MONTH;
         this.setUI(uiType);
@@ -113,6 +121,7 @@ public class UserInterfaceController implements Initializable {
 
                 break;
         }
+        userInterfaceRenderer.redraw();
     }
 
     public void clearMessageLog() {
@@ -147,6 +156,7 @@ public class UserInterfaceController implements Initializable {
 
                 break;
         }
+        userInterfaceRenderer.redraw();
 
     }
 
@@ -154,15 +164,17 @@ public class UserInterfaceController implements Initializable {
     	uiType = type;
         switch ( uiType ) {
             case MONTH:
-                canvas.setMainRenderer(monthViewRenderer);
+                userInterfaceRenderer.setMainRenderer(monthViewRenderer);
                 break;
             case WEEK:
-                canvas.setMainRenderer(weekViewRenderer);
+                userInterfaceRenderer.setMainRenderer(weekViewRenderer);
                 break;
             case SETTING:
-                canvas.setMainRenderer(settingViewRenderer);
+                userInterfaceRenderer.setMainRenderer(settingViewRenderer);
                 break;
         }
+
+        userInterfaceRenderer.redraw();
     }
 
     /**
@@ -181,12 +193,15 @@ public class UserInterfaceController implements Initializable {
         }
     }
     
-    public void displayPopup(CanvasRenderer popupRenderer){
-    	canvas.setPopupRenderer(popupRenderer);
+    public void displayPopup( String message ){
+        popupRenderer.setMessage(message);
+        userInterfaceRenderer.setPopupRenderer(popupRenderer);
+        userInterfaceRenderer.redraw();
     }
     
-    public void cleanPopup(){
-    	canvas.setPopupRenderer(null);
+    public void clearPopup(){
+        userInterfaceRenderer.setPopupRenderer(null);
+        userInterfaceRenderer.redraw();
     }
 
     public enum UIType {

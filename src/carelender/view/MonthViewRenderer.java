@@ -68,25 +68,24 @@ public class MonthViewRenderer extends CanvasRenderer {
         
         calender.draw(gc, width*2/5, height*3/10, width*3/5, height*3/10);
 
-		tasks.setParams(gc, width*2/5, height*8/10, width*3/5, height*7/10,
+		tasks.setParams(gc, width*2/5, height*5/10, width*3/5, height*7/10,
 						10, 10, 0.7, 0.1, 0.2, 0.1);
-		tasks.addEvents(this.listResults);
 		tasks.drawTasks();
         autocompleteRenderer.draw(gc, 0, height, width, 0);
 	}
 
 	public void setMessageBoxText(String text) {
 		messageText = text;
-		redraw();
 	}
 
 	public void setTaskview(EventList tasks) {
 		this.listResults = tasks;
+        this.tasks.clearEvents();
+        this.tasks.addEvents(this.listResults);
 		redraw();
 	}
 
     public void setAutocompleteOptions ( String [] options ) {
         autocompleteRenderer.setAutocompleteOptions(options);
-        redraw();
     }
 }
