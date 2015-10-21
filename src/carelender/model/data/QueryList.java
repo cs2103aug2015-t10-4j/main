@@ -101,12 +101,12 @@ public class QueryList extends QueryBase {
 		}
 
 		if (searchResults.size() > 0) {
-			Controller.displayMessage(searchResults.toString());
+			//Controller.displayMessage(searchResults.toString());
 		} else {
 			Controller.displayMessage("No results");
 		}
 
-		Controller.setDisplayedList(searchResults);
+		//Controller.setDisplayedList(searchResults);
 		Controller.displayTasks(searchResults);
 	}
 
