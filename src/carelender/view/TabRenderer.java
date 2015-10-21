@@ -18,16 +18,15 @@ public class TabRenderer extends CanvasRenderer {
 		double wordThdXRatio = 25.0/36.0;
 		double wordYRatio = 5.0/6.0;
 		double wordWidthRatio = 2.0/9.0;
+		double fontSizeRatio = 1.0/20.0;
+		double fontSize = width * fontSizeRatio; //Temporary
+		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
 
 		System.out.println("TabRenderer " + x + " " + y + " " + width + " " + height );
 		
 		gc.setFill(Color.web("#999"));
 		gc.fillRect(x, y, width, height);
 		
-		double fontSize = width / 20.0; //Temporary
-		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
-
-
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setFill(Color.web("#555"));
 		gc.setFont(font);
