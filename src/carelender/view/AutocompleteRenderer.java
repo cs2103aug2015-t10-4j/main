@@ -11,6 +11,7 @@ import java.text.ParseException;
 public class AutocompleteRenderer extends CanvasRenderer {
 
     String [] autocompleteOptions = null; //= {"test", "test2", "bubu", "lala", "test some very loing line of text lorem ipsum blah blahb labhbl ablhbl abhla hblahbl hba more text so much text text text text text"};
+    TextRenderer autoComplete = new TextRenderer();
     @Override
     public void draw(GraphicsContext gc, double x, double y, double width, double height) {
         super.draw(gc, x, y, width,height);
@@ -22,7 +23,7 @@ public class AutocompleteRenderer extends CanvasRenderer {
             double lineHeight = 0.05;
             double innerPadding = 5;
             double fieldHeight = autocompleteOptions.length * ( 1 + lineHeight ) * fontSize + innerPadding * 2;
-            TextRenderer autoComplete = new TextRenderer(gc, x, y - fieldHeight, width, fieldHeight,
+            autoComplete.setParams(gc, x, y - fieldHeight, width, fieldHeight,
                     innerPadding, innerPadding, font, 0.6, lineHeight);
 
             for ( String autocompleteOption : autocompleteOptions ) {

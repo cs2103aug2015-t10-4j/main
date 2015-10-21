@@ -22,6 +22,8 @@ public class UserInterfaceController implements Initializable {
     private ArrayList<String> messageList;
     ResizableCanvas canvas;
 
+    private CanvasRenderer currentRenderer;
+
     private MonthViewRenderer monthViewRenderer;
     private SettingViewRenderer settingViewRenderer;
 

@@ -9,8 +9,10 @@ public class MonthViewRenderer extends CanvasRenderer {
 	//MessageboxRenderer
 	//SelectionPopupRenderer
 
-	TextRenderer messageBox;
+	TextRenderer messageBox = new TextRenderer();
+	TextRenderer announcementBox = new TextRenderer();
     AutocompleteRenderer autocompleteRenderer;
+    CalenderRenderer calender = new CalenderRenderer();
 	String messageText;
 	public MonthViewRenderer() {
         autocompleteRenderer = new AutocompleteRenderer();
@@ -46,19 +48,18 @@ public class MonthViewRenderer extends CanvasRenderer {
 		 */
 
         //TODO: Move all new TextRenderers out of draw
-		TextRenderer announcementBox = new TextRenderer (gc, 0, announcementBoxY,
-														width*4/10, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
-														font, 0.6, 0.05);
+		announcementBox.setParams(gc, 0, announcementBoxY,
+								width*4/10, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
+								font, 0.6, 0.05);
 		announcementBox.addText("This is a announcementRenderer.\n");
 		announcementBox.drawText();
 		
-        messageBox = new TextRenderer (gc, 0, messageBoxY,
-        											width*4/10, messageBoxH, textboxInnerPadding, textboxInnerPadding,
-													font, 0.6, 0.05);
+        messageBox.setParams(gc, 0, messageBoxY,
+        					width*4/10, messageBoxH, textboxInnerPadding, textboxInnerPadding,
+							font, 0.6, 0.05);
         messageBox.addText(messageText);
         messageBox.drawText();
         
-        CalenderRenderer calender = new CalenderRenderer();
         calender.draw(gc, width*2/5, height*3/10, width*3/5, height*7/10);
 
         autocompleteRenderer.draw(gc, 0, height, width, 0);

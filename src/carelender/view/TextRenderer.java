@@ -34,7 +34,12 @@ public class TextRenderer {
     private ArrayList<String> textLines;
     private double charsPerLine;
 
-    public TextRenderer ( GraphicsContext gc, double x, double y,
+   
+    public TextRenderer() {
+        this.gc = null;
+    }
+
+    public void setParams ( GraphicsContext gc, double x, double y,
                             double w, double h, double xPad, double yPad,
                             Font font, double widthRatio, double lineSpaceRatio ) {
         this.gc = gc;
@@ -58,95 +63,124 @@ public class TextRenderer {
     }
 
     public void addTextEllipsis ( String textLine ) {
-        double freeCharsOnLine = this.charsPerLine - 4 ;// Size of "... "
-        String [] wordsToAdd = textLine.split(" ");
-        StringBuilder stringBuilder = new StringBuilder();
-        boolean outOfSpace = false;
-        for ( String wordToAdd : wordsToAdd ) {
-            freeCharsOnLine -= wordToAdd.length() + 1; //+1 is for space character
-            if ( freeCharsOnLine >= 0 ) {
-				stringBuilder.append(wordToAdd);
-				stringBuilder.append(" ");
-			} else {
-                outOfSpace = true;
-				break;
-			}
-        }
-        if ( outOfSpace ) {
-            stringBuilder.append("...");
-        }
-		this.textLines.add(stringBuilder.toString());
+    	if (this.gc == null) {
+    		System.out.println("Error");
+    	} else {
+	        double freeCharsOnLine = this.charsPerLine - 4 ;// Size of "... "
+	        String [] wordsToAdd = textLine.split(" ");
+	        StringBuilder stringBuilder = new StringBuilder();
+	        boolean outOfSpace = false;
+	        for ( String wordToAdd : wordsToAdd ) {
+	            freeCharsOnLine -= wordToAdd.length() + 1; //+1 is for space character
+	            if ( freeCharsOnLine >= 0 ) {
+					stringBuilder.append(wordToAdd);
+					stringBuilder.append(" ");
+				} else {
+	                outOfSpace = true;
+					break;
+				}
+	        }
+	        if ( outOfSpace ) {
+	            stringBuilder.append("...");
+	        }
+			this.textLines.add(stringBuilder.toString());
+    	}
     }
 
     public void addText ( String textToAdd ) {
-        double freeCharsOnLine = this.charsPerLine;
-        String lineToAppendTo = "";
-
-        String [] wordsToAdd = this.separateEndline(textToAdd).split(" ");
-        //Check if there are already lines of text to append textToAdd to.
-        if ( !this.textLines.isEmpty() ) {
-            //Get the last line rendered to check if words can be appended on.
-            lineToAppendTo = this.textLines.get(this.textLines.size() - 1);
-            freeCharsOnLine -= lineToAppendTo.length();
-        } else {
-            this.textLines.add("");
-        }
-
-        for ( String wordToAdd : wordsToAdd ) {
-            if ( wordToAdd.length() > 0 ) {
-                if ( wordToAdd.equals("\n") ) {
-                    freeCharsOnLine = this.charsPerLine;
-                    lineToAppendTo = "";
-                    this.textLines.add(lineToAppendTo);
-                } else if ( wordToAdd.length() <= freeCharsOnLine ) {
-                    lineToAppendTo += (wordToAdd + " ");
-                    freeCharsOnLine = this.charsPerLine - lineToAppendTo.length();
-                    this.textLines.set(this.textLines.size() - 1, lineToAppendTo);
-                } else {
-                    freeCharsOnLine = this.charsPerLine;
-                    lineToAppendTo = wordToAdd + " ";
-                    this.textLines.add(lineToAppendTo);
-                }
-            }
-        }
+    	if (this.gc == null) {
+    		System.out.println("Error");
+    	} else {
+	        double freeCharsOnLine = this.charsPerLine;
+	        String lineToAppendTo = "";
+	
+	        String [] wordsToAdd = this.separateEndline(textToAdd).split(" ");
+	        //Check if there are already lines of text to append textToAdd to.
+	        if ( !this.textLines.isEmpty() ) {
+	            //Get the last line rendered to check if words can be appended on.
+	            lineToAppendTo = this.textLines.get(this.textLines.size() - 1);
+	            freeCharsOnLine -= lineToAppendTo.length();
+	        } else {
+	            this.textLines.add("");
+	        }
+	
+	        for ( String wordToAdd : wordsToAdd ) {
+	            if ( wordToAdd.length() > 0 ) {
+	                if ( wordToAdd.equals("\n") ) {
+	                    freeCharsOnLine = this.charsPerLine;
+	                    lineToAppendTo = "";
+	                    this.textLines.add(lineToAppendTo);
+	                } else if ( wordToAdd.length() <= freeCharsOnLine ) {
+	                    lineToAppendTo += (wordToAdd + " ");
+	                    freeCharsOnLine = this.charsPerLine - lineToAppendTo.length();
+	                    this.textLines.set(this.textLines.size() - 1, lineToAppendTo);
+	                } else {
+	                    freeCharsOnLine = this.charsPerLine;
+	                    lineToAppendTo = wordToAdd + " ";
+	                    this.textLines.add(lineToAppendTo);
+	                }
+	            }
+	        }
+    	}
     }
 
     public void clearText() {
-        this.textLines.clear();
+    	if (this.gc == null) {
+    		System.out.println("Error");
+    	} else {
+    		this.textLines.clear();
+    	}
     }
 
     public void drawText ( String background, String text ) {
-        double xCurrent = this.xPosition + this.xPadding;
-        double yCurrent = this.yPosition + (this.yPadding + this.charHeight);
-
-        gc.setFill(Color.web(background));
-        gc.fillRect(this.xPosition, this.yPosition, this.width, this.height);
-
-        for ( String lineToDraw : this.textLines ) {
-
-            this.gc.setFill(Color.web(text));
-            this.gc.setTextAlign(TextAlignment.LEFT);
-            this.gc.setFont(this.font);
-            this.gc.setTextBaseline(VPos.BOTTOM);
-
-            this.gc.fillText ( lineToDraw, xCurrent, yCurrent );
-            yCurrent += ( this.lineSpace + this.charHeight );
-        }
+    	if (this.gc == null) {
+    		System.out.println("Error");
+    	} else {
+	        double xCurrent = this.xPosition + this.xPadding;
+	        double yCurrent = this.yPosition + (this.yPadding + this.charHeight);
+	
+	        gc.setFill(Color.web(background));
+	        gc.fillRect(this.xPosition, this.yPosition, this.width, this.height);
+	
+	        for ( String lineToDraw : this.textLines ) {
+	
+	            this.gc.setFill(Color.web(text));
+	            this.gc.setTextAlign(TextAlignment.LEFT);
+	            this.gc.setFont(this.font);
+	            this.gc.setTextBaseline(VPos.BOTTOM);
+	
+	            this.gc.fillText ( lineToDraw, xCurrent, yCurrent );
+	            yCurrent += ( this.lineSpace + this.charHeight );
+	        }
+    	}
     }
     public void drawText (String background) {
-        drawText(background, "#000");
+    	if (this.gc == null) {
+    		System.out.println("Error");
+    	} else {
+    		drawText(background, "#000");
+    	}
     }
     public void drawText () {
-        drawText("#95bacd", "#000");
+    	if (this.gc == null) {
+    		System.out.println("Error");
+    	} else {
+    		drawText("#95bacd", "#000");
+    	}
     }
     private String separateEndline ( String toParse ) {
-        String toAppend = "";
-        String toReturn = "";
-        String [] stringSegment = toParse.split("\n", -1);
-        for ( String segment : stringSegment ) {
-            toReturn += (toAppend + segment);
-            toAppend = " " + "\n" + " ";
-        }
-        return toReturn.equals("") ? toParse : toReturn;
+    	if (this.gc == null) {
+    		System.out.println("Error");
+    		return "";
+    	} else {
+	        String toAppend = "";
+	        String toReturn = "";
+	        String [] stringSegment = toParse.split("\n", -1);
+	        for ( String segment : stringSegment ) {
+	            toReturn += (toAppend + segment);
+	            toAppend = " " + "\n" + " ";
+	        }
+	        return toReturn.equals("") ? toParse : toReturn;
+    	}
     }
 }
