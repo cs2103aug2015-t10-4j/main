@@ -12,9 +12,9 @@ public enum QueryType {
     LIST,       //Listing tasks //TODO: Split into different types
     CLEAR,       //Clears the message screen
     UNDO,
-    SETTINGS,
     SWITCHUI,
     DATETEST,       //Used for testing date parsing
     DEV1,           //Used for whatever
-    DEV2            //Used for whatever
+    DEV2,            //Used for whatever
+    EXIT
 }

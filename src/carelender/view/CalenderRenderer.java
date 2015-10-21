@@ -60,15 +60,15 @@ public class CalenderRenderer extends CanvasRenderer {
         if ( width > squareHeight ) { //Height is the constraint
             scaledWidth = height * aspect;
             scaledHeight = height;
-            System.out.println("Height constraint");
+            //System.out.println("Height constraint");
         } else { //Width is the constraint
             scaledWidth = width;
             scaledHeight = width / aspect;
-            System.out.println("Width constraint");
+            //System.out.println("Width constraint");
         }
 
-        System.out.println("Width : " + scaledWidth + "/" + width);
-        System.out.println("Height: " + scaledHeight + "/" + height);
+        //System.out.println("Width : " + scaledWidth + "/" + width);
+        //System.out.println("Height: " + scaledHeight + "/" + height);
 
         offsetX = (width - scaledWidth) * 0.5;
         offsetY = (height - scaledHeight) * 0.5;

@@ -44,7 +44,6 @@ public class MonthViewRenderer extends CanvasRenderer {
 
 
 		TabRenderer tab = new TabRenderer(); //TODO: Move this out of draw
-		System.out.println("MonthViewRenderer " + x + " " + y + " " + width + " " + height );
 		tab.draw(gc, 0, 0, width, topBarHeight);
 
 

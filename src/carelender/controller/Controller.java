@@ -131,9 +131,9 @@ public class Controller {
         if ( stateManager.getAppState() == AppState.DEFAULT && !blockingStateController.isBlocked() ) {
             String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput);
             if ( autocompleteOptions != null ) {
-                System.out.println("Autocomplete size: " + autocompleteOptions.length);
+                //System.out.println("Autocomplete size: " + autocompleteOptions.length);
             } else {
-                System.out.println("No match");
+                //System.out.println("No match");
             }
             userInterfaceController.setAutocompleteOptions(autocompleteOptions);
         } else {
@@ -209,22 +209,18 @@ public class Controller {
                 break;
             case DEV2:
                 break;
-            case SWITCHUI:
-                processSwitchUI();
-                break;
             case LIST:
                 currentListQuery = (QueryList)query;
                 refreshDisplay();
+                break;
+            case EXIT:
+                System.exit(0);
                 break;
             default:
                 query.controllerExecute();
                 refreshDisplay();
                 break;
         }
-    }
-
-    private static void processSwitchUI () {
-        displayMessage("Switching UI");
     }
 
     /**

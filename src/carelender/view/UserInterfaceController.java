@@ -25,7 +25,9 @@ public class UserInterfaceController implements Initializable {
 
     private UIType uiType;
 
+    private PopupRenderer popupRenderer;
     private MonthViewRenderer monthViewRenderer;
+    private WeekViewRenderer weekViewRenderer;
     private SettingViewRenderer settingViewRenderer;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
@@ -47,11 +49,13 @@ public class UserInterfaceController implements Initializable {
         Controller.initUserInterfaceController(this);
 
         monthViewRenderer = new MonthViewRenderer();
+        weekViewRenderer = new WeekViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
-        canvas.setRenderer(monthViewRenderer);
+        popupRenderer = new PopupRenderer("Hello");
 
         uiType = UIType.MONTH;
-
+        this.setUI(uiType);
+        
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
                 new EventHandler<KeyEvent>() {
@@ -97,7 +101,18 @@ public class UserInterfaceController implements Initializable {
     }
 
     public void setAutocompleteOptions( String[] autocompleteOptions ) {
-        monthViewRenderer.setAutocompleteOptions(autocompleteOptions);
+        switch ( uiType ) {
+            case MONTH:
+                monthViewRenderer.setAutocompleteOptions(autocompleteOptions);
+                break;
+            case WEEK:
+
+                break;
+
+            case SETTING:
+
+                break;
+        }
     }
 
     public void clearMessageLog() {
@@ -107,7 +122,6 @@ public class UserInterfaceController implements Initializable {
     public void displayMessage( String message ) {
         messageList.add(message);
         refreshOutputField();
-        //System.out.println(message);
     }
 
     public void setUserInput ( String inputText ) {
@@ -120,12 +134,35 @@ public class UserInterfaceController implements Initializable {
             stringBuilder.append(messageList.get(i));
             stringBuilder.append("\n");
         }
-        monthViewRenderer.setMessageBoxText(stringBuilder.toString());
+
+        switch ( uiType ) {
+            case MONTH:
+                monthViewRenderer.setMessageBoxText(stringBuilder.toString());
+                break;
+            case WEEK:
+
+                break;
+
+            case SETTING:
+
+                break;
+        }
+
     }
 
-    //TODO
     public void setUI(UIType type) {
-
+    	uiType = type;
+        switch ( uiType ) {
+            case MONTH:
+                canvas.setMainRenderer(monthViewRenderer);
+                break;
+            case WEEK:
+                canvas.setMainRenderer(weekViewRenderer);
+                break;
+            case SETTING:
+                canvas.setMainRenderer(settingViewRenderer);
+                break;
+        }
     }
 
     /**
@@ -134,14 +171,22 @@ public class UserInterfaceController implements Initializable {
      */
     public void toggleUI() {
         if ( uiType == UIType.SETTING ) {
-            uiType = UIType.MONTH;
+            setUI(UIType.MONTH);
         } else {
             if (uiType == UIType.MONTH ) {
-                uiType = UIType.WEEK;
+                setUI(UIType.WEEK);
             } else {
-                uiType = UIType.MONTH;
+                setUI(UIType.MONTH);
             }
         }
+    }
+    
+    public void displayPopup(CanvasRenderer popupRenderer){
+    	canvas.setPopupRenderer(popupRenderer);
+    }
+    
+    public void cleanPopup(){
+    	canvas.setPopupRenderer(null);
     }
 
     public enum UIType {
