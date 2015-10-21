@@ -25,7 +25,7 @@ public class InputParser {
     //List of displayed events
     private EventList displayedList;
 
-    private InputParser () {
+    protected InputParser () {
         commandManager = new CommandManager();
         defineDefaultCommands();
     }
@@ -554,7 +554,7 @@ public class InputParser {
      * @param commandParts commandPart array
      * @return null if it doesn't exist
      */
-    private CommandPart getCommandPart ( String type, CommandPart [] commandParts ) {
+    protected CommandPart getCommandPart ( String type, CommandPart [] commandParts ) {
         for ( CommandPart commandPart : commandParts ) {
             if ( type.equals(commandPart.getKeywordType())) {
                 return commandPart;
@@ -564,11 +564,12 @@ public class InputParser {
     }
     /**
      * Takes an index string and converts it into a list of indices
-     * Example: "1,13,5-8" will give a list [1,5,6,7,8,13]
+     * Example: "1,13,5-8" will give a list [0,4,5,6,7,12]
      * @param indexString String containing indices
      * @return null if there is an error in parsing
      */
-    private Integer[] extractIndices ( String indexString ) {
+    protected Integer[] extractIndices ( String indexString ) {
+    	indexString = indexString.replace(" ", "");
         //String errorMessage = "";
         boolean pass = true;
         ArrayList<Integer> indexList = new ArrayList<>();
@@ -604,7 +605,7 @@ public class InputParser {
                             start = end;
                             end = t;
                         }
-                        for ( int i = start; i < end; i++ ) {
+                        for ( int i = start; i <= end; i++ ) {
                             indexList.add(i);
                         }
                     }
@@ -664,7 +665,7 @@ public class InputParser {
      * @param queryParts String array
      * @return array with empty entries removed
      */
-    private String [] removeEmptyEntries ( String [] queryParts ) {
+    protected String [] removeEmptyEntries ( String [] queryParts ) {
         int emptyCount = 0;
         for ( String queryPart : queryParts ) {
             if ( queryPart.length() == 0 ) emptyCount++;
