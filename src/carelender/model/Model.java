@@ -25,12 +25,12 @@ public class Model {
 		}
 		return singleton;
 	}
-
+	private static Logger log;
+	
 	private String filename;
 	private EventList events;
 	private ArrayList<EventList> cache;
 	private ArrayList<String> storage;
-	private static Logger log;
 
 	private int currentUid;
 
@@ -48,10 +48,10 @@ public class Model {
 
 	public boolean addEvent(Event eventObj) {
 		eventObj.setUid(currentUid += 1);// Set incremented UID to Event
-		events.add(eventObj);
 		AppSettings.getInstance().setIntSetting(SettingName.CURRENT_INDEX, currentUid);
-		updateUndoManager(eventObj, UndoType.ADD);
-		System.out.println("Added UID:" + currentUid + "Event Name: " + eventObj.getName());
+		events.add(eventObj);
+		updateUndoManager(eventObj, UndoType.ADD);		
+		//System.out.println("Added UID:" + currentUid + "Event Name: " + eventObj.getName());
 		return saveToFile("events.dat", events);
 	}
 
@@ -63,7 +63,9 @@ public class Model {
 		for (int i = 0; i < events.size(); i++) {
 			if (events.get(i).getUid() == eventObj.getUid()) {
 				updateUndoManager(events.get(i), UndoType.UPDATE);
+				int uid = (int) events.get(i).getUid();
 				events.remove(i);
+				eventObj.setUid(uid);
 				events.add(eventObj);
 				return saveToFile("events.dat", events);
 			}
@@ -109,7 +111,16 @@ public class Model {
 	}
 
 	public void undoUpdatedEvent(EventList eventList) {
-
+		for (int i = 0; i < eventList.size(); i++) {
+			for (int j = 0; j < events.size(); j++) {
+				if (events.get(j).getUid() == eventList.get(i).getUid()) {
+					events.remove(j);
+				}
+				saveToFile("events.dat", events);
+			}
+			events.add(eventList.get(i));
+		}
+		saveToFile("events.dat", events);
 	}
 
 	public void undoDeletedEvent(EventList eventList) {

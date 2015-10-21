@@ -22,12 +22,57 @@ import carelender.model.data.EventList;
  * This class contains static methods to help to render the calendar view
  */
 public class TaskRenderer {
+    private GraphicsContext gc;
+    private double xPosition;
+    private double yPosition;
+
+    private double width;
+    private double height;
+
+    private double xPadding;
+    private double yPadding;
+
+    private double dateBarWidth;
+    private double dateBarHeight;
+
+    private double taskBarWidth;
+    private double taskBarHeight;
+
+    private int windowSize;
+    private int windowStart;
 	private HashMap<String, EventList> taskDisplay;
+    private TaskBarRenderer taskBarRender;
 	
 	public TaskRenderer () {
-		this.taskDisplay = new HashMap<String, EventList>();
+        this.taskBarRender = new TaskBarRenderer();
+        this.taskDisplay = new HashMap<String, EventList>();
 	}
-	
+
+    public void setParams (GraphicsContext gc, double x, double y,
+                           double w, double h, double xPad, double yPad,
+                           double taskWidthRatio, double taskHeightRatio,
+                           double dateWidthRatio, double dateHeightRatio) {
+        this.gc = gc;
+
+        this.xPosition = x;
+        this.yPosition = y;
+
+        this.width = w;
+        this.height = h;
+
+        this.xPadding = xPad;
+        this.yPadding = yPad;
+
+        this.dateBarWidth = this.width * dateWidthRatio;
+        this.dateBarHeight = this.height * dateHeightRatio;
+
+        this.taskBarWidth = this.width * taskWidthRatio;
+        this.taskBarHeight = this.height * taskHeightRatio;
+
+        this.taskBarRender.setParams (gc, this.taskBarWidth, this.taskBarHeight,
+                                        this.xPadding, this.yPadding, 0.2, 0.4);
+    }
+
 	public void addEvents ( EventList toDisplay ) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("d EEE");
 		for ( Event event : toDisplay ) {
@@ -50,14 +95,33 @@ public class TaskRenderer {
 	}
 	
 	public void drawTasks () {
+        double xCurrent = this.xPosition + this.xPadding;
+        double yCurrent = this.yPosition + this.yPadding;
+
+        Font font = Font.loadFont("file:res/monaco.ttf", this.dateBarHeight * 0.5);
+
 		for ( Map.Entry<String, EventList> entry : this.taskDisplay.entrySet()) {
 		    String key = entry.getKey();
 		    EventList value = entry.getValue();
-		    
+
+            this.gc.setFill (Color.web("999"));
+            this.gc.fillRect(xCurrent, yCurrent, this.dateBarWidth, this.dateBarHeight);
+
+            this.gc.setFill(Color.web("979"));
+            this.gc.setTextAlign(TextAlignment.LEFT);
+            this.gc.setFont(font);
+            this.gc.setTextBaseline(VPos.TOP);
+
+            this.gc.fillText ( key, xCurrent, yCurrent );
+
 		    System.out.println ("Day " + key);
 		    
 		    for (Event event : value) {
+                this.taskBarRender.setPosition(xCurrent + this.dateBarWidth + this.xPadding, yCurrent);
+                this.taskBarRender.setContent(event);
+                this.taskBarRender.drawTaskBar("999", "000");
 		    	System.out.println ("             " + event.getName());
+                yCurrent += ( this.taskBarHeight + this.yPadding );
 		    }
 		}
 	}
@@ -69,20 +133,6 @@ public class TaskRenderer {
         calendar.add(Calendar.DATE, days);
         
         return calendar.getTime();
-    }
-    
-    public static void calendarSquare ( GraphicsContext gc,  double x, double y, double w, double h, double dropOffset, String color, String text, Font font ) {
-        gc.setFill(Color.web("#999"));
-        gc.fillRect(x + dropOffset, y + dropOffset, w, h);
-
-        gc.setFill(Color.web(color));
-        gc.fillRect(x, y, w, h);
-
-        gc.setFill(Color.web("#000"));
-        gc.setTextAlign(TextAlignment.RIGHT);
-        gc.setFont(font);
-        gc.setTextBaseline(VPos.BOTTOM);
-        gc.fillText(text, x + w - dropOffset * 0.5 , y + h - dropOffset * 0.5 );
     }
 
 

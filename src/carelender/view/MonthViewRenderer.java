@@ -1,5 +1,6 @@
 package carelender.view;
 
+import carelender.model.data.EventList;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -14,6 +15,10 @@ public class MonthViewRenderer extends CanvasRenderer {
 	TextRenderer announcementBox = new TextRenderer();
     AutocompleteRenderer autocompleteRenderer;
     CalenderRenderer calender = new CalenderRenderer();
+
+	private EventList listResults = new EventList();
+	TaskRenderer tasks = new TaskRenderer();
+
 	String messageText;
 	public MonthViewRenderer() {
         autocompleteRenderer = new AutocompleteRenderer();
@@ -61,14 +66,24 @@ public class MonthViewRenderer extends CanvasRenderer {
         messageBox.addText(messageText);
         messageBox.drawText();
         
-        calender.draw(gc, width*2/5, height*3/10, width*3/5, height*7/10);
+        calender.draw(gc, width*2/5, height*3/10, width*3/5, height*3/10);
 
+		tasks.setParams(gc, width*2/5, height*8/10, width*3/5, height*7/10,
+						10, 10, 0.7, 0.1, 0.2, 0.1);
+		tasks.addEvents(this.listResults);
+		tasks.drawTasks();
         autocompleteRenderer.draw(gc, 0, height, width, 0);
 	}
 
 	public void setMessageBoxText(String text) {
 		messageText = text;
 	}
+
+	public void setTaskview(EventList tasks) {
+		this.listResults = tasks;
+		redraw();
+	}
+
     public void setAutocompleteOptions ( String [] options ) {
         autocompleteRenderer.setAutocompleteOptions(options);
     }

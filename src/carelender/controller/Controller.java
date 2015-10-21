@@ -271,6 +271,10 @@ public class Controller {
         userInterfaceController.displayMessage(message);
     }
 
+    public static void displayTasks (EventList events) {
+        userInterfaceController.setTaskList(events);
+    }
+
     public static void clearMessages ( ) {
         userInterfaceController.clearMessageLog();
     }
