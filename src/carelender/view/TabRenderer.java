@@ -21,8 +21,6 @@ public class TabRenderer extends CanvasRenderer {
 		double fontSizeRatio = 1.0/20.0;
 		double fontSize = width * fontSizeRatio; //Temporary
 		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
-
-		System.out.println("TabRenderer " + x + " " + y + " " + width + " " + height );
 		
 		gc.setFill(Color.web("#999"));
 		gc.fillRect(x, y, width, height);

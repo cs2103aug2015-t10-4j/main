@@ -18,10 +18,8 @@ public class QuerySwitchUI extends QueryBase {
     @Override
     public void controllerExecute() {
         if ( isSettingSwitch ) {
-            System.out.println("Switch to settings");
             Controller.getGUI().setUI(UserInterfaceController.UIType.SETTING);
         } else {
-            System.out.println("Toggle UI");
             Controller.getGUI().toggleUI();
         }
     }

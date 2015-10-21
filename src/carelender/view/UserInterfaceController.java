@@ -94,7 +94,18 @@ public class UserInterfaceController implements Initializable {
     }
 
     public void setAutocompleteOptions( String[] autocompleteOptions ) {
-        monthViewRenderer.setAutocompleteOptions(autocompleteOptions);
+        switch ( uiType ) {
+            case MONTH:
+                monthViewRenderer.setAutocompleteOptions(autocompleteOptions);
+                break;
+            case WEEK:
+
+                break;
+
+            case SETTING:
+
+                break;
+        }
     }
 
     public void clearMessageLog() {
@@ -104,7 +115,6 @@ public class UserInterfaceController implements Initializable {
     public void displayMessage( String message ) {
         messageList.add(message);
         refreshOutputField();
-        //System.out.println(message);
     }
 
     public void setUserInput ( String inputText ) {
@@ -117,20 +127,35 @@ public class UserInterfaceController implements Initializable {
             stringBuilder.append(messageList.get(i));
             stringBuilder.append("\n");
         }
-        monthViewRenderer.setMessageBoxText(stringBuilder.toString());
+
+        switch ( uiType ) {
+            case MONTH:
+                monthViewRenderer.setMessageBoxText(stringBuilder.toString());
+                break;
+            case WEEK:
+
+                break;
+
+            case SETTING:
+
+                break;
+        }
+
     }
 
     public void setUI(UIType type) {
     	uiType = type;
-    	if( uiType == UIType.MONTH ) {
-    		canvas.setRenderer(monthViewRenderer);
-    	} else if ( uiType == UIType.WEEK ) {
-    		canvas.setRenderer(weekViewRenderer);
-    	} else if ( uiType == UIType.SETTING ) {
-    		canvas.setRenderer(settingViewRenderer);
-    	} else {
-    		System.out.println("Incorrect UI type");
-    	}
+        switch ( uiType ) {
+            case MONTH:
+                canvas.setRenderer(monthViewRenderer);
+                break;
+            case WEEK:
+                canvas.setRenderer(weekViewRenderer);
+                break;
+            case SETTING:
+                canvas.setRenderer(settingViewRenderer);
+                break;
+        }
     }
 
     /**
@@ -139,12 +164,12 @@ public class UserInterfaceController implements Initializable {
      */
     public void toggleUI() {
         if ( uiType == UIType.SETTING ) {
-            uiType = UIType.MONTH;
+            setUI(UIType.MONTH);
         } else {
             if (uiType == UIType.MONTH ) {
-                uiType = UIType.WEEK;
+                setUI(UIType.WEEK);
             } else {
-                uiType = UIType.MONTH;
+                setUI(UIType.MONTH);
             }
         }
     }

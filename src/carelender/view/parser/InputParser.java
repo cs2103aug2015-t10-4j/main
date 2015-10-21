@@ -83,6 +83,10 @@ public class InputParser {
         newCommand.setDescription("Go to the settings page");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("setting", QueryType.SWITCHUI);
+        newCommand.setDescription("Go to the settings page");
+        commandManager.addCommand(newCommand);
+
         newCommand = new Command("date", QueryType.DATETEST);
         newCommand.setDescription("Does date parse testing");
         commandManager.addCommand(newCommand);

@@ -18,6 +18,9 @@ class ResizableCanvas extends Canvas {
     private void draw() {
         double width = getWidth();
         double height = getHeight();
+        if ( width == 0 || height == 0 ) {
+            return;
+        }
         GraphicsContext gc = getGraphicsContext2D();
         if ( renderer == null ) {
             //Draw a red cross
@@ -35,6 +38,7 @@ class ResizableCanvas extends Canvas {
 
     public void setRenderer(CanvasRenderer renderer) {
         this.renderer = renderer;
+        draw();
     }
 
     @Override
