@@ -1,6 +1,8 @@
 package carelender.view.parser;
 
 import carelender.model.data.*;
+import carelender.model.data.QueryUpdate.UpdateParam;
+import carelender.view.parser.CommandKeyword.DataPosition;
 import net.fortuna.ical4j.model.DateTime;
 
 import java.util.ArrayList;
@@ -52,10 +54,11 @@ public class InputParser {
         
         newCommand = new Command("update", QueryType.UPDATE);
         newCommand.setDescription("Update events/tasks");
-        newCommand.setUsage("update \"event name\" into \"new name\" [tomorrow/today/etc...] [morning/noon/etc...]");
-        newCommand.addKeywords("delimiter", "into", CommandKeyword.DataPosition.NONE);
-        newCommand.addKeywords("relativeday", "tomorrow,next,monday,tuesday,wednesday,thursday,friday,saturday,sunday", CommandKeyword.DataPosition.NONE);
-        newCommand.addKeywords("timeofday", "later,tonight,afternoon,night,morning,evening,noon", CommandKeyword.DataPosition.NONE);
+        newCommand.setUsage("update <id> [name \"new name\"] [date \"new date\"] [cat \"new category\"]");
+        newCommand.addKeywords("name", "name", DataPosition.AFTER);
+        newCommand.addKeywords("complete", "complete,finished,finish", DataPosition.AFTER);
+        newCommand.addKeywords("category", "cat,category", DataPosition.AFTER);
+        newCommand.addKeywords("date", "date,dates,time,times,datetime,datetimes", DataPosition.AFTER);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("delete", QueryType.DELETE );
@@ -222,7 +225,7 @@ public class InputParser {
                 newQuery = parseDeleteCommand(commandParts);
                 break;
             case UPDATE:
-                newQuery = parseUpdateCommand(queryPartsNoDate, commandPartsNoDate, input);
+                newQuery = parseUpdateCommand(commandParts);
                 break;
             case LIST:
                 if ( matchedCommand.getCommand().equalsIgnoreCase("search") ) {
@@ -353,7 +356,7 @@ public class InputParser {
             return new QueryError("Nothing displayed");
         }
 
-        ArrayList<Integer> indexList = extractIndices(commandParts[0].getQueryPart());
+        Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
 
         if ( indexList == null ) {
             return new QueryError("Error parsing indices");
@@ -369,32 +372,61 @@ public class InputParser {
         return queryDelete;
     }
     
-    public QueryBase parseUpdateCommand ( String [] queryParts, CommandPart [] commandParts, String input ) {
+    public QueryBase parseUpdateCommand ( CommandPart [] commandParts ) {
         QueryUpdate queryUpdate = new QueryUpdate();
-
-        String name = queryParts[1]; //First item is the name
-        queryUpdate.addSearchParam(QueryList.SearchParam.NAME_EXACT, name);
         
-        //TODO: THIS IS A HACK.
-        String newName = queryParts[3];
-        queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.NAME, newName);
+        CommandPart commandPart;
+        String data;
+        boolean pass = false;
         
-        //TODO: THIS IS A HACK AS WELL.
-        if (queryParts.length <= 4) {
-            return queryUpdate;
+        if ( commandParts.length < 1 ) {
+            return new QueryError("What do you want to update?");
         }
+        if ( displayedList == null ) {
+            return new QueryError("Nothing displayed");
+        }
+        
+        
 
-        SimpleDateGroup [] dateGroups = DateTimeParser.parseDateTimeRaw(input);
-        if ( dateGroups != null ) {
-            if ( dateGroups.length > 1 && dateGroups.length % 2 != 0) {
-                //Odd number of dates
-                return new QueryError("Please input an even number of date time values", false);
+        Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
+
+        if ( indexList == null ) {
+            return new QueryError("Error parsing indices");
+        }
+        
+        for ( int i : indexList ) {
+        	
+            Event event = displayedList.get(i);
+            if ( event != null ) {
+                queryUpdate.addEvent(event);
             }
-
-            DateRange[] dr = new DateRange[]{new DateRange(dateGroups[0].dates[0], dateGroups[0].hasTime)};
-            queryUpdate.addUpdateParam(QueryUpdate.UpdateParam.DATE_RANGE, dr);
-
         }
+        
+        commandPart = getCommandPart("name", commandParts);
+        if ( commandPart != null ) {
+        	data = commandPart.getKeywordData();
+            if ( data != null ) {
+            	queryUpdate.addUpdateParam(UpdateParam.NAME, data);
+            	pass = true;
+            }
+        }
+        
+        commandPart = getCommandPart("date", commandParts);
+        if ( commandPart != null ) {
+        	data = commandPart.getKeywordData();
+            if ( data != null ) {
+            	DateRange[] dateRanges = DateTimeParser.parseDateTime(data);
+            	if ( dateRanges != null ) {
+            		queryUpdate.addUpdateParam(UpdateParam.DATE_RANGE, dateRanges);
+            		pass = true;
+            	}
+            }
+        }
+        
+        if ( !pass ) {
+        	return new QueryError("Update command invalid");
+        }
+        
 
         return queryUpdate;
     }
@@ -536,7 +568,7 @@ public class InputParser {
      * @param indexString String containing indices
      * @return null if there is an error in parsing
      */
-    private ArrayList<Integer> extractIndices ( String indexString ) {
+    private Integer[] extractIndices ( String indexString ) {
         //String errorMessage = "";
         boolean pass = true;
         ArrayList<Integer> indexList = new ArrayList<>();
@@ -610,7 +642,7 @@ public class InputParser {
         }
 
         if ( pass ) {
-            return indexList;
+        	return indexList.toArray(new Integer[indexList.size()]);
         }
         return null;
     }

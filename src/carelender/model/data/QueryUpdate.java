@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import carelender.controller.Controller;
 import carelender.controller.Search;
+import carelender.controller.callbacks.OnConfirmedCallback;
 import carelender.model.Model;
 import carelender.model.data.QueryList.SearchParam;
 
@@ -14,9 +15,15 @@ import carelender.model.data.QueryList.SearchParam;
  */
 public class QueryUpdate extends QueryList {
     HashMap<UpdateParam, Object> updateParamsList = new HashMap<UpdateParam, Object>();;
-
+    EventList updateList;
+    
     public QueryUpdate() {
         super(QueryType.UPDATE);
+        updateList = new EventList();
+    }
+    
+    public void addEvent ( Event e ) {
+    	updateList.add(e.copy());
     }
     
     public void addUpdateParam (UpdateParam key, Object value) {
@@ -35,39 +42,60 @@ public class QueryUpdate extends QueryList {
 	@Override
 	public void controllerExecute() {
 		Controller.clearMessages();
-		EventList searchResults = searchExecute();
-		for ( Event event : searchResults ) {
-			//TODO: This will have to change if we want to do bulk updating.
-			HashMap<QueryUpdate.UpdateParam, Object> paramList = getUpdateParamsList();
+		//EventList searchResults = searchExecute();
+		
+		final OnConfirmedCallback updateConfirmedCallback = new OnConfirmedCallback() {
+			@Override
+			public void onConfirmed(boolean confirmed) {
+				if ( confirmed ) {
+					for ( Event event : updateList ) {
+						//TODO: This will have to change if we want to do bulk updating.
+						System.out.println("UPDATING:" + (String)updateParamsList.get(QueryUpdate.UpdateParam.NAME));
+						if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
+							String fromName = (String)updateParamsList.get(QueryUpdate.UpdateParam.NAME);
+							event.setName(fromName);
+						}
 
-			if ( paramList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
-				String fromName = (String)paramList.get(QueryUpdate.UpdateParam.NAME);
-				event.setName(fromName);
+						if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
+							DateRange[] fromDateRange = (DateRange[])updateParamsList.get(QueryUpdate.UpdateParam.DATE_RANGE);
+							event.setDateRange(fromDateRange);
+						}
+
+						//Call Model updateEvent function
+						//this.model.updateEvent ( event );
+						Model.getInstance().updateEvent(event);
+						System.out.println ( event.getName() );
+					}
+				} else {
+					
+				}
 			}
+		};
 
-			if ( paramList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
-				DateRange[] fromDateRange = (DateRange[])paramList.get(QueryUpdate.UpdateParam.DATE_RANGE);
-				event.setDateRange(fromDateRange);
+		if ( updateList.size() > 1 ) {
+			if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
+				Controller.displayMessage("Cannot bulk update dates! Will cause conflicts");
+			} else {
+			Controller.getBlockingStateController()
+	        .startConfirmation("Are you sure you want to update " + updateList.size() + " events? [Y/N]", updateConfirmedCallback);
 			}
-
-			//Call Model updateEvent function
-			//this.model.updateEvent ( event );
-			Model.getInstance().updateEvent(event);
-			System.out.println ( event.getName() );
+		} else if ( updateList.size() == 1 ) {
+			updateConfirmedCallback.onConfirmed(true);
 		}
+		
 	}
 
 	@Override
 	public EventList searchExecute() {
 		EventList returnList = new EventList();
 		//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
-		if (Model.getInstance().retrieveEvent() != null) {
+		/*if (Model.getInstance().retrieveEvent() != null) {
 			for (Event event : Model.getInstance().retrieveEvent()) {
 				if (Search.eventMatchesParams(event, getSearchParamsList())) {
 					returnList.add(event.copy());
 				}
 			}
-		}
+		}*/
 		return returnList;
 	}
 }
