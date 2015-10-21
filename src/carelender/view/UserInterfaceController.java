@@ -20,7 +20,7 @@ public class UserInterfaceController implements Initializable {
     @FXML
     private StackPane canvasPane;
 
-    private ArrayList<String> messageList;
+    public ArrayList<String> messageList;
     ResizableCanvas canvas;
 
     private UIType uiType;
@@ -175,6 +175,19 @@ public class UserInterfaceController implements Initializable {
         }
 
         userInterfaceRenderer.redraw();
+    }
+    
+    public String setUIType(UIType type) {
+    	uiType = type;
+        switch ( uiType ) {
+            case MONTH:
+                return "Month";
+            case WEEK:
+                return "Week";
+            case SETTING:
+            	return "Setting";
+        }
+		return "Error";
     }
 
     /**
