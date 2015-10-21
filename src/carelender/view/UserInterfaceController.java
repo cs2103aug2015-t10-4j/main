@@ -1,6 +1,7 @@
 package carelender.view;
 
 import carelender.controller.Controller;
+import carelender.model.data.EventList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -89,6 +90,10 @@ public class UserInterfaceController implements Initializable {
     
     public void setMessageList( ArrayList<String> messageList ) {
         this.messageList = messageList;
+    }
+
+    public void setTaskList ( EventList events ) {
+        monthViewRenderer.setTaskview(events);
     }
 
     public void setAutocompleteOptions( String[] autocompleteOptions ) {

@@ -79,12 +79,6 @@ public class QueryList extends QueryBase {
 	public void controllerExecute() {
 		EventList searchResults = searchExecute();
 		
-		//TODO: THIS IS TEST CODE INJECTION.
-		TaskRenderer taskTest = new TaskRenderer();
-		taskTest.addEvents(searchResults);
-		taskTest.drawTasks();
-		//END OF TEST.
-		
 		if ( this.searchParamsList.containsKey(SearchParam.SORT) ) {
 			SortParam sortType = (SortParam)this.searchParamsList.get(SearchParam.SORT);
 			Collections.sort(searchResults, this.sortComparators.get(sortType));
@@ -113,6 +107,7 @@ public class QueryList extends QueryBase {
 		}
 
 		Controller.setDisplayedList(searchResults);
+		Controller.displayTasks(searchResults);
 	}
 
 	@Override
