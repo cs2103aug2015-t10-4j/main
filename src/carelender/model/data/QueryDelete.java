@@ -13,16 +13,13 @@ public class QueryDelete extends QueryBase {
     private EventList events;
     public QueryDelete() {
         super(QueryType.DELETE);
-        events = null;
+        events = new EventList();
     }
 
 	//private Event selectedObject; // Used for confirmation
 
     public void addEvent ( Event e ) {
-        if ( events == null ) {
-            events = new EventList();
-        }
-        events.add(e);
+        events.add(e.copy());
     }
 
     public void setEventList ( EventList e ) {

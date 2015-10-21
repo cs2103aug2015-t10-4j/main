@@ -10,7 +10,6 @@ public class QueryUndo extends QueryBase{
 
 	@Override
 	public void controllerExecute() {
-		// TODO Auto-generated method stub
 		UndoManager.getInstance().undo();
 	}
 
