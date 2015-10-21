@@ -50,11 +50,10 @@ public class UserInterfaceController implements Initializable {
         monthViewRenderer = new MonthViewRenderer();
         weekViewRenderer = new WeekViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
-        popupRenderer = new PopupRenderer();
+        popupRenderer = new PopupRenderer("Hello");
 
         uiType = UIType.MONTH;
         this.setUI(uiType);
-        //canvas.setPopupRenderer(popupRenderer);
         
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
@@ -175,6 +174,14 @@ public class UserInterfaceController implements Initializable {
                 setUI(UIType.MONTH);
             }
         }
+    }
+    
+    public void displayPopup(CanvasRenderer popupRenderer){
+    	canvas.setPopupRenderer(popupRenderer);
+    }
+    
+    public void cleanPopup(){
+    	canvas.setPopupRenderer(null);
     }
 
     public enum UIType {
