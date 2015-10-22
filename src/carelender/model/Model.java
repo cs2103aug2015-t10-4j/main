@@ -35,6 +35,7 @@ public class Model {
 	private int currentUid;
 
 	private Model() {
+		filename = "events.dat";
 		log = Logger.getLogger(Model.class.getName());
 		File file = new File("events.dat");
 		events = new EventList();
@@ -52,7 +53,8 @@ public class Model {
 		events.add(eventObj);
 		updateUndoManager(eventObj, UndoType.ADD);		
 		//System.out.println("Added UID:" + currentUid + "Event Name: " + eventObj.getName());
-		return saveToFile("events.dat", events);
+		//System.out.println("HEEEEELLLOOO" +saveToFile("events.dat", events));
+		return saveToFile(filename, events);
 	}
 
 	public EventList retrieveEvent() {
@@ -67,7 +69,7 @@ public class Model {
 				events.remove(i);
 				eventObj.setUid(uid);
 				events.add(eventObj);
-				return saveToFile("events.dat", events);
+				return saveToFile(filename, events);
 			}
 		}
 		return false;
@@ -80,7 +82,7 @@ public class Model {
 				updateUndoManager(events.get(i), UndoType.DELETE);
 				events.remove(i);
 			}
-			saveToFile("events.dat", events);
+			saveToFile(filename, events);
 		}
 	}
 
@@ -96,7 +98,7 @@ public class Model {
 			}
 		}
 		updateUndoManager(deletedEventList);
-		saveToFile("events.dat", events);
+		saveToFile(filename, events);
 	}
 
 	public void undoAddedEvent(EventList eventList) {
@@ -107,7 +109,7 @@ public class Model {
 				}
 			}
 		}
-		saveToFile("events.dat", events);
+		saveToFile(filename, events);
 	}
 
 	public void undoUpdatedEvent(EventList eventList) {
@@ -116,18 +118,18 @@ public class Model {
 				if (events.get(j).getUid() == eventList.get(i).getUid()) {
 					events.remove(j);
 				}
-				saveToFile("events.dat", events);
+				saveToFile(filename, events);
 			}
 			events.add(eventList.get(i));
 		}
-		saveToFile("events.dat", events);
+		saveToFile(filename, events);
 	}
 
 	public void undoDeletedEvent(EventList eventList) {
 		for (int i = 0; i < eventList.size(); i++) {
 			events.add(eventList.get(i));
 		}
-		saveToFile("events.dat", events);
+		saveToFile(filename, events);
 	}
 
 	private void updateUndoManager(Event eventObj, UndoStep.UndoType type) {
@@ -152,6 +154,10 @@ public class Model {
 		UndoManager.getInstance().delete(eventList);
 	}
 
+	public void setSaveFileName(String input) {
+		filename = input;
+	}
+	
 	private boolean saveToFile(String filename, EventList eventList) {
 		try {
 			PrintWriter printWriter = new PrintWriter(filename);
