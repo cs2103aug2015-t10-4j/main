@@ -2,17 +2,21 @@ package carelender.view;
 
 import java.util.Calendar;
 
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 /**
  * Renders the calendar view
  */
 public class CalenderRenderer extends CanvasRenderer {
     int squaresToDraw; //Temp, testing purposes only
+    final String [] days = {"M", "T", "W", "T", "F", "S", "S"};
     public CalenderRenderer() {
-        squaresToDraw = 28;
+        squaresToDraw = 4*7;
+
     }
 
     double sidePadding;
@@ -26,32 +30,44 @@ public class CalenderRenderer extends CanvasRenderer {
 
     @Override
     public void draw(GraphicsContext gc, double x, double y, double width, double height) {
-        super.draw(gc, x, y, width,height);
+        super.draw(gc, x, y, width, height);
         calculateScaledDimensions(width, height);
         calulateCellProperties();
         
         Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY );
-        
 
-        Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight / 3.0);
+        gc.strokeRect(x, y, width, height);
+
+        Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight * 0.5);
+
+        gc.setFill(Color.web("#000"));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setFont(font);
+        gc.setTextBaseline(VPos.TOP);
+        for (int i = 0 ; i < 7; i++ ) {
+            double actualX = x + i * ( calCellWidth + calCellSpacing ) + sidePadding + offsetX + calCellWidth * 0.5;
+            double actualY = y + offsetY;
+            gc.fillText(days[i], actualX, actualY);
+        }
+
+        font = Font.loadFont("file:res/monaco.ttf", calCellHeight / 4.0);
         for (int i = 0; i < squaresToDraw; i++ ) {
             double actualX = x + i%7 * ( calCellWidth + calCellSpacing ) + sidePadding;
             double actualY = y + (i/7) * ( calCellHeight + calCellSpacing ) + sidePadding;
             actualX += offsetX;
-            actualY += offsetY;
-            
+            actualY += offsetY + calCellHeight * 0.5;
+
             String month = "";
             int date = c.get(Calendar.DATE);
-            if ( date == 1 ) {
-            	month = (c.get(Calendar.MONTH)+1) + "/";
+            if (date == 1) {
+                month = (c.get(Calendar.MONTH) + 1) + "/";
             }
-            
+
             RenderHelper.calendarSquare(gc, actualX, actualY,
-                                        calCellWidth, calCellHeight,
-                                        calCellShadowOffset, "F99",  month + date, font);
+                    calCellWidth, calCellHeight,
+                    calCellShadowOffset, "F99", month + date, font);
             c.add(Calendar.DATE, 1);
-            
             
         }
 
@@ -91,12 +107,12 @@ public class CalenderRenderer extends CanvasRenderer {
     }
 
     private void calulateCellProperties() {
-        sidePadding = scaledWidth * 0.05;
-        double usableWidth = scaledWidth * 0.95; // Give 2.5% padding on each size
+        sidePadding = scaledWidth * 0.025;
+        double usableWidth = scaledWidth - sidePadding * 2; // Give 2.5% padding on each size
         calCellWidth = usableWidth / 7.0;
         calCellSpacing = calCellWidth * 0.1; //Make spacing 10% of each cell size
         calCellWidth -= calCellSpacing;
-        calCellHeight = calCellWidth ;
+        calCellHeight = calCellWidth * 0.88;
         calCellShadowOffset = calCellSpacing * 0.7;
     }
 
