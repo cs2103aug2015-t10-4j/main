@@ -1,36 +1,47 @@
 package carelender.view;
 
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 public class TabRenderer extends CanvasRenderer {
-	public TabRenderer() {
+    String [] tabText = { "Week", "Month", "Floating", "Settings" };
+    public TabRenderer() {
     }
-	
-	@Override
-	public void draw(GraphicsContext gc, double x, double y, double width, double height) {
-		super.draw(gc, x, y, width,height);
 
-		double wordFstXRatio = 1.0/12.0;
-		double wordSndXRatio = 7.0/18.0;
-		double wordThdXRatio = 25.0/36.0;
-		double wordYRatio = 5.0/6.0;
-		double wordWidthRatio = 2.0/9.0;
-		double fontSizeRatio = 1.0/20.0;
-		double fontSize = width * fontSizeRatio; //Temporary
-		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
-		
-		gc.setFill(Color.web("#999"));
-		gc.fillRect(x, y, width, height);
-		
-		gc.setTextAlign(TextAlignment.CENTER);
-		gc.setFill(Color.web("#555"));
-		gc.setFont(font);
 
-		gc.fillText("Week", width*wordFstXRatio, height*wordYRatio, width*wordWidthRatio);
-		gc.fillText("Month", width*wordSndXRatio, height*wordYRatio, width*wordWidthRatio);
-		gc.fillText("Setting", width*wordThdXRatio, height*wordYRatio, width*wordWidthRatio);
-	}
+    @Override
+    void draw(GraphicsContext gc, double x, double y, double width, double height) {
+        draw(gc, x, y, width, height, -1);
+    }
+
+    public void draw(GraphicsContext gc, double x, double y, double width, double height, int tab) {
+        super.draw(gc, x, y, width,height);
+
+        double fontSizeRatio = 1.0/23.0;
+        double fontSize = width * fontSizeRatio; //Temporary
+        double textPos = width / 4.0;
+
+        Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+
+        gc.setFill(Color.web("#999"));
+        gc.fillRect(x, y, width, height);
+
+        gc.setTextBaseline(VPos.CENTER);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setFont(font);
+
+        for ( int i = 0 ; i < tabText.length; i++ ) {
+            double xPos = x + (i) * textPos + textPos * 0.5;
+            if ( i == tab ) {
+                gc.setFill(Color.web("#FF0"));
+            } else {
+                gc.setFill(Color.web("#555"));
+            }
+            gc.fillText(tabText[i], xPos, height * 0.5 );
+
+        }
+    }
 }

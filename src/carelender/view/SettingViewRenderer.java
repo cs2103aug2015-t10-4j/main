@@ -27,7 +27,7 @@ public class SettingViewRenderer extends CanvasRenderer {
 		double wordPaddingH = 8;
 		
         
-		tab.draw(gc, 0, 0, width, topBarHeight);
+		tab.draw(gc, 0, 0, width, topBarHeight, 3);
 
         gc.setTextAlign(TextAlignment.LEFT);
 

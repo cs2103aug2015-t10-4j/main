@@ -60,7 +60,7 @@ public class MonthViewRenderer extends CanvasRenderer {
 		double taskviewHeight = remainderHeight - calendarHeight - 2* windowPadding;
 
 
-        tab.draw(gc, 0, 0, width, topBarHeight);
+        tab.draw(gc, 0, 0, width, topBarHeight, 0 );
 
         /* Todo
          * replace magic numbers;
