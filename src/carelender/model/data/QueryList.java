@@ -100,6 +100,7 @@ public class QueryList extends QueryBase {
 			Controller.displayMessage("   matching: " + search);
 		}
 
+		/*
 		if (searchResults.size() > 0) {
 			Controller.displayMessage(searchResults.toString());
 		} else {
@@ -107,6 +108,7 @@ public class QueryList extends QueryBase {
 		}
 
 		Controller.setDisplayedList(searchResults);
+		*/
 		Controller.displayTasks(searchResults);
 	}
 

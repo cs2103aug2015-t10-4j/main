@@ -125,17 +125,12 @@ public class Search {
 	
 	public static boolean isEventInDateRange (Event eventToCheck,
 										Date startDate, Date endDate) {
-		Date earliestDate = eventToCheck.getEarliestDate();
-		Date latestDate = eventToCheck.getLatestDate();
-		
-		if (earliestDate != null && latestDate != null) {
-			
-			System.out.println ( earliestDate.getTime() + "     " + startDate.getTime());
-			System.out.println ( latestDate.getTime() + "     " + endDate.getTime());
-			if (!earliestDate.before(startDate) && !latestDate.after(endDate)) {
+		for ( DateRange dateRange : eventToCheck.getDateRange() ) {
+			if (!dateRange.getStart().before(startDate) && !dateRange.getEnd().after(endDate)) {
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	

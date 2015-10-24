@@ -174,6 +174,13 @@ public class TextRenderer {
     		drawText("#95bacd", "#000");
     	}
     }
+    
+    public double getTextHeight () {
+    	return (this.textLines.size() * this.charHeight)
+    			+ (((this.textLines.size() - 1) <= 0 ? 0 : (this.textLines.size() - 1)) * this.lineSpace)
+    			+ (this.yPadding * 2);
+    }
+    
     private String separateEndline ( String toParse ) {
     	if (this.gc == null) {
     		System.out.println("Error");

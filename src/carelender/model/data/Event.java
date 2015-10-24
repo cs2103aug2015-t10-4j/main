@@ -83,6 +83,24 @@ public class Event implements Serializable{
         }
         return firstDate;
     }
+    
+    public Date getEarliestDateFromNow () {
+    	Date currentDate = new Date();
+        Date firstDate = null;
+        if ( this.dateRange == null ) return null;
+        for (DateRange dateR : this.dateRange) {
+        	if (dateR.getStart().after(currentDate)) {
+	            if (firstDate == null) {
+	                firstDate = dateR.getStart();
+	            } else {
+	                if (dateR.getStart().before(firstDate)) {
+	                    firstDate = dateR.getStart();
+	                }
+	            }
+        	}
+        }
+        return firstDate;
+    }
 
     public long getUid() {
         return uid;
