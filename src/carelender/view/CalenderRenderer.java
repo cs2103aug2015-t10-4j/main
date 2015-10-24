@@ -41,7 +41,7 @@ public class CalenderRenderer extends CanvasRenderer {
 
         Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight * 0.5);
 
-        gc.setFill(Color.web("#000"));
+        gc.setFill(Color.web("556370"));
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(font);
         gc.setTextBaseline(VPos.TOP);
@@ -66,7 +66,7 @@ public class CalenderRenderer extends CanvasRenderer {
 
             RenderHelper.calendarSquare(gc, actualX, actualY,
                     calCellWidth, calCellHeight,
-                    calCellShadowOffset, "F99", month + date, font);
+                    calCellShadowOffset, "556370", month + date, font);
             c.add(Calendar.DATE, 1);
             
         }

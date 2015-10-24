@@ -89,7 +89,7 @@ public class TaskRenderer extends CanvasRenderer {
             String key = entry.getKey();
             EventList value = entry.getValue();
 
-            this.gc.setFill (Color.web("999"));
+            this.gc.setFill (Color.web("757575"));
             this.gc.fillRect(xCurrent, yCurrent, this.width - (this.xPadding * 2), this.yPadding * 0.5);
             
             yCurrent += (this.yPadding * 1.5);
@@ -103,14 +103,14 @@ public class TaskRenderer extends CanvasRenderer {
 	                this.taskBarRender.setContent(event);
 	                
 	                if ( (remainingHeight - this.taskBarRender.getHeight()) >= 0 ) {
-	                	this.gc.setFill(Color.web("979"));
+	                	this.gc.setFill(Color.web("757575"));
 	                    this.gc.setTextAlign(TextAlignment.LEFT);
 	                    this.gc.setFont(font);
 	                    this.gc.setTextBaseline(VPos.TOP);
 	                    
 	                    this.gc.fillText ( String.valueOf(index), xCurrent + dateBarWidth - this.xPadding, yCurrent );
 	                    
-		                this.taskBarRender.drawTaskBar("999", "000");
+		                this.taskBarRender.drawTaskBar("757575", "eeeff0");
 		                yCurrent += ( this.taskBarRender.getHeight() + this.yPadding );
 		                
 		                remainingHeight -= (this.taskBarRender.getHeight() + this.yPadding);
@@ -125,7 +125,7 @@ public class TaskRenderer extends CanvasRenderer {
             /*this.gc.setFill (Color.web("999"));
             this.gc.fillRect(xPositionDate, yPositionDate, dateBarWidth, dateBarHeight);*/
 
-            this.gc.setFill(Color.web("979"));
+            this.gc.setFill(Color.web("4ecdc4"));
             this.gc.setTextAlign(TextAlignment.LEFT);
             this.gc.setFont(font);
             this.gc.setTextBaseline(VPos.TOP);

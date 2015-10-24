@@ -31,7 +31,7 @@ public class RenderHelper {
         gc.setFill(Color.web(color));
         gc.fillRect(x, y, w, h);
 
-        gc.setFill(Color.web("#000"));
+        gc.setFill(Color.web("4ecdc4"));
         gc.setTextAlign(TextAlignment.RIGHT);
         gc.setFont(font);
         gc.setTextBaseline(VPos.BOTTOM);
