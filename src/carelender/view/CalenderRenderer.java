@@ -2,6 +2,7 @@ package carelender.view;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import carelender.model.data.DateRange;
 import carelender.model.data.Event;
@@ -24,13 +25,18 @@ public class CalenderRenderer extends CanvasRenderer {
 
     private EventList monthEvents = null;
     private int[][] monthEventNumbers;
-    private Date startDate;
-    private Date endDate;
+    private Date monthStartTime;
+    private Date monthEndTime;
     
     public CalenderRenderer() {
         squaresToDraw = 4*7;
         
         monthEventNumbers = new int[squaresToDraw][3];
+        for(int i=0; i<squaresToDraw; i++) {
+        	for (int j=0; j<3; j++){
+        		monthEventNumbers[i][j] = 0;
+        	}
+        }
         
         monthListQuery = new QueryList();
         
@@ -40,18 +46,18 @@ public class CalenderRenderer extends CanvasRenderer {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR, 0);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        startDate = cal.getTime();
+        monthStartTime = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, squaresToDraw);
-        endDate = cal.getTime();
+        monthEndTime = cal.getTime();
 
-        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_START, startDate);
-        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_END, endDate);
+        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_START, monthStartTime);
+        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_END, monthEndTime);
         refreshEventList();
     }
 
     public void refreshEventList() {
         monthEvents = monthListQuery.searchExecute();
-        //updateEventNumbers();
+        updateEventNumbers();
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
     
@@ -60,14 +66,39 @@ public class CalenderRenderer extends CanvasRenderer {
     		Event currentEvent = monthEvents.get(i);
     		for (int j=0; j<currentEvent.getDateRange().length; i++) {
     			DateRange currentRage = currentEvent.getDateRange()[j];
-    			Date start = currentRage.getStart();
-    			Date end = currentRage.getEnd();
-    			//get the start and end time of these 28 days
-    			//check if in range; only get the part that is in range
-    			//determine which time period it is during the day
-    			//calculate the offset -> get the correct day to update
-    			//update the correct slot(s)
-    			//update 2-D array
+    			Date taskStartTime = currentRage.getStart();
+    			Date taskEndTime = currentRage.getEnd();
+    			if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
+	    			if (taskStartTime.before(monthStartTime)) {
+	    				taskStartTime = monthStartTime;
+	    			}
+	    			if (taskEndTime.after(monthEndTime)) {
+	    				taskEndTime = monthEndTime;
+	    			}
+	    			long offsetStartMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
+	    			long offsetStartDays = TimeUnit.MILLISECONDS.toDays(offsetStartMilliseconds);
+	    			long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) 24;
+	    			int offsetStartSlot = (int)offsetStartHours % 8;
+	    			long offsetEndMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
+	    			long offsetEndDays = TimeUnit.MILLISECONDS.toDays(offsetEndMilliseconds);
+	    			long offsetEndHours = TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) % (long) 24;
+	    			int offsetEndSlot = (int)offsetEndHours % 8;
+	    			for(int t=(int)offsetStartDays; t<=(int)offsetEndDays; t++) {
+	    				if(t == (int) offsetStartDays){
+	    					for(int a=offsetStartSlot; a<3; a++) {
+	    						monthEventNumbers[t][a]++;
+	    					}
+	    				} else if (t == (int)offsetEndDays){
+	    					for(int a=0; a<offsetEndSlot; a++) {
+	    						monthEventNumbers[t][a]++;
+	    					}
+	    				} else {
+	    					for(int a=0; a<3; a++){
+	    						monthEventNumbers[t][a]++;
+	    					}
+	    				}
+	    			}
+    			}
     		}
     	}
     }
