@@ -104,11 +104,11 @@ public class TaskRenderer extends CanvasRenderer {
 	                
 	                if ( (remainingHeight - this.taskBarRender.getHeight()) >= 0 ) {
 	                	this.gc.setFill(Color.web("757575"));
-	                    this.gc.setTextAlign(TextAlignment.LEFT);
+	                    this.gc.setTextAlign(TextAlignment.RIGHT);
 	                    this.gc.setFont(font);
 	                    this.gc.setTextBaseline(VPos.TOP);
 	                    
-	                    this.gc.fillText ( String.valueOf(index), xCurrent + dateBarWidth - this.xPadding, yCurrent );
+	                    this.gc.fillText ( String.valueOf(index), xCurrent + dateBarWidth, yCurrent );
 	                    
 		                this.taskBarRender.drawTaskBar("757575", "eeeff0");
 		                yCurrent += ( this.taskBarRender.getHeight() + this.yPadding );
