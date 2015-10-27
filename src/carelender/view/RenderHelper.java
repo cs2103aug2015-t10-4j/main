@@ -23,8 +23,9 @@ public class RenderHelper {
      * @param dropOffset
      * @param color
      * @param text
+     * @param dailyEventNumbers 
      */
-    public static void calendarSquare ( GraphicsContext gc,  double x, double y, double w, double h, double dropOffset, String color, String text, Font font ) {
+    public static void calendarSquare ( GraphicsContext gc,  double x, double y, double w, double h, double dropOffset, String color, String text, Font font, int[] dailyEventNumbers ) {
         gc.setFill(Color.web("#999"));
         gc.fillRect(x + dropOffset, y + dropOffset, w, h);
 
