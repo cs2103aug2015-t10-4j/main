@@ -101,7 +101,7 @@ public class MonthViewRenderer extends CanvasRenderer {
         autocompleteRenderer.setAutocompleteOptions(options);
     }
 
-    public void refresh() {
+    public void refreshData() {
         calender.refreshEventList();
     }
 }

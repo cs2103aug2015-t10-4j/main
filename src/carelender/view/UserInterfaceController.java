@@ -139,7 +139,6 @@ public class UserInterfaceController implements Initializable {
     }
 
     public void refreshOutputField() {
-
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < messageList.size(); i++) {
             stringBuilder.append(messageList.get(i));
@@ -149,7 +148,7 @@ public class UserInterfaceController implements Initializable {
         switch ( uiType ) {
             case MONTH:
                 monthViewRenderer.setMessageBoxText(stringBuilder.toString());
-                monthViewRenderer.refresh();
+                monthViewRenderer.refreshData();
                 break;
             case WEEK:
 
@@ -160,7 +159,6 @@ public class UserInterfaceController implements Initializable {
                 break;
         }
         userInterfaceRenderer.redraw();
-
     }
 
     public void setUI(UIType type) {

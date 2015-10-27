@@ -207,16 +207,15 @@ public class Controller {
                 break;
             case LIST:
                 currentListQuery = (QueryList)query;
-                refreshDisplay();
                 break;
             case EXIT:
                 System.exit(0);
                 break;
             default:
                 query.controllerExecute();
-                refreshDisplay();
                 break;
         }
+        refreshDisplay();
     }
 
     /**
@@ -257,6 +256,7 @@ public class Controller {
         }
 
         currentListQuery.controllerExecute();
+        userInterfaceController.refreshOutputField();
     }
 
     /**
