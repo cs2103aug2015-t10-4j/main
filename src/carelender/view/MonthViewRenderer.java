@@ -100,4 +100,8 @@ public class MonthViewRenderer extends CanvasRenderer {
     public void setAutocompleteOptions ( String [] options ) {
         autocompleteRenderer.setAutocompleteOptions(options);
     }
+
+    public void refresh() {
+        calender.refreshEventList();
+    }
 }

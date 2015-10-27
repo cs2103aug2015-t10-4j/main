@@ -9,10 +9,17 @@ import carelender.view.UserInterfaceController;
 public class QuerySwitchUI extends QueryBase {
     //Flag to determine if it's a settings switch or a UI toggle
     private boolean isSettingSwitch;
+    private UserInterfaceController.UIType uiType = null;
 
     public QuerySwitchUI(boolean isSettingSwitch) {
         super(QueryType.SWITCHUI);
         this.isSettingSwitch = isSettingSwitch;
+        uiType = null;
+    }
+    public QuerySwitchUI(boolean isSettingSwitch, UserInterfaceController.UIType uiType) {
+        super(QueryType.SWITCHUI);
+        this.isSettingSwitch = isSettingSwitch;
+        this.uiType =  uiType;
     }
 
     @Override
@@ -20,7 +27,11 @@ public class QuerySwitchUI extends QueryBase {
         if ( isSettingSwitch ) {
             Controller.getGUI().setUI(UserInterfaceController.UIType.SETTING);
         } else {
-            Controller.getGUI().toggleUI();
+            if ( uiType != null ) {
+                Controller.getGUI().setUI(uiType);
+            } else {
+                Controller.getGUI().toggleUI();
+            }
         }
     }
 

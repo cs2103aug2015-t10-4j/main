@@ -14,9 +14,7 @@ import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
 import jdk.internal.util.xml.impl.Input;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Does all the logic of the application
@@ -57,6 +55,8 @@ public class Controller {
         	System.out.println("Username: " + userName);
         }
         currentCommand = 0;
+
+
     }
 
 

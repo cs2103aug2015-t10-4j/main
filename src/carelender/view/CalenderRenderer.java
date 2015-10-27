@@ -1,7 +1,10 @@
 package carelender.view;
 
 import java.util.Calendar;
+import java.util.Date;
 
+import carelender.model.data.EventList;
+import carelender.model.data.QueryList;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -12,11 +15,34 @@ import javafx.scene.text.TextAlignment;
  * Renders the calendar view
  */
 public class CalenderRenderer extends CanvasRenderer {
+    private QueryList monthListQuery;
+
     int squaresToDraw; //Temp, testing purposes only
     final String [] days = {"M", "T", "W", "T", "F", "S", "S"};
+
+    EventList monthEvents = null;
     public CalenderRenderer() {
         squaresToDraw = 4*7;
 
+        monthListQuery = new QueryList();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        Date startDate = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, squaresToDraw);
+        Date endDate = cal.getTime();
+
+        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_START, startDate);
+        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_END, endDate);
+        refreshEventList();
+    }
+
+    public void refreshEventList () {
+        monthEvents = monthListQuery.searchExecute();
+        System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
 
     double sidePadding;
