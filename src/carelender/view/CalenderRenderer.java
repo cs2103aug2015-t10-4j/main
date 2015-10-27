@@ -100,10 +100,14 @@ public class CalenderRenderer extends CanvasRenderer {
                     //System.out.println("EndTime is away from the first day by " + TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) + " hours");
                     //System.out.println("It ends at " + offsetEndHours + " of that day");
         			int offsetEndSlot = (int)offsetEndHours / 8;
-                    //System.out.println("It should fill in the " + offsetStartSlot + " slot");
+                    //System.out.println("It should fill in the " + offsetEndSlot + " slot");
         			
                     for(int t=(int)offsetStartDays; t<=(int)offsetEndDays; t++) {
-        				if(t == (int) offsetStartDays){
+                    	if(t == (int) offsetStartDays && t == (int)offsetEndDays){
+                    		for(int a=offsetStartSlot; a<=offsetEndSlot; a++) {
+        						monthEventNumbers[t][a]++;
+        					}
+                    	} else if(t == (int) offsetStartDays){
         					for(int a=offsetStartSlot; a<3; a++) {
         						monthEventNumbers[t][a]++;
         					}
@@ -112,7 +116,6 @@ public class CalenderRenderer extends CanvasRenderer {
         						monthEventNumbers[t][a]++;
         					}
         				} else {
-        					//System.out.println("I am here bitch with t " + t);
 	        				for(int a=0; a<3; a++){
 	        					monthEventNumbers[t][a]++;
 	        				}
