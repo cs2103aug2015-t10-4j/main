@@ -76,7 +76,7 @@ public class CalenderRenderer extends CanvasRenderer {
     			Date taskEndTime = currentRage.getEnd();
     			//System.out.println("end time of the event " + taskEndTime);
     			if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
-                    System.out.println("In range");
+                    //System.out.println("In range");
         			if (taskStartTime.before(monthStartTime)) {
         				taskStartTime = monthStartTime;
         			}
