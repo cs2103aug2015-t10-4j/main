@@ -128,6 +128,7 @@ public class UserInterfaceController implements Initializable {
         messageList.clear();
         refreshOutputField();
     }
+
     public void displayMessage( String message ) {
         messageList.add(message);
         refreshOutputField();
@@ -138,6 +139,7 @@ public class UserInterfaceController implements Initializable {
     }
 
     public void refreshOutputField() {
+
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < messageList.size(); i++) {
             stringBuilder.append(messageList.get(i));
@@ -147,6 +149,7 @@ public class UserInterfaceController implements Initializable {
         switch ( uiType ) {
             case MONTH:
                 monthViewRenderer.setMessageBoxText(stringBuilder.toString());
+                monthViewRenderer.refresh();
                 break;
             case WEEK:
 
@@ -206,7 +209,7 @@ public class UserInterfaceController implements Initializable {
         }
     }
     
-    public void displayPopup( String message ){
+    public void displayPopup( String message ) {
         popupRenderer.setMessage(message);
         userInterfaceRenderer.setPopupRenderer(popupRenderer);
         userInterfaceRenderer.redraw();
@@ -218,7 +221,7 @@ public class UserInterfaceController implements Initializable {
     }
 
     public enum UIType {
-        MONTH, WEEK, SETTING
+        MONTH, WEEK, FLOATING, SETTING
     }
 
 }

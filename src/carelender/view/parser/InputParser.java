@@ -2,6 +2,7 @@ package carelender.view.parser;
 
 import carelender.model.data.*;
 import carelender.model.data.QueryUpdate.UpdateParam;
+import carelender.view.UserInterfaceController;
 import carelender.view.parser.CommandKeyword.DataPosition;
 import net.fortuna.ical4j.model.DateTime;
 
@@ -80,6 +81,22 @@ public class InputParser {
 
         newCommand = new Command("switch", QueryType.SWITCHUI);
         newCommand.setDescription("Switches the screen");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("month", QueryType.SWITCHUI);
+        newCommand.setDescription("Shows the calendar view");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("week", QueryType.SWITCHUI);
+        newCommand.setDescription("Shows the week view");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("float", QueryType.SWITCHUI);
+        newCommand.setDescription("Shows the floating task screen");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("floating", QueryType.SWITCHUI);
+        newCommand.setDescription("Shows the floating task screen");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("settings", QueryType.SWITCHUI);
@@ -238,7 +255,13 @@ public class InputParser {
                 newQuery = new QueryHelp();
                 break;
             case SWITCHUI:
-                if ( matchedCommand.getCommand().equalsIgnoreCase("switch") ) {
+                if ( matchedCommand.getCommand().equalsIgnoreCase("week") ) {
+                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.WEEK);
+                } else if ( matchedCommand.getCommand().equalsIgnoreCase("month") ) {
+                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.MONTH);
+                } else if ( matchedCommand.getCommand().startsWith("float") ) {
+                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.FLOATING);
+                } else if ( matchedCommand.getCommand().equalsIgnoreCase("switch") ) {
                     newQuery = new QuerySwitchUI(false);
                 } else { //Go to settings
                     newQuery = new QuerySwitchUI(true);
