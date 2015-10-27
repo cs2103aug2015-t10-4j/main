@@ -38,15 +38,20 @@ public class RenderHelper {
         gc.setTextBaseline(VPos.BOTTOM);
         gc.fillText(text, x + w - dropOffset * 0.5 , y + h - dropOffset * 0.5 );
         
+        double x_offset;
+        double y_offset;
+        
         for (int i=0; i<dailyEventNumbers.length; i++) {
         	int numArc = dailyEventNumbers[i];
+        	
         	if (numArc > 3) {
         		numArc = 3;
         	}
         	for (int j=0; j<numArc; j++) {
-        		System.out.println("I tried with i " + i + " j " + j);
         		gc.setFill(Color.web("4ecdc4"));
-        		gc.arc(x + w*((double) j + 1)/40.0, y + h*((double) i + 1)/40.0, w/40, h/40, 0, 0);
+        		x_offset = x + w*((double) j)/10.0 + w*((double) j + 1.0)/20.0;
+        		y_offset = y + h*((double) i)/10.0 + h*((double) i + 1.0)/20.0;
+        		gc.fillRect(x_offset, y_offset, w/10.0, h/10.0);
         	}
         }
     }
