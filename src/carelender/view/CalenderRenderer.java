@@ -3,6 +3,8 @@ package carelender.view;
 import java.util.Calendar;
 import java.util.Date;
 
+import carelender.model.data.DateRange;
+import carelender.model.data.Event;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
 import javafx.geometry.VPos;
@@ -20,31 +22,56 @@ public class CalenderRenderer extends CanvasRenderer {
     int squaresToDraw; //Temp, testing purposes only
     final String [] days = {"M", "T", "W", "T", "F", "S", "S"};
 
-    EventList monthEvents = null;
+    private EventList monthEvents = null;
+    private int[][] monthEventNumbers;
+    private Date startDate;
+    private Date endDate;
+    
     public CalenderRenderer() {
         squaresToDraw = 4*7;
-
+        
+        monthEventNumbers = new int[squaresToDraw][3];
+        
         monthListQuery = new QueryList();
+        
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR, 0);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        Date startDate = cal.getTime();
+        startDate = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, squaresToDraw);
-        Date endDate = cal.getTime();
+        endDate = cal.getTime();
 
         monthListQuery.addSearchParam(QueryList.SearchParam.DATE_START, startDate);
         monthListQuery.addSearchParam(QueryList.SearchParam.DATE_END, endDate);
         refreshEventList();
     }
 
-    public void refreshEventList () {
+    public void refreshEventList() {
         monthEvents = monthListQuery.searchExecute();
+        //updateEventNumbers();
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
-
+    
+    private void updateEventNumbers() {
+    	for (int i=0; i<monthEvents.size(); i++) {
+    		Event currentEvent = monthEvents.get(i);
+    		for (int j=0; j<currentEvent.getDateRange().length; i++) {
+    			DateRange currentRage = currentEvent.getDateRange()[j];
+    			Date start = currentRage.getStart();
+    			Date end = currentRage.getEnd();
+    			//get the start and end time of these 28 days
+    			//check if in range; only get the part that is in range
+    			//determine which time period it is during the day
+    			//calculate the offset -> get the correct day to update
+    			//update the correct slot(s)
+    			//update 2-D array
+    		}
+    	}
+    }
+    
     double sidePadding;
     double calCellWidth;
     double calCellHeight;
