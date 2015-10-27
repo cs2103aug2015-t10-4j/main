@@ -57,7 +57,7 @@ public class CalenderRenderer extends CanvasRenderer {
 
     public void refreshEventList() {
         monthEvents = monthListQuery.searchExecute();
-        updateEventNumbers();
+        //updateEventNumbers();
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
     
@@ -100,6 +100,13 @@ public class CalenderRenderer extends CanvasRenderer {
 	    			}
     			}
     		}
+    	}
+    	drawEventArray();
+    }
+    
+    private void drawEventArray(){
+    	for(int i=0; i<28; i++){
+    		System.out.println("Day " + i + " [" + monthEventNumbers[i][0] + "]" + " [" + monthEventNumbers[i][1] + "]" + " [" + monthEventNumbers[i][2] + "]\n");
     	}
     }
     
