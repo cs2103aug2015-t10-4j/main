@@ -128,7 +128,7 @@ public class UserInterfaceController implements Initializable {
 
     public void setAutocompleteOptions( String[] autocompleteOptions ) {
         userInterfaceRenderer.setAutocompleteOptions(autocompleteOptions);
-        userInterfaceRenderer.redraw();
+        refresh();
     }
 
     /**
@@ -179,6 +179,10 @@ public class UserInterfaceController implements Initializable {
 
                 break;
         }
+        refresh();
+    }
+
+    public void refresh() {
         userInterfaceRenderer.redraw();
     }
 
@@ -199,7 +203,7 @@ public class UserInterfaceController implements Initializable {
                 break;
         }
 
-        userInterfaceRenderer.redraw();
+        refresh();
     }
 
     /**
@@ -221,12 +225,12 @@ public class UserInterfaceController implements Initializable {
     public void displayPopup( String message ) {
         popupRenderer.setMessage(message);
         userInterfaceRenderer.setPopupRenderer(popupRenderer);
-        userInterfaceRenderer.redraw();
+        refresh();
     }
     
     public void clearPopup(){
         userInterfaceRenderer.setPopupRenderer(null);
-        userInterfaceRenderer.redraw();
+        refresh();
     }
 
     public enum UIType {
