@@ -36,6 +36,8 @@ public class Model {
 	private EventList events;
 	private ArrayList<EventList> cache;
 	private ArrayList<String> storage;
+	File fileName;
+	File folderName;
 
 	private int currentUid;
 
@@ -47,10 +49,10 @@ public class Model {
 		System.out.println("Current Month: " + cal.get(Calendar.MONTH));
 		
 		//Initiate the Directory
-		File folderName = new File(FOLDER_NAME);
+		folderName = new File(FOLDER_NAME);
 		folderName.mkdir();
 
-		File fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
+		fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
 		events = new EventList();	
 		if (!fileName.exists()) {
 			try {
@@ -76,7 +78,7 @@ public class Model {
 		updateUndoManager(eventObj, UndoType.ADD);		
 		//System.out.println("Added UID:" + currentUid + "Event Name: " + eventObj.getName());
 		//System.out.println("HEEEEELLLOOO" +saveToFile("events.dat", events));
-		return saveToFile(filename, events);
+		return saveToFile(fileName, events);
 	}
 
 	public EventList retrieveEvent() {
@@ -91,7 +93,7 @@ public class Model {
 				events.remove(i);
 				eventObj.setUid(uid);
 				events.add(eventObj);
-				return saveToFile(filename, events);
+				return saveToFile(fileName, events);
 			}
 		}
 		return false;
@@ -103,7 +105,7 @@ public class Model {
 				updateUndoManager(events.get(i), UndoType.DELETE);
 				events.remove(i);
 			}
-			saveToFile(filename, events);
+			saveToFile(fileName, events);
 		}
 	}
 	// Delete multiple Events
@@ -118,7 +120,7 @@ public class Model {
 			}
 		}
 		updateUndoManager(deletedEventList);
-		saveToFile(filename, events);
+		saveToFile(fileName, events);
 	}
 
 	public void undoAddedEvent(EventList eventList) {
@@ -129,7 +131,7 @@ public class Model {
 				}
 			}
 		}
-		saveToFile(filename, events);
+		saveToFile(fileName, events);
 	}
 
 	public void undoUpdatedEvent(EventList eventList) {
@@ -138,18 +140,18 @@ public class Model {
 				if (events.get(j).getUid() == eventList.get(i).getUid()) {
 					events.remove(j);
 				}
-				saveToFile(filename, events);
+				saveToFile(fileName, events);
 			}
 			events.add(eventList.get(i));
 		}
-		saveToFile(filename, events);
+		saveToFile(fileName, events);
 	}
 
 	public void undoDeletedEvent(EventList eventList) {
 		for (int i = 0; i < eventList.size(); i++) {
 			events.add(eventList.get(i));
 		}
-		saveToFile(filename, events);
+		saveToFile(fileName, events);
 	}
 
 	private void updateUndoManager(Event eventObj, UndoStep.UndoType type) {
@@ -178,7 +180,7 @@ public class Model {
 		filename = input;
 	}
 	
-	private boolean saveToFile(String filename, EventList eventList) {
+	private boolean saveToFile(File filename, EventList eventList) {
 		try {
 			PrintWriter printWriter = new PrintWriter(filename);
 			Gson gson = new Gson();
