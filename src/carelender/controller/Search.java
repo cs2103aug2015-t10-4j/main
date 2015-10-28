@@ -36,20 +36,17 @@ public class Search {
 		if (hasDateRange(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
-			assert ( startDate != null && endDate != null ) : "DATE_START or DATE_END paired with null object in HashMap.";
 			if (startDate instanceof Date && endDate instanceof Date) {
 				match = isEventInDateRange(eventToCheck, 
 												(Date)startDate, (Date)endDate);
 			}
 		} else if (hasStartDate(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
-			assert ( startDate != null ) : "DATE_START paired with null object in HashMap.";
 			if (startDate instanceof Date) {
 				match = isEventAfterDate(eventToCheck, (Date)startDate);
 			}
 		} else if (hasEndDate(paramsList)) {
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
-			assert ( endDate != null ) : "DATE_END paired with null object in HashMap.";
 			if (endDate instanceof Date) {
 				match = isEventBeforeDate(eventToCheck, (Date)endDate);
 			}
@@ -117,7 +114,7 @@ public class Search {
 	
 	public static boolean isEventAfterDate (Event eventToCheck,
 										Date endDate) {
-		Date earliestDate = eventToCheck.getEarliestDate();
+		Date earliestDate = eventToCheck.getEarliestDateFromNow();
 		if (earliestDate != null) {
 			System.out.println ( earliestDate.getTime() + "     " + endDate.getTime());
 			if (!earliestDate.before(endDate)) {
