@@ -65,6 +65,8 @@ public class TaskBarRenderer {
 			    this.timeText.addTextEllipsis(timeFormat.format(date.getStart())
 						+ " to " + timeFormat.format(date.getEnd()));
 			} else {
+				this.timeText.addTextEllipsis(timeFormat.format(date.getStart())
+						+ " to " + timeFormat.format(date.getEnd()) + "[OVER]");
 				long difference = date.getEnd().getTime() - date.getStart().getTime();
 				long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
 			    numOfDays += days;

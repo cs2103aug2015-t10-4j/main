@@ -20,6 +20,7 @@ public class ReminderManager {
 	}
 
 	private PriorityQueue<Reminder> reminders;
+	Calendar cal;
 
 	private ReminderManager() {
 		// Calendar cal = Calendar.getInstance();
@@ -31,9 +32,9 @@ public class ReminderManager {
 		reminders.add(reminder);
 		return true;
 	}
-
+	
 	public ReminderList getReminders() {
-		Calendar cal = Calendar.getInstance();
+		cal = Calendar.getInstance();
 
 		ReminderList reminderList = new ReminderList();
 		while (!reminders.isEmpty()) {
@@ -45,6 +46,11 @@ public class ReminderManager {
 			}
 		}
 		return reminderList;
+	}
+	
+	public void snoozeReminder(Reminder reminder){
+		reminder.snooze();
+		reminders.add(reminder);
 	}
 
 }
