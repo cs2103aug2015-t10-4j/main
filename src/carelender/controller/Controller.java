@@ -227,8 +227,9 @@ public class Controller {
 
 
     public static void showHelp() {
-        userInterfaceController.displayMessage("Available Commands:");
-        userInterfaceController.displayMessage(InputParser.getInstance().showCommandList());
+        //userInterfaceController.displayMessage("Available Commands:");
+        //userInterfaceController.displayMessage(InputParser.getInstance().showCommandList());
+        blockingStateController.startPopup(InputParser.getInstance().showCommandList());
     }
 
     public static void printWelcomeMessage() {
@@ -271,7 +272,7 @@ public class Controller {
     }
 
 
-    public static void clearMessages ( ) {
+    public static void clearMessages () {
         userInterfaceController.clearMessageLog();
     }
 

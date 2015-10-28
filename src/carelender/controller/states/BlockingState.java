@@ -8,5 +8,6 @@ public enum BlockingState {
     EVENTSELECTION,       //Used for selecting multiple events.
     SELECTION,      //Used for selecting options
     CONFIRMING,     //A confirmation screen for deleting or editing items
-    REMINDER
+    REMINDER,
+    POPUP
 }

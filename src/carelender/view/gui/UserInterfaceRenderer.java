@@ -4,6 +4,7 @@ import carelender.view.gui.components.AutocompleteRenderer;
 import carelender.view.gui.components.CanvasRenderer;
 import carelender.view.gui.components.TextRenderer;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * Used to render the popup and normal layers
@@ -22,7 +23,11 @@ public class UserInterfaceRenderer extends CanvasRenderer {
             mainRenderer.draw(gc, 0, 0, width, height);
         }
         if ( popupRenderer != null ) {
-            popupRenderer.draw(gc, width / 3.0, height / 3.0, width / 3.0, height / 3.0);
+            gc.setGlobalAlpha(0.4);
+            gc.setFill(Color.web("#000"));
+            gc.fillRect(x,y,width,height);
+            gc.setGlobalAlpha(1);
+            popupRenderer.draw(gc, width * 0.1, height * 0.1, width * 0.8, height * 0.8);
         }
 
         autocompleteRenderer.draw(gc, 0, height, width, 0);

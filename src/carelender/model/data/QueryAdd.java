@@ -57,7 +57,6 @@ public class QueryAdd extends QueryBase {
             }
         }
 
-
         /*QueryList checkClashesQuery = new QueryList();
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_END, queryAdd.getTime());

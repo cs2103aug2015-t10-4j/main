@@ -46,6 +46,12 @@ public class BlockingStateController {
             case CONFIRMING:
                 stateConfirming(userInput);
                 break;
+            case REMINDER:
+                stateReminder(userInput);
+                break;
+            case POPUP:
+                statePopup(userInput);
+                break;
 
             default:
                 return false;
@@ -104,6 +110,11 @@ public class BlockingStateController {
         onConfirmedCallback = callback;
         /*Controller.clearMessages();
         Controller.displayMessage(message);*/
+    }
+
+    public void startPopup ( String message ) {
+        Controller.getGUI().displayPopup(message);
+        blockingState = BlockingState.POPUP;
     }
 
 
@@ -165,6 +176,15 @@ public class BlockingStateController {
         } else {
             Controller.getGUI().displayPopup(ErrorMessages.invalidConfirmation());
         }
+    }
+
+    private void statePopup(String userInput) {
+        blockingState = BlockingState.NONE;
+        Controller.getGUI().clearPopup();
+    }
+
+    private void stateReminder(String userInput) {
+        blockingState = BlockingState.NONE;
     }
 
 

@@ -140,11 +140,13 @@ public class UserInterfaceController implements Initializable {
         timelineViewRenderer.setAnnouncementBoxText(message);
     }
     public void clearMessageLog() {
+        System.out.println("Clear message");
         messageList.clear();
         refreshOutputField();
     }
 
     public void displayMessage( String message ) {
+        System.out.println("Add message " + message);
         messageList.add(message);
         refreshOutputField();
     }
@@ -156,6 +158,7 @@ public class UserInterfaceController implements Initializable {
     }
 
     public void refreshOutputField() {
+        System.out.println("Refreshing messages");
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < messageList.size(); i++) {
             stringBuilder.append(messageList.get(i));
