@@ -14,6 +14,14 @@ public class Reminder {
 		this.reTime = reTime;
 	}
 	
+	public void setReTime(Calendar reTime) {
+		this.reTime = reTime;
+	}
+	
+	public void snooze(){
+		reTime.add(Calendar.MINUTE, 10);
+	}
+	
 	public Calendar getReTime(){
 		return reTime;
 	}
@@ -21,5 +29,6 @@ public class Reminder {
 	public Date getStart(){
 		return start;
 	}
+	
 	
 }
