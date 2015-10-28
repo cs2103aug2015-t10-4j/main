@@ -61,8 +61,10 @@ public class Model {
 				log.log(Level.FINE, "Failed to create file");
 				e.printStackTrace();
 			}
+		} else {
+			events = getFromFile(fileName);
 		}
-		events = getFromFile(fileName);
+		
 
 		currentUid = 1;
 		if (AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX) != null) {
