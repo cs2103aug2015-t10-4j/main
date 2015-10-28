@@ -6,6 +6,7 @@ import carelender.view.UserInterfaceController;
 import carelender.view.parser.CommandKeyword.DataPosition;
 import net.fortuna.ical4j.model.DateTime;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -65,6 +66,18 @@ public class InputParser {
         newCommand = new Command("delete", QueryType.DELETE );
         newCommand.setUsage("delete <id>");
         newCommand.setDescription("Deletes a specified event/task");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("reminder", QueryType.REMINDER );
+        newCommand.setUsage("reminder <id> [minutes/hours/days X]");
+        newCommand.addKeywords("time", "minute,minutes,hour,hours,day,days", DataPosition.AFTER);
+        newCommand.setDescription("Sets a reminder for the specified task");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("remind", QueryType.REMINDER );
+        newCommand.setUsage("remind <id> [X minutes/hours/days]");
+        newCommand.addKeywords("time", "minute,minutes,hour,hours,day,days", DataPosition.AFTER);
+        newCommand.setDescription("Sets a reminder for the specified task");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("help", QueryType.HELP);
@@ -244,6 +257,9 @@ public class InputParser {
             case UPDATE:
                 newQuery = parseUpdateCommand(commandParts);
                 break;
+            case REMINDER:
+                newQuery = parseRemindCommand(commandParts);
+                break;
             case LIST:
                 if ( matchedCommand.getCommand().equalsIgnoreCase("search") ) {
                     newQuery = parseSearchCommand(dateRanges, commandPartsNoDate);
@@ -393,6 +409,53 @@ public class InputParser {
         }
 
         return queryDelete;
+    }
+
+    public QueryBase parseRemindCommand ( CommandPart [] commandParts ) {
+        if ( commandParts.length < 1 ) {
+            return new QueryError("What do you want a reminder for?");
+        }
+        if ( displayedList == null ) {
+            return new QueryError("Nothing displayed");
+        }
+
+        Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
+
+        if ( indexList == null ) {
+            return new QueryError("Error parsing indices");
+        }
+        QueryRemind queryRemind = new QueryRemind();
+        for ( int i : indexList ) {
+            Event event = displayedList.get(i);
+            if ( event != null ) {
+                queryRemind.addEvent(event);
+            }
+        }
+        String data;
+        int timeOffset = 15; //15 minutes as default
+        CommandPart commandPart = getCommandPart("time", commandParts);
+        if ( commandPart != null ) {
+            data = commandPart.getKeywordData();
+            System.out.println("parseRemindCommand: data:" + data);
+            if ( data != null ) {
+                try {
+                    timeOffset = Integer.parseInt(data);
+                    if (commandPart.getQueryPart().startsWith("hour")) {
+                        timeOffset *= 60;
+                    }
+                    if (commandPart.getQueryPart().startsWith("day")) {
+                        timeOffset *= 60 * 24;
+                    }
+                } catch (NumberFormatException e ) {
+                    return new QueryError(data + " is not a number");
+                }
+            }
+        }
+        queryRemind.setOffset(timeOffset);
+
+        System.out.println("parseRemindCommand: timeOffset:" + timeOffset);
+
+        return queryRemind;
     }
     
     public QueryBase parseUpdateCommand ( CommandPart [] commandParts ) {

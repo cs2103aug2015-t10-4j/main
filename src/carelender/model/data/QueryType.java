@@ -7,6 +7,7 @@ public enum QueryType {
     ERROR,      //Invalid command entered
     ADD,        //Adding new event
     DELETE,     //Deleting an event
+    REMINDER,   //Setting reminder for an event
     UPDATE,     //Updating an event
     HELP,       //Showing the help list
     LIST,       //Listing tasks //TODO: Split into different types
