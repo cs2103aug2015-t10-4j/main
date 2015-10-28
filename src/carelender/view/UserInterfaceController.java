@@ -113,18 +113,7 @@ public class UserInterfaceController implements Initializable {
     }
 
     public void setAutocompleteOptions( String[] autocompleteOptions ) {
-        switch ( uiType ) {
-            case MONTH:
-                monthViewRenderer.setAutocompleteOptions(autocompleteOptions);
-                break;
-            case WEEK:
-
-                break;
-
-            case SETTING:
-
-                break;
-        }
+        userInterfaceRenderer.setAutocompleteOptions(autocompleteOptions);
         userInterfaceRenderer.redraw();
     }
 

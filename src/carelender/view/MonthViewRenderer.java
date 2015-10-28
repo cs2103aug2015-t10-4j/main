@@ -13,7 +13,7 @@ public class MonthViewRenderer extends CanvasRenderer {
 
     TextRenderer messageBox;
     TextRenderer announcementBox;
-    AutocompleteRenderer autocompleteRenderer;
+    //AutocompleteRenderer autocompleteRenderer;
     CalenderRenderer calender;
 
     private EventList listResults;
@@ -23,7 +23,7 @@ public class MonthViewRenderer extends CanvasRenderer {
     private TabRenderer tab;
 
     public MonthViewRenderer() {
-        autocompleteRenderer = new AutocompleteRenderer();
+
         tasks = new TaskRenderer();
         tasks.setParams(10, 10, 0.7, 0.1, 0.2, 0.1);
         
@@ -83,7 +83,7 @@ public class MonthViewRenderer extends CanvasRenderer {
         calender.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
         tasks.draw(gc, leftColumnX, messageBoxY, leftColumnWidth, messageBoxH);
 
-        autocompleteRenderer.draw(gc, 0, height, width, 0);
+
     }
 
     public void setMessageBoxText(String text) {
@@ -97,9 +97,7 @@ public class MonthViewRenderer extends CanvasRenderer {
         redraw();
     }
 
-    public void setAutocompleteOptions ( String [] options ) {
-        autocompleteRenderer.setAutocompleteOptions(options);
-    }
+
 
     public void refreshData() {
         calender.refreshEventList();

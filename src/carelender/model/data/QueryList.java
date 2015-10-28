@@ -85,7 +85,7 @@ public class QueryList extends QueryBase {
 		}
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
-		Controller.displayMessage("Listing events");
+		/*Controller.displayMessage("Listing events");
 		
 		if ( this.searchParamsList.containsKey(SearchParam.DATE_START) ) {
 			Date fromDate = (Date)this.searchParamsList.get(SearchParam.DATE_START);
@@ -98,7 +98,7 @@ public class QueryList extends QueryBase {
 		if ( this.searchParamsList.containsKey(SearchParam.NAME_CONTAINS) ) {
 			String search = (String)this.searchParamsList.get(SearchParam.NAME_CONTAINS);
 			Controller.displayMessage("   matching: " + search);
-		}
+		}*/
 
 		/*
 		if (searchResults.size() > 0) {
