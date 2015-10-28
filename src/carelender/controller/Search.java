@@ -107,6 +107,10 @@ public class Search {
 			if (!latestDate.after(startDate)) {
 				return true;
 			}
+		} else {
+			if ( startDate == null ) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -119,12 +123,23 @@ public class Search {
 			if (!earliestDate.before(endDate)) {
 				return true;
 			}
+		} else {
+			if ( endDate == null ) {
+				return true;
+			}
 		}
 		return false;
 	}
 	
 	public static boolean isEventInDateRange (Event eventToCheck,
 										Date startDate, Date endDate) {
+		if ( eventToCheck.getDateRange() == null ) {
+			if ( startDate == null || endDate == null )
+			{
+				return true;
+			}
+			return false;
+		}
 		for ( DateRange dateRange : eventToCheck.getDateRange() ) {
 			if (!dateRange.getStart().before(startDate) && !dateRange.getEnd().after(endDate)) {
 				return true;

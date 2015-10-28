@@ -179,6 +179,14 @@ public class TaskRenderer extends CanvasRenderer {
     	}
     	Controller.setDisplayedList((EventList)concatList);
     }
+    
+    public EventList getDisplayList () {
+    	List<Event> concatList = new EventList();
+    	for ( EventList events : this.taskDisplay.values()) {
+            concatList.addAll(events);
+    	}
+    	return (EventList)concatList;
+    }
     /*
 	public void addEvents ( EventList toDisplay ) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("d EEE");

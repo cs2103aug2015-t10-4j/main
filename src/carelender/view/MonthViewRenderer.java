@@ -26,6 +26,7 @@ public class MonthViewRenderer extends CanvasRenderer {
         autocompleteRenderer = new AutocompleteRenderer();
         tasks = new TaskRenderer();
         tasks.setParams(10, 10, 0.7, 0.1, 0.2, 0.1);
+        
         listResults = new EventList();
         calender = new CalenderRenderer();
         announcementBox = new TextRenderer();
@@ -81,7 +82,6 @@ public class MonthViewRenderer extends CanvasRenderer {
 
         calender.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
         tasks.draw(gc, leftColumnX, messageBoxY, leftColumnWidth, messageBoxH);
-
 
         autocompleteRenderer.draw(gc, 0, height, width, 0);
     }

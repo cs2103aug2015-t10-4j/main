@@ -270,6 +270,10 @@ public class Controller {
     public static void displayTasks (EventList events) {
         userInterfaceController.setTaskList(events);
     }
+    
+    public static void displayWeekView (EventList events) {
+        userInterfaceController.setWeekView(events);
+    }
 
     public static void clearMessages ( ) {
         userInterfaceController.clearMessageLog();
