@@ -8,7 +8,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.*;
 import com.google.gson.Gson;
 import carelender.model.AppSettings.SettingName;
@@ -18,6 +21,9 @@ import carelender.model.data.*;
 public class Model {
 
 	private static Model singleton = null;
+	private static final String FOLDER_NAME = "data/";	
+	private static final String FILE_NAME = "events";
+	private static final String FILE_TYPE = ".dat";
 
 	public static Model getInstance() {
 		if (singleton == null) {
@@ -26,7 +32,6 @@ public class Model {
 		return singleton;
 	}
 	private static Logger log;
-	
 	private String filename;
 	private EventList events;
 	private ArrayList<EventList> cache;
@@ -35,11 +40,28 @@ public class Model {
 	private int currentUid;
 
 	private Model() {
-		filename = "events.dat";
 		log = Logger.getLogger(Model.class.getName());
-		File file = new File("events.dat");
-		events = new EventList();
-		events = getFromFile("events.dat");
+		//Get current time
+		Calendar cal = Calendar.getInstance();
+		
+		System.out.println("Current Month: " + cal.get(Calendar.MONTH));
+		
+		//Initiate the Directory
+		File folderName = new File(FOLDER_NAME);
+		folderName.mkdir();
+
+		File fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
+		events = new EventList();	
+		if (!fileName.exists()) {
+			try {
+				fileName.createNewFile();
+			} catch (IOException e) {
+				log.log(Level.FINE, "Failed to create file");
+				e.printStackTrace();
+			}
+		}
+		events = getFromFile(fileName);
+
 		currentUid = 1;
 		if (AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX) != null) {
 			currentUid = AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX);
@@ -74,7 +96,6 @@ public class Model {
 		}
 		return false;
 	}
-
 	// Delete single Event
 	public void deleteEvent(Event eventObj) {
 		for (int i = 0; i < events.size(); i++) {
@@ -85,7 +106,6 @@ public class Model {
 			saveToFile(filename, events);
 		}
 	}
-
 	// Delete multiple Events
 	public void deleteEvent(EventList eventList) {
 		EventList deletedEventList = new EventList();
@@ -175,7 +195,7 @@ public class Model {
 		}
 	}
 
-	private EventList getFromFile(String filename) {
+	private EventList getFromFile(File filename) {
 		try {
 			FileReader fileReader = new FileReader(filename);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);

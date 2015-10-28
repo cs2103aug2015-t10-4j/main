@@ -2,7 +2,10 @@ package carelender.view;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
+import carelender.model.data.DateRange;
+import carelender.model.data.Event;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
 import javafx.geometry.VPos;
@@ -20,31 +23,116 @@ public class CalenderRenderer extends CanvasRenderer {
     int squaresToDraw; //Temp, testing purposes only
     final String [] days = {"M", "T", "W", "T", "F", "S", "S"};
 
-    EventList monthEvents = null;
+    private EventList monthEvents = null;
+    private int[][] monthEventNumbers;
+    private Date monthStartTime;
+    private Date monthEndTime;
+    
     public CalenderRenderer() {
         squaresToDraw = 4*7;
-
+        
+        monthEventNumbers = new int[squaresToDraw][3];
+        resetEventNumbers();
+        
         monthListQuery = new QueryList();
+        
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR, 0);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        Date startDate = cal.getTime();
+        monthStartTime = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, squaresToDraw);
-        Date endDate = cal.getTime();
+        monthEndTime = cal.getTime();
 
-        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_START, startDate);
-        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_END, endDate);
+        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_START, monthStartTime);
+        monthListQuery.addSearchParam(QueryList.SearchParam.DATE_END, monthEndTime);
         refreshEventList();
     }
-
-    public void refreshEventList () {
-        monthEvents = monthListQuery.searchExecute();
-        System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
+    
+    private void resetEventNumbers(){
+    	for(int i=0; i<squaresToDraw; i++) {
+        	for (int j=0; j<3; j++){
+        		monthEventNumbers[i][j] = 0;
+        	}
+        }
     }
 
+    public void refreshEventList() {
+        monthEvents = monthListQuery.searchExecute();
+        updateEventNumbers();
+        System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
+    }
+    
+    private void updateEventNumbers() {
+    	resetEventNumbers();
+    	for (int i=0; i<monthEvents.size(); i++) {
+    		Event currentEvent = monthEvents.get(i);
+    		for (int j=0; j<currentEvent.getDateRange().length; j++) {
+    			DateRange currentRage = currentEvent.getDateRange()[j];
+    			Date taskStartTime = currentRage.getStart();
+    			//System.out.println("start time of the event " + taskStartTime);
+    			Date taskEndTime = currentRage.getEnd();
+    			//System.out.println("end time of the event " + taskEndTime);
+    			if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
+                    //System.out.println("In range");
+        			if (taskStartTime.before(monthStartTime)) {
+        				taskStartTime = monthStartTime;
+        			}
+        			if (taskEndTime.after(monthEndTime)) {
+        				taskEndTime = monthEndTime;
+        			}
+
+        			long offsetStartMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
+        			long offsetStartDays = TimeUnit.MILLISECONDS.toDays(offsetStartMilliseconds);
+                    //System.out.println("StartTime is away from the first day by " + offsetStartDays + " days");
+        			long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) 24;
+                    //System.out.println("StartTime is away from the first day by " + TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) + " hours");
+        			//System.out.println("It starts at " + offsetStartHours + " of that day");
+                    int offsetStartSlot = (int)offsetStartHours / 8;
+                    //System.out.println("It should fill in the " + offsetStartSlot + " slot");
+        			
+                    long offsetEndMilliseconds = taskEndTime.getTime() - monthStartTime.getTime();
+        			long offsetEndDays = TimeUnit.MILLISECONDS.toDays(offsetEndMilliseconds);
+                    //System.out.println("EndTime is away from the first day by " + offsetEndDays + " days");
+        			long offsetEndHours = TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) % (long) 24;
+                    //System.out.println("EndTime is away from the first day by " + TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) + " hours");
+                    //System.out.println("It ends at " + offsetEndHours + " of that day");
+        			int offsetEndSlot = (int)offsetEndHours / 8;
+                    //System.out.println("It should fill in the " + offsetEndSlot + " slot");
+        			
+                    for(int t=(int)offsetStartDays; t<=(int)offsetEndDays; t++) {
+                    	if(t == (int) offsetStartDays && t == (int)offsetEndDays){
+                    		for(int a=offsetStartSlot; a<=offsetEndSlot; a++) {
+        						monthEventNumbers[t][a]++;
+        					}
+                    	} else if(t == (int) offsetStartDays){
+        					for(int a=offsetStartSlot; a<3; a++) {
+        						monthEventNumbers[t][a]++;
+        					}
+        				} else if (t == (int)offsetEndDays){
+        					for(int a=0; a<offsetEndSlot; a++) {
+        						monthEventNumbers[t][a]++;
+        					}
+        				} else {
+	        				for(int a=0; a<3; a++){
+	        					monthEventNumbers[t][a]++;
+	        				}
+        				}
+        			}
+    			}
+    		}
+    	}
+    	//drawEventArray();
+    }
+    
+    private void drawEventArray(){
+    	for(int i=0; i<28; i++){
+    		System.out.println("Day " + i + " [" + monthEventNumbers[i][0] + "]" + " [" + monthEventNumbers[i][1] + "]" + " [" + monthEventNumbers[i][2] + "]\n");
+    	}
+    }
+    
     double sidePadding;
     double calCellWidth;
     double calCellHeight;
@@ -89,10 +177,11 @@ public class CalenderRenderer extends CanvasRenderer {
             if (date == 1) {
                 month = (c.get(Calendar.MONTH) + 1) + "/";
             }
+            int[] dailyEventNumbers = monthEventNumbers[i];
 
             RenderHelper.calendarSquare(gc, actualX, actualY,
                     calCellWidth, calCellHeight,
-                    calCellShadowOffset, "556370", month + date, font);
+                    calCellShadowOffset, "556370", month + date, font, dailyEventNumbers);
             c.add(Calendar.DATE, 1);
             
         }
