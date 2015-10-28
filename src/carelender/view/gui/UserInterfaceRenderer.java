@@ -2,6 +2,7 @@ package carelender.view.gui;
 
 import carelender.view.gui.components.AutocompleteRenderer;
 import carelender.view.gui.components.CanvasRenderer;
+import carelender.view.gui.components.TextRenderer;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
@@ -25,6 +26,8 @@ public class UserInterfaceRenderer extends CanvasRenderer {
         }
 
         autocompleteRenderer.draw(gc, 0, height, width, 0);
+
+
     }
 
     public void setMainRenderer(CanvasRenderer mainRenderer) {

@@ -35,6 +35,8 @@ public class QueryDelete extends QueryBase {
 				if ( confirmed ) {
 					Controller.displayMessage("Deleting " + events.size() + " tasks");
 					Model.getInstance().deleteEvent(events);
+				} else {
+					Controller.displayMessage("Cancelled delete");
 				}
 			}
 		};

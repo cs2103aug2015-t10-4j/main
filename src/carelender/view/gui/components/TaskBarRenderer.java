@@ -45,11 +45,13 @@ public class TaskBarRenderer {
 		Font font = Font.loadFont("file:res/monaco.ttf", this.initialHeight * nameTextRatio);
 		this.nameText.setParams (gc, this.xPosition + this.xPadding, this.yPosition + this.yPadding,
 				this.width - (this.xPadding * 2), font.getSize(), 0, 0, font, 0.6, 0);
+		this.nameText.clearText();
 		this.nameText.addTextEllipsis(this.event.getName());
 
 		font = Font.loadFont("file:res/monaco.ttf", this.initialHeight * timeTextRatio);
 		this.timeText.setParams (gc, this.xPosition + this.xPadding, this.yPosition + this.yPadding + (this.nameText.getTextHeight()),
 				this.width - (this.xPadding * 2), font.getSize(), 0, 0, font, 0.6, 0.1);
+		this.timeText.clearText();
 		SimpleDateFormat timeFormat = new SimpleDateFormat("[dd MMM hh:mm a]");
 		
 		Date currentDate = new Date();

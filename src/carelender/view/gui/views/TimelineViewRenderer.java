@@ -18,6 +18,7 @@ public class TimelineViewRenderer extends CanvasRenderer {
     private TaskRenderer taskView;
     
     String messageText;
+    String announcementText;
     private TabRenderer tab;
 
     public TimelineViewRenderer() {
@@ -66,7 +67,7 @@ public class TimelineViewRenderer extends CanvasRenderer {
         announcementBox.setParams(gc, leftColumnX, announcementBoxY,
                 leftColumnWidth, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
-        announcementBox.addText("This is a announcementRenderer.\n");
+        announcementBox.addText(announcementText);
         announcementBox.drawText();
 
         messageBox.setParams(gc, rightColumnX, announcementBoxY, rightColumnWidth, calendarHeight,
@@ -79,12 +80,24 @@ public class TimelineViewRenderer extends CanvasRenderer {
         this.weekView.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
     }
 
+    /**
+    * Sets the text of the announcement box
+    * @param text Text to set
+    */
+    public void setAnnouncementBoxText ( String text ) {
+        if ( text != null ) {
+            announcementText = text;
+        }
+    }
+
+    /**
+     * Sets the text for the message box
+     * @param text Text to set
+     */
     public void setMessageBoxText(String text) {
-    	if ( text == null ) {
-    		messageText = "";
-    	} else {
-    		messageText = text;
-    	}
+        if ( text != null ) {
+            messageText = text;
+        }
     }
 
     public void setTaskview(EventList tasks) {

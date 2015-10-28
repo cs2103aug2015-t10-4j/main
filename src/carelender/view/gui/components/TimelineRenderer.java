@@ -21,7 +21,7 @@ import carelender.model.data.EventList;
  * This class contains static methods to help to render the calendar view
  */
 public class TimelineRenderer extends CanvasRenderer {
-    private Map<String, ArrayList<WeekBarRenderer>> weekDisplay;
+    private Map<String, ArrayList<TimelineBarRenderer>> weekDisplay;
 
     private double xPadding;
     private double yPadding;
@@ -29,7 +29,7 @@ public class TimelineRenderer extends CanvasRenderer {
     private double labelWidth;
 
     public TimelineRenderer() {
-        this.weekDisplay = new TreeMap<String, ArrayList<WeekBarRenderer>>();
+        this.weekDisplay = new TreeMap<String, ArrayList<TimelineBarRenderer>>();
 	}
 
     public void setParams (double xPad, double yPad, double maxBarHeight, double labelWidth) {
@@ -57,7 +57,7 @@ public class TimelineRenderer extends CanvasRenderer {
         double xCurrent = x + this.xPadding + labelWidth;
         double yCurrent = y + (this.yPadding * 2) + font.getSize();
         
-        double divisorWidth = (1 / WeekBarRenderer.MINUTES_IN_DAY) * usableWidth;
+        double divisorWidth = (1 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
         for (int i = 0; i <= 24; i++) {
         	gc.setFill(Color.web("757575"));
             gc.setTextAlign(TextAlignment.CENTER);
@@ -68,13 +68,13 @@ public class TimelineRenderer extends CanvasRenderer {
             
         	gc.setFill(Color.web("4ecdc4"));
 			gc.fillRect(xCurrent, y + this.yPadding + font.getSize(), divisorWidth, height - (this.xPadding * 2) - font.getSize());
-        	xCurrent += (60 / WeekBarRenderer.MINUTES_IN_DAY) * usableWidth;
+        	xCurrent += (60 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
         }
         xCurrent = x + labelWidth;
         
-        for ( Map.Entry<String, ArrayList<WeekBarRenderer>> entry : this.weekDisplay.entrySet()) {
+        for ( Map.Entry<String, ArrayList<TimelineBarRenderer>> entry : this.weekDisplay.entrySet()) {
             String key = entry.getKey();
-            ArrayList<WeekBarRenderer> value = entry.getValue();
+            ArrayList<TimelineBarRenderer> value = entry.getValue();
             
             gc.setFill(Color.web("4ecdc4"));
             gc.setTextAlign(TextAlignment.RIGHT);
@@ -84,7 +84,7 @@ public class TimelineRenderer extends CanvasRenderer {
             String [] keyWords = key.split(" ");
             gc.fillText ( keyWords[1] + " " + keyWords[2], xCurrent - this.xPadding, yCurrent + (barHeight * 0.5) );
             
-            for (WeekBarRenderer bar : value) {
+            for (TimelineBarRenderer bar : value) {
                 bar.draw(gc, "757575", "4ecdc4", xCurrent + this.xPadding, yCurrent, usableWidth, barHeight);
             }
             yCurrent += ( barHeight + this.yPadding );
@@ -108,12 +108,12 @@ public class TimelineRenderer extends CanvasRenderer {
 				} else {
 					this.addDateRangeToDisplay(dateFormat.format(date.getStart()),
 												this.getTimeInMinutes(date.getStart()),
-												WeekBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
+												TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
 					Date currentDay = date.getStart();
 					for ( int i = 1; i < date.getDaysBetween(); i++ ) {
 						currentDay = this.addDays(currentDay, 1);
 						this.addDateRangeToDisplay(dateFormat.format(currentDay),
-													0, WeekBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
+													0, TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
 					}
 					this.addDateRangeToDisplay(dateFormat.format(date.getEnd()),
 												0, this.getTimeInMinutes(date.getEnd()), String.valueOf(index));
@@ -127,14 +127,14 @@ public class TimelineRenderer extends CanvasRenderer {
 		if (this.weekDisplay.containsKey(key)) {
 			this.weekDisplay.get(key).add(createWeekBar(startTime, endTime, content));
 		} else {
-			ArrayList<WeekBarRenderer> tasksOnDay = new ArrayList<WeekBarRenderer>();
+			ArrayList<TimelineBarRenderer> tasksOnDay = new ArrayList<TimelineBarRenderer>();
 			tasksOnDay.add(createWeekBar(startTime, endTime, content));
 			this.weekDisplay.put (key, tasksOnDay);
 		}
 	}
 	
-	private WeekBarRenderer createWeekBar (double startTime, double endTime, String content) {
-		WeekBarRenderer bar = new WeekBarRenderer();
+	private TimelineBarRenderer createWeekBar (double startTime, double endTime, String content) {
+		TimelineBarRenderer bar = new TimelineBarRenderer();
 		bar.setParams(this.gc, this.width, this.height, startTime, endTime, content);
 		return bar;
 	}

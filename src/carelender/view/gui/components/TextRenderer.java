@@ -37,7 +37,8 @@ public class TextRenderer {
 
     public TextRenderer() {
         this.gc = null;
-    }
+		this.textLines = new ArrayList<String>();
+}
 
     public void setPosition ( double x, double y ) {
     	this.xPosition = x;
@@ -64,7 +65,7 @@ public class TextRenderer {
         this.lineSpace = this.font.getSize() * lineSpaceRatio;
 
         this.charsPerLine = Math.floor ((this.width - (this.xPadding * 2)) / this.charWidth);
-        this.textLines = new ArrayList<String>();
+		clearText();
 		gc.setTextAlign(TextAlignment.LEFT);
     }
 
@@ -73,6 +74,9 @@ public class TextRenderer {
 	 * @param textLine Line of text to add. Breaklines will be removed
 	 */
     public void addTextEllipsis ( String textLine ) {
+		if ( textLine == null ) {
+			return;
+		}
     	if (this.gc == null) {
     		System.out.println("Error");
     	} else {
@@ -91,7 +95,7 @@ public class TextRenderer {
 					break;
 				}
 	        }
-	        if ( outOfSpace ) {
+	        if ( outOfSpace) {
 	            stringBuilder.append("...");
 	        }
 			this.textLines.add(stringBuilder.toString());
@@ -99,12 +103,15 @@ public class TextRenderer {
     }
 
     public void addText ( String textToAdd ) {
+		if ( textToAdd == null ) {
+			return;
+		}
     	if (this.gc == null) {
     		System.out.println("Error");
     	} else {
 	        double freeCharsOnLine = this.charsPerLine;
 	        String lineToAppendTo = "";
-	
+
 	        String [] wordsToAdd = this.separateEndline(textToAdd).split(" ");
 	        //Check if there are already lines of text to append textToAdd to.
 	        if ( !this.textLines.isEmpty() ) {
@@ -114,7 +121,7 @@ public class TextRenderer {
 	        } else {
 	            this.textLines.add("");
 	        }
-	
+
 	        for ( String wordToAdd : wordsToAdd ) {
 	            if ( wordToAdd.length() > 0 ) {
 	                if ( wordToAdd.equals("\n") ) {
@@ -211,6 +218,9 @@ public class TextRenderer {
     }
     
     private String separateEndline ( String toParse ) {
+		if ( toParse == null ) {
+			return "";
+		}
     	if (this.gc == null) {
     		System.out.println("Error");
     		return "";

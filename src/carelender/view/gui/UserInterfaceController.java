@@ -2,6 +2,7 @@ package carelender.view.gui;
 
 import carelender.controller.Controller;
 import carelender.model.data.EventList;
+import carelender.model.data.QueryList;
 import carelender.view.gui.components.PopupRenderer;
 import carelender.view.gui.views.FloatingViewRenderer;
 import carelender.view.gui.views.MonthViewRenderer;
@@ -16,6 +17,7 @@ import javafx.scene.layout.StackPane;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 public class UserInterfaceController implements Initializable {
@@ -50,6 +52,7 @@ public class UserInterfaceController implements Initializable {
         canvasPane.getChildren().add(canvas);
 
         popupRenderer = new PopupRenderer();
+        messageList = new ArrayList<>();
 
         userInterfaceRenderer = new UserInterfaceRenderer();
         canvas.setRenderer(userInterfaceRenderer);
@@ -68,7 +71,7 @@ public class UserInterfaceController implements Initializable {
         floatingViewRenderer = new FloatingViewRenderer();
 
 
-        uiType = UIType.MONTH;
+        uiType = UIType.CALENDAR;
         this.setUI(uiType);
         
         Controller.printWelcomeMessage();
@@ -104,26 +107,38 @@ public class UserInterfaceController implements Initializable {
                 };
         inputText.setOnKeyPressed( keyEventHandler );
         inputText.setOnKeyReleased( keyEventHandler );
+
+        //Create initial list command
+        Calendar calendar = Calendar.getInstance();
+        QueryList list = new QueryList();
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        list.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
+        list.controllerExecute();
     }
 
-    
-    public void setMessageList( ArrayList<String> messageList ) {
-        this.messageList = messageList;
-    }
 
     public void setTaskList ( EventList events ) {
         monthViewRenderer.setTaskview(events);
-    }
-    
-    public void setWeekView ( EventList events ) {
+        timelineViewRenderer.setTaskview(events);
         timelineViewRenderer.setWeekView(events);
     }
+
 
     public void setAutocompleteOptions( String[] autocompleteOptions ) {
         userInterfaceRenderer.setAutocompleteOptions(autocompleteOptions);
         userInterfaceRenderer.redraw();
     }
 
+    /**
+     * Sets the message in the announcement box if any
+     * @param message Message to show
+     */
+    public void setAnnouncementMessage ( String message ) {
+        monthViewRenderer.setAnnouncementBoxText(message);
+        timelineViewRenderer.setAnnouncementBoxText(message);
+    }
     public void clearMessageLog() {
         messageList.clear();
         refreshOutputField();
@@ -133,6 +148,8 @@ public class UserInterfaceController implements Initializable {
         messageList.add(message);
         refreshOutputField();
     }
+
+
 
     public void setUserInput ( String inputText ) {
         this.inputText.setText(inputText);
@@ -146,11 +163,11 @@ public class UserInterfaceController implements Initializable {
         }
 
         switch ( uiType ) {
-            case MONTH:
+            case CALENDAR:
                 monthViewRenderer.setMessageBoxText(stringBuilder.toString());
                 monthViewRenderer.refreshData();
                 break;
-            case WEEK:
+            case TIMELINE:
                 monthViewRenderer.setMessageBoxText(stringBuilder.toString());
                 monthViewRenderer.refreshData();
                 break;
@@ -165,10 +182,10 @@ public class UserInterfaceController implements Initializable {
     public void setUI(UIType type) {
     	uiType = type;
         switch ( uiType ) {
-            case MONTH:
+            case CALENDAR:
                 userInterfaceRenderer.setMainRenderer(monthViewRenderer);
                 break;
-            case WEEK:
+            case TIMELINE:
                 userInterfaceRenderer.setMainRenderer(timelineViewRenderer);
                 break;
             case FLOATING:
@@ -188,12 +205,12 @@ public class UserInterfaceController implements Initializable {
      */
     public void toggleUI() {
         if ( uiType == UIType.SETTING ) {
-            setUI(UIType.MONTH);
+            setUI(UIType.CALENDAR);
         } else {
-            if (uiType == UIType.MONTH ) {
-                setUI(UIType.WEEK);
+            if (uiType == UIType.CALENDAR) {
+                setUI(UIType.TIMELINE);
             } else {
-                setUI(UIType.MONTH);
+                setUI(UIType.CALENDAR);
             }
         }
     }
@@ -210,7 +227,7 @@ public class UserInterfaceController implements Initializable {
     }
 
     public enum UIType {
-        MONTH, WEEK, FLOATING, SETTING
+        CALENDAR, TIMELINE, FLOATING, SETTING
     }
 
 }

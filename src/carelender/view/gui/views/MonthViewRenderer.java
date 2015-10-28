@@ -5,6 +5,8 @@ import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 
+import java.nio.file.FileSystemNotFoundException;
+
 public class MonthViewRenderer extends CanvasRenderer {
     //CalenderRenderer
     //MessageboxRenderer
@@ -19,6 +21,7 @@ public class MonthViewRenderer extends CanvasRenderer {
     private TaskRenderer tasks;
 
     String messageText;
+    String announcementText;
     private TabRenderer tab;
 
     public MonthViewRenderer() {
@@ -59,8 +62,7 @@ public class MonthViewRenderer extends CanvasRenderer {
 		double calendarHeight = remainderHeight * 0.4 - windowPadding;
 		double taskviewHeight = remainderHeight - calendarHeight - 2* windowPadding;
 
-
-        tab.draw(gc, 0, 0, width, topBarHeight, 1 );
+        tab.draw(gc, 0, 0, width, topBarHeight, 1);
 
         /* Todo
          * replace magic numbers;
@@ -70,23 +72,37 @@ public class MonthViewRenderer extends CanvasRenderer {
         announcementBox.setParams(gc, leftColumnX, announcementBoxY,
                 leftColumnWidth, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
-        announcementBox.addText("This is a announcementRenderer.\n");
+        announcementBox.addText(announcementText);
         announcementBox.drawText();
 
         messageBox.setParams(gc, rightColumnX, announcementBoxY, rightColumnWidth, calendarHeight,
-				textboxInnerPadding, textboxInnerPadding,
+                textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
         messageBox.addText(messageText);
         messageBox.drawText();
 
         calender.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
         tasks.draw(gc, leftColumnX, messageBoxY, leftColumnWidth, messageBoxH);
-
-
     }
 
+    /**
+     * Sets the text of the announcement box
+     * @param text Text to set
+     */
+    public void setAnnouncementBoxText ( String text ) {
+        if ( text != null ) {
+            announcementText = text;
+        }
+    }
+
+    /**
+     * Sets the text for the message box
+     * @param text Text to set
+     */
     public void setMessageBoxText(String text) {
-        messageText = text;
+        if ( text != null ) {
+            messageText = text;
+        }
     }
 
     public void setTaskview(EventList tasks) {

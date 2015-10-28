@@ -94,12 +94,16 @@ public class InputParser {
         newCommand.setDescription("Switches the screen");
         commandManager.addCommand(newCommand);
 
-        newCommand = new Command("month", QueryType.SWITCHUI);
+        newCommand = new Command("calendar", QueryType.SWITCHUI);
         newCommand.setDescription("Shows the calendar view");
         commandManager.addCommand(newCommand);
 
-        newCommand = new Command("week", QueryType.SWITCHUI);
-        newCommand.setDescription("Shows the week view");
+        newCommand = new Command("cal", QueryType.SWITCHUI);
+        newCommand.setDescription("Shows the calendar view");
+        commandManager.addCommand(newCommand);
+
+        newCommand = new Command("timeline", QueryType.SWITCHUI);
+        newCommand.setDescription("Shows the timeline view");
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("float", QueryType.SWITCHUI);
@@ -269,10 +273,10 @@ public class InputParser {
                 newQuery = new QueryHelp();
                 break;
             case SWITCHUI:
-                if ( matchedCommand.getCommand().equalsIgnoreCase("week") ) {
-                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.WEEK);
-                } else if ( matchedCommand.getCommand().equalsIgnoreCase("month") ) {
-                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.MONTH);
+                if ( matchedCommand.getCommand().startsWith("time") ) {
+                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.TIMELINE);
+                } else if ( matchedCommand.getCommand().startsWith("cal")) {
+                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.CALENDAR);
                 } else if ( matchedCommand.getCommand().startsWith("float") ) {
                     newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.FLOATING);
                 } else if ( matchedCommand.getCommand().equalsIgnoreCase("switch") ) {

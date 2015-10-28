@@ -18,14 +18,12 @@ import java.util.*;
  * Does all the logic of the application
  */
 public class Controller {
-    private static boolean debugMode = true;
-
     private static UserInterfaceController userInterfaceController = null;
     private static StateManager stateManager;
     private static BlockingStateController blockingStateController;
 
     //Stores the messages to the user
-    private static ArrayList<String> messageList;
+    //private static ArrayList<String> messageList;
     //Stores the user's inputs
     private static ArrayList<String> commandList;
     private static int currentCommand;
@@ -37,7 +35,7 @@ public class Controller {
     private static QueryList currentListQuery;
 
     public static void initialize() throws Exception {
-        messageList = new ArrayList<>();
+        //messageList = new ArrayList<>();
         commandList = new ArrayList<>();
         stateManager = new StateManager();
         blockingStateController = new BlockingStateController();
@@ -60,7 +58,7 @@ public class Controller {
 
     public static void initUserInterfaceController(UserInterfaceController userInterfaceController) {
         Controller.userInterfaceController = userInterfaceController;
-        Controller.userInterfaceController.setMessageList(messageList);
+        //Controller.userInterfaceController.setMessageList(messageList);
         /*canvasRenderer = new MonthViewRenderer();
         Controller.userInterfaceController.setCanvasRenderer(canvasRenderer);*/
     }
@@ -235,10 +233,9 @@ public class Controller {
 
     public static void printWelcomeMessage() {
         if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
-            userInterfaceController.displayMessage("CareLender: Maybe the best task manager in the world.");
-            userInterfaceController.displayMessage(FirstStartMessages.askForName());
+            userInterfaceController.setAnnouncementMessage("CareLender: Maybe the best task manager in the world.\n" + FirstStartMessages.askForName());
         } else {
-            userInterfaceController.displayMessage("Welcome back, " + userName);
+            userInterfaceController.setAnnouncementMessage("Welcome back, " + userName);
             stateManager.changeState(AppState.DEFAULT);
         }
     }
@@ -265,26 +262,17 @@ public class Controller {
         userInterfaceController.displayMessage(message);
     }
 
+    public static void displayAnnouncement ( String message ) {
+        userInterfaceController.setAnnouncementMessage(message);
+    }
+
     public static void displayTasks (EventList events) {
         userInterfaceController.setTaskList(events);
     }
-    
-    public static void displayWeekView (EventList events) {
-        userInterfaceController.setWeekView(events);
-    }
+
 
     public static void clearMessages ( ) {
         userInterfaceController.clearMessageLog();
-    }
-    /**
-     * Prints a message to the screen only in debug mode.
-     * @param message message to be displayed
-     */
-    public static void printDebugMessage ( String message ) {
-        if ( debugMode ) {
-            userInterfaceController.displayMessage(message);
-        }
-        System.out.println(message);
     }
 
     public static void setDisplayedList(EventList displayedList) {

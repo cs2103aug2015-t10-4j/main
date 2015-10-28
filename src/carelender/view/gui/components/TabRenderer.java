@@ -7,8 +7,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 public class TabRenderer extends CanvasRenderer {
-    String [] tabText = { "Week", "Month", "Floating", "Settings" };
+    String [] tabText = { "Timeline", "Calendar", "Floating", "Settings" };
     public TabRenderer() {
+
     }
 
 

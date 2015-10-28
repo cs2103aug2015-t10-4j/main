@@ -8,9 +8,9 @@ import javafx.scene.text.TextAlignment;
 
 /**
  * Written by : Weizheng Lee 27/10/2015
- * This class contains static methods to help to render the calendar view
+ * This class contains static methods to help to render the timeline view
  */
-public class WeekBarRenderer {
+public class TimelineBarRenderer {
 	public final static double MINUTES_IN_DAY = 1440;
 	private final static double NO_RANGE_RATIO = 0.01;
 	
@@ -25,7 +25,7 @@ public class WeekBarRenderer {
 	private double startTime;
 	private double endTime;
 
-	public WeekBarRenderer () {
+	public TimelineBarRenderer() {
 	}
 	
 	public void setParams ( GraphicsContext gc, double width, double height,
@@ -45,13 +45,13 @@ public class WeekBarRenderer {
 			System.out.println("Error");
 		} else {
 			if ( this.endTime <= this.startTime ) {
-				this.actualWidth = WeekBarRenderer.NO_RANGE_RATIO * width;
+				this.actualWidth = TimelineBarRenderer.NO_RANGE_RATIO * width;
 			} else {
-				this.actualWidth = ((this.endTime - this.startTime) / WeekBarRenderer.MINUTES_IN_DAY) * width;
+				this.actualWidth = ((this.endTime - this.startTime) / TimelineBarRenderer.MINUTES_IN_DAY) * width;
 			}
 			
 			gc.setFill(Color.web(backgroundColour));
-			gc.fillRect(xPosition + ((this.startTime / WeekBarRenderer.MINUTES_IN_DAY) * width),
+			gc.fillRect(xPosition + ((this.startTime / TimelineBarRenderer.MINUTES_IN_DAY) * width),
 						yPosition, this.actualWidth, height);
 			
 			Font font = Font.loadFont("file:res/monaco.ttf", height * 0.7);
@@ -60,7 +60,7 @@ public class WeekBarRenderer {
             gc.setFont(font);
             gc.setTextBaseline(VPos.TOP);
 
-            gc.fillText ( this.text, xPosition + ((this.startTime  / WeekBarRenderer.MINUTES_IN_DAY) * width) + (this.actualWidth * 0.5), yPosition );
+            gc.fillText ( this.text, xPosition + ((this.startTime  / TimelineBarRenderer.MINUTES_IN_DAY) * width) + (this.actualWidth * 0.5), yPosition );
 		}
 	}
 }

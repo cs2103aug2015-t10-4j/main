@@ -14,7 +14,6 @@ import carelender.model.Model;
  */
 
 public class QueryList extends QueryBase {
-	
 	private HashMap<SortParam, Comparator<Event>> sortComparators = new HashMap<SortParam, Comparator<Event>>();
 	private HashMap<SearchParam, Object> searchParamsList = new HashMap<SearchParam, Object>();
 	
