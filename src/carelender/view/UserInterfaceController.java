@@ -107,6 +107,10 @@ public class UserInterfaceController implements Initializable {
     public void setTaskList ( EventList events ) {
         monthViewRenderer.setTaskview(events);
     }
+    
+    public void setWeekView ( EventList events ) {
+        weekViewRenderer.setWeekView(events);
+    }
 
     public void setAutocompleteOptions( String[] autocompleteOptions ) {
         switch ( uiType ) {

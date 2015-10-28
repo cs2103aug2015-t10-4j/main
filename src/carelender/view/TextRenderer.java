@@ -39,6 +39,11 @@ public class TextRenderer {
         this.gc = null;
     }
 
+    public void setPosition ( double x, double y ) {
+    	this.xPosition = x;
+    	this.yPosition = y;
+    }
+    
     public void setParams ( GraphicsContext gc, double x, double y,
                             double w, double h, double xPad, double yPad,
                             Font font, double widthRatio, double lineSpaceRatio ) {
@@ -138,6 +143,29 @@ public class TextRenderer {
     	}
     }
 
+    public void drawText ( GraphicsContext gc, String background, String text ) {
+    	if (gc == null) {
+    		System.out.println("Error drawing text.");
+    	} else {
+	        double xCurrent = this.xPosition + this.xPadding;
+	        double yCurrent = this.yPosition + (this.yPadding + this.charHeight);
+	
+	        gc.setFill(Color.web(background));
+	        gc.fillRect(this.xPosition, this.yPosition, this.width, this.height);
+	
+	        for ( String lineToDraw : this.textLines ) {
+	
+	            gc.setFill(Color.web(text));
+	            gc.setTextAlign(TextAlignment.LEFT);
+	            gc.setFont(this.font);
+	            gc.setTextBaseline(VPos.BOTTOM);
+	
+	            gc.fillText ( lineToDraw, xCurrent, yCurrent );
+	            yCurrent += ( this.lineSpace + this.charHeight );
+	        }
+    	}
+    }
+    
     public void drawText ( String background, String text ) {
     	if (this.gc == null) {
     		System.out.println("Error");
@@ -160,6 +188,7 @@ public class TextRenderer {
 	        }
     	}
     }
+    
     public void drawText (String background) {
     	if (this.gc == null) {
     		System.out.println("Error");

@@ -69,9 +69,9 @@ public class DateRange implements Serializable{
 		if ( isRange() ) {
 			long difference = this.end.getTime() - this.start.getTime();
 			long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
-		    return days <= 0 ? 1 : days;
+		    return days <= 0 ? 0 : days;
 		}
-		return 1;
+		return 0;
 	}
 
     /**
