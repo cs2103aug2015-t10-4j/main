@@ -28,6 +28,7 @@ public class UserInterfaceController implements Initializable {
 
     private MonthViewRenderer monthViewRenderer;
     private WeekViewRenderer weekViewRenderer;
+    private FloatingViewRenderer floatingViewRenderer;
     private SettingViewRenderer settingViewRenderer;
 
     private PopupRenderer popupRenderer;
@@ -59,6 +60,7 @@ public class UserInterfaceController implements Initializable {
         monthViewRenderer = new MonthViewRenderer();
         weekViewRenderer = new WeekViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
+        floatingViewRenderer = new FloatingViewRenderer();
 
 
         uiType = UIType.MONTH;
@@ -144,7 +146,8 @@ public class UserInterfaceController implements Initializable {
                 monthViewRenderer.refreshData();
                 break;
             case WEEK:
-
+                monthViewRenderer.setMessageBoxText(stringBuilder.toString());
+                monthViewRenderer.refreshData();
                 break;
 
             case SETTING:
@@ -163,25 +166,15 @@ public class UserInterfaceController implements Initializable {
             case WEEK:
                 userInterfaceRenderer.setMainRenderer(weekViewRenderer);
                 break;
+            case FLOATING:
+                userInterfaceRenderer.setMainRenderer(floatingViewRenderer);
+                break;
             case SETTING:
                 userInterfaceRenderer.setMainRenderer(settingViewRenderer);
                 break;
         }
 
         userInterfaceRenderer.redraw();
-    }
-    
-    public String setUIType(UIType type) {
-    	uiType = type;
-        switch ( uiType ) {
-            case MONTH:
-                return "Month";
-            case WEEK:
-                return "Week";
-            case SETTING:
-            	return "Setting";
-        }
-		return "Error";
     }
 
     /**
