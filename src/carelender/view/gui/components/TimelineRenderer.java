@@ -1,4 +1,4 @@
-package carelender.view;
+package carelender.view.gui.components;
 
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,21 +9,18 @@ import javafx.scene.text.TextAlignment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Calendar;
 import carelender.model.data.DateRange;
 import carelender.model.data.Event;
 import carelender.model.data.EventList;
-import carelender.controller.Controller;
 
 /**
  * Written by : Weizheng Lee 27/10/2015
  * This class contains static methods to help to render the calendar view
  */
-public class WeekRenderer extends CanvasRenderer {
+public class TimelineRenderer extends CanvasRenderer {
     private Map<String, ArrayList<WeekBarRenderer>> weekDisplay;
 
     private double xPadding;
@@ -31,7 +28,7 @@ public class WeekRenderer extends CanvasRenderer {
     private double maxBarHeight;
     private double labelWidth;
 
-    public WeekRenderer () {
+    public TimelineRenderer() {
         this.weekDisplay = new TreeMap<String, ArrayList<WeekBarRenderer>>();
 	}
 
@@ -44,7 +41,7 @@ public class WeekRenderer extends CanvasRenderer {
     }
 
     @Override
-    void draw(GraphicsContext gc, double x, double y, double width, double height) {
+    public void draw(GraphicsContext gc, double x, double y, double width, double height) {
     	super.draw(gc, x, y, width, height);
 
         double barHeight = (height - (this.yPadding * 2)) / (this.weekDisplay.size() + 2);

@@ -1,4 +1,4 @@
-package carelender.view;
+package carelender.view.gui.components;
 
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -7,14 +7,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Calendar;
-import carelender.model.data.DateRange;
+
 import carelender.model.data.Event;
 import carelender.model.data.EventList;
 import carelender.controller.Controller;
@@ -59,7 +57,7 @@ public class TaskRenderer extends CanvasRenderer {
     }
 
     @Override
-    void draw(GraphicsContext gc, double x, double y, double width, double height) {
+    public void draw(GraphicsContext gc, double x, double y, double width, double height) {
         super.draw(gc, x, y, width, height);
 
         double xCurrent = x + this.xPadding;

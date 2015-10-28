@@ -1,4 +1,4 @@
-package carelender.view;
+package carelender.view.gui.components;
 
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;

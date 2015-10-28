@@ -1,4 +1,4 @@
-package carelender.view;
+package carelender.view.gui.components;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -8,6 +8,8 @@ import carelender.model.data.DateRange;
 import carelender.model.data.Event;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
+import carelender.view.gui.RenderHelper;
+import carelender.view.gui.components.CanvasRenderer;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

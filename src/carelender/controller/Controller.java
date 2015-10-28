@@ -8,11 +8,9 @@ import carelender.model.AppSettings;
 import carelender.model.AppSettings.SettingName;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
-import carelender.view.MonthViewRenderer;
-import carelender.view.UserInterfaceController;
+import carelender.view.gui.UserInterfaceController;
 import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
-import jdk.internal.util.xml.impl.Input;
 
 import java.util.*;
 

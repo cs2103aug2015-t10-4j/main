@@ -1,7 +1,12 @@
-package carelender.view;
+package carelender.view.gui;
 
 import carelender.controller.Controller;
 import carelender.model.data.EventList;
+import carelender.view.gui.components.PopupRenderer;
+import carelender.view.gui.views.FloatingViewRenderer;
+import carelender.view.gui.views.MonthViewRenderer;
+import carelender.view.gui.views.SettingViewRenderer;
+import carelender.view.gui.views.TimelineViewRenderer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,7 +32,7 @@ public class UserInterfaceController implements Initializable {
 
 
     private MonthViewRenderer monthViewRenderer;
-    private WeekViewRenderer weekViewRenderer;
+    private TimelineViewRenderer timelineViewRenderer;
     private FloatingViewRenderer floatingViewRenderer;
     private SettingViewRenderer settingViewRenderer;
 
@@ -58,7 +63,7 @@ public class UserInterfaceController implements Initializable {
         Controller.initUserInterfaceController(this);
 
         monthViewRenderer = new MonthViewRenderer();
-        weekViewRenderer = new WeekViewRenderer();
+        timelineViewRenderer = new TimelineViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
         floatingViewRenderer = new FloatingViewRenderer();
 
@@ -111,7 +116,7 @@ public class UserInterfaceController implements Initializable {
     }
     
     public void setWeekView ( EventList events ) {
-        weekViewRenderer.setWeekView(events);
+        timelineViewRenderer.setWeekView(events);
     }
 
     public void setAutocompleteOptions( String[] autocompleteOptions ) {
@@ -164,7 +169,7 @@ public class UserInterfaceController implements Initializable {
                 userInterfaceRenderer.setMainRenderer(monthViewRenderer);
                 break;
             case WEEK:
-                userInterfaceRenderer.setMainRenderer(weekViewRenderer);
+                userInterfaceRenderer.setMainRenderer(timelineViewRenderer);
                 break;
             case FLOATING:
                 userInterfaceRenderer.setMainRenderer(floatingViewRenderer);

@@ -1,9 +1,9 @@
-package carelender.view;
+package carelender.view.gui.components;
 
+import carelender.view.gui.components.CanvasRenderer;
+import carelender.view.gui.components.TextRenderer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
-
-import java.text.ParseException;
 
 /**
  * Renders the autocomplete box

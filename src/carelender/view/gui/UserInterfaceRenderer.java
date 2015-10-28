@@ -1,8 +1,8 @@
-package carelender.view;
+package carelender.view.gui;
 
+import carelender.view.gui.components.AutocompleteRenderer;
+import carelender.view.gui.components.CanvasRenderer;
 import javafx.scene.canvas.GraphicsContext;
-
-import java.awt.*;
 
 /**
  * Used to render the popup and normal layers
@@ -11,11 +11,11 @@ public class UserInterfaceRenderer extends CanvasRenderer {
     private CanvasRenderer mainRenderer;
     private CanvasRenderer popupRenderer;
     AutocompleteRenderer autocompleteRenderer;
-    UserInterfaceRenderer() {
+    public UserInterfaceRenderer() {
         autocompleteRenderer = new AutocompleteRenderer();
     }
     @Override
-    void draw(GraphicsContext gc, double x, double y, double width, double height) {
+    public void draw(GraphicsContext gc, double x, double y, double width, double height) {
         super.draw(gc, x, y, width, height);
         if ( mainRenderer != null ) {
             mainRenderer.draw(gc, 0, 0, width, height);

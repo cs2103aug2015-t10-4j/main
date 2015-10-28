@@ -1,7 +1,7 @@
 package carelender.model.data;
 
 import carelender.controller.Controller;
-import carelender.view.UserInterfaceController;
+import carelender.view.gui.UserInterfaceController;
 
 /**
  * Processes the Switch UI

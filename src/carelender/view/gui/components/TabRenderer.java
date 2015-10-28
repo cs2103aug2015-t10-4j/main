@@ -1,4 +1,4 @@
-package carelender.view;
+package carelender.view.gui.components;
 
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,7 +13,7 @@ public class TabRenderer extends CanvasRenderer {
 
 
     @Override
-    void draw(GraphicsContext gc, double x, double y, double width, double height) {
+    public void draw(GraphicsContext gc, double x, double y, double width, double height) {
         draw(gc, x, y, width, height, -1);
     }
 

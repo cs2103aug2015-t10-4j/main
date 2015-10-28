@@ -1,10 +1,9 @@
-package carelender.view;
+package carelender.view.gui.views;
 
 import carelender.model.data.EventList;
+import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 
 public class MonthViewRenderer extends CanvasRenderer {
     //CalenderRenderer

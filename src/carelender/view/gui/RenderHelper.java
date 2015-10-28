@@ -1,4 +1,4 @@
-package carelender.view;
+package carelender.view.gui;
 
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -15,15 +15,15 @@ import java.util.HashMap;
 public class RenderHelper {
     /**
      * Draws a calendar square with a drop shadow
-     * @param gc
-     * @param x
-     * @param y
-     * @param w
-     * @param h
-     * @param dropOffset
-     * @param color
-     * @param text
-     * @param dailyEventNumbers 
+     * @param gc GraphicsContext of canvas
+     * @param x X position
+     * @param y Y position
+     * @param w Width
+     * @param h Height
+     * @param dropOffset Offset of drop shadow
+     * @param color Colour of square
+     * @param text Text to show at bottom right
+     * @param dailyEventNumbers Array of integers to show the dots
      */
     public static void calendarSquare ( GraphicsContext gc,  double x, double y, double w, double h, double dropOffset, String color, String text, Font font, int[] dailyEventNumbers ) {
         gc.setFill(Color.web("#999"));

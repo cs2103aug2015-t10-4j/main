@@ -1,5 +1,7 @@
-package carelender.view;
+package carelender.view.gui.views;
 
+import carelender.view.gui.components.CanvasRenderer;
+import carelender.view.gui.components.TabRenderer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;

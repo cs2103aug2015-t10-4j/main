@@ -1,4 +1,4 @@
-package carelender.view;
+package carelender.view.gui.components;
 
 import javafx.scene.canvas.GraphicsContext;
 
@@ -15,7 +15,7 @@ public abstract class CanvasRenderer {
 
     public CanvasRenderer() {}
 
-    void draw ( GraphicsContext gc, double x, double y, double width, double height ) {
+    public void draw ( GraphicsContext gc, double x, double y, double width, double height ) {
         this.gc = gc;
         this.x = x;
         this.y = y;
@@ -23,7 +23,7 @@ public abstract class CanvasRenderer {
         this.height = height;
         gc.clearRect(x, y, width, height);
     }
-    void redraw() {
+    public void redraw() {
         if ( gc == null ) {
             return;
         }

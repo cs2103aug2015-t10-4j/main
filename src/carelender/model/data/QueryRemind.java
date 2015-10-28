@@ -2,9 +2,7 @@ package carelender.model.data;
 
 
 import carelender.controller.Controller;
-import carelender.controller.Reminder;
 import carelender.model.ReminderManager;
-import carelender.view.CalenderRenderer;
 
 import java.util.Calendar;
 

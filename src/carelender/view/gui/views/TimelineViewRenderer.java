@@ -1,40 +1,42 @@
-package carelender.view;
+package carelender.view.gui.views;
 
 import carelender.model.data.EventList;
+import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 
-public class FloatingViewRenderer extends CanvasRenderer {
-    //CalenderRenderer
-    //MessageboxRenderer
-    //SelectionPopupRenderer
-
-    TextRenderer messageBox;
+public class TimelineViewRenderer extends CanvasRenderer {
+	//TaskRenderer
+	//MessageboxRenderer
+	//SelectionPopupRenderer
+	
+	TextRenderer messageBox;
     TextRenderer announcementBox;
-    CalenderRenderer calender;
 
     private EventList listResults;
-    private TaskRenderer tasks;
-
+    private TimelineRenderer weekView;
+    private TaskRenderer taskView;
+    
     String messageText;
     private TabRenderer tab;
 
-    public FloatingViewRenderer() {
-        tasks = new TaskRenderer();
-        tasks.setParams(10, 10, 0.7, 0.1, 0.2, 0.1);
-
+    public TimelineViewRenderer() {
+        this.weekView = new TimelineRenderer();
+        this.weekView.setParams(10, 10, 50, 50);
+        this.taskView = new TaskRenderer();
+        this.taskView.setParams(10, 10, 0.7, 0.1, 0.2, 0.1);
+        
         listResults = new EventList();
-        calender = new CalenderRenderer();
         announcementBox = new TextRenderer();
         messageBox = new TextRenderer();
         tab = new TabRenderer();
+        
+        messageText = "";
     }
 
     @Override
     public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
-        super.draw(gc, 0, 0, width, height);
+    	super.draw(gc, 0, 0, width, height);
 
         //Todo: 20 -> meaningful expression
         double fontSize = width / 60.0; //Temporary
@@ -55,16 +57,11 @@ public class FloatingViewRenderer extends CanvasRenderer {
         double leftColumnX = windowPadding;
         double rightColumnX = leftColumnX + leftColumnWidth + windowPadding;
 
-        double calendarHeight = remainderHeight * 0.4 - windowPadding;
-        double taskviewHeight = remainderHeight - calendarHeight - 2* windowPadding;
+		double calendarHeight = remainderHeight * 0.4 - windowPadding;
+		double taskviewHeight = remainderHeight - calendarHeight - 2* windowPadding;
 
 
-        tab.draw(gc, 0, 0, width, topBarHeight, 2 );
-
-        /* Todo
-         * replace magic numbers;
-         * create specific class for these renderers;
-         */
+        tab.draw(gc, 0, 0, width, topBarHeight, 0);
 
         announcementBox.setParams(gc, leftColumnX, announcementBoxY,
                 leftColumnWidth, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
@@ -78,26 +75,32 @@ public class FloatingViewRenderer extends CanvasRenderer {
         messageBox.addText(messageText);
         messageBox.drawText();
 
-        calender.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
-        tasks.draw(gc, leftColumnX, messageBoxY, leftColumnWidth, messageBoxH);
-
-
+        this.taskView.draw(gc, leftColumnX, messageBoxY, leftColumnWidth, messageBoxH);
+        this.weekView.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
     }
 
     public void setMessageBoxText(String text) {
-        messageText = text;
+    	if ( text == null ) {
+    		messageText = "";
+    	} else {
+    		messageText = text;
+    	}
     }
 
     public void setTaskview(EventList tasks) {
         this.listResults = tasks;
-        this.tasks.clearEvents();
-        this.tasks.addEvents(this.listResults);
+        this.taskView.clearEvents();
+        this.taskView.addEvents(this.listResults);
+        
+        this.weekView.clear();
+        this.weekView.addEvents(this.taskView.getDisplayList());
         redraw();
     }
-
-
-
-    public void refreshData() {
-        calender.refreshEventList();
+    
+    public void setWeekView(EventList tasks) {
+        this.listResults = tasks;
+        this.weekView.clear();
+        this.weekView.addEvents(this.listResults);
+        redraw();
     }
 }

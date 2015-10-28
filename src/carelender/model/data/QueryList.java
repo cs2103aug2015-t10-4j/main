@@ -3,13 +3,11 @@ package carelender.model.data;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 
 import carelender.controller.Controller;
 import carelender.controller.Search;
 import carelender.model.Model;
-import carelender.view.TaskRenderer;
 
 /**
  * Used for list queries

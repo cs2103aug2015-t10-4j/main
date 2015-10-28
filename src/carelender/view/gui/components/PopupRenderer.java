@@ -1,9 +1,10 @@
-package carelender.view;
+package carelender.view.gui.components;
 
+import carelender.view.gui.components.CanvasRenderer;
+import carelender.view.gui.components.TextRenderer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 
 public class PopupRenderer extends CanvasRenderer {
 	String message;

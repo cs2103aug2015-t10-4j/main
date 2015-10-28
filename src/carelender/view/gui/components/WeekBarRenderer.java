@@ -1,20 +1,10 @@
-package carelender.view;
+package carelender.view.gui.components;
 
-import carelender.model.data.DateRange;
-import carelender.model.data.Event;
-import carelender.model.data.EventList;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Written by : Weizheng Lee 27/10/2015

@@ -1,5 +1,6 @@
-package carelender.view;
+package carelender.view.gui;
 
+import carelender.view.gui.components.CanvasRenderer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -7,7 +8,7 @@ import javafx.scene.paint.Color;
 /**
  * Canvas to extend the resizable component of
  */
-class ResizableCanvas extends Canvas {
+public class ResizableCanvas extends Canvas {
     CanvasRenderer renderer;
     public ResizableCanvas() {
         // Redraw canvas when size changes.
