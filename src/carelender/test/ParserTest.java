@@ -64,6 +64,12 @@ public class ParserTest extends InputParser {
 		String [] expectedSplit = { "This", "is", "string", "Literals and such", "andr andomSpa ces" };
 		
 		assertArrayEquals(expectedSplit, resultSplit);
+		
+		
+		String resultString =  removeQuotes(userInput);
+		String expectedString = "This is string   \"-----------------\" \"------------------";
+		
+		assertEquals(expectedString, resultString);
 	}
 	
 

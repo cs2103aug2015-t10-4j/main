@@ -83,6 +83,20 @@ public class Controller {
         }
         showPreviousCommand();
     }
+    
+    /**
+     * Called by UI when page down key is pressed
+     */
+    public static void processPageDownPress() {
+    	
+    }
+    
+    /**
+     * Called by UI when page up key is pressed
+     */
+    public static void processPageUpPress() {
+    	
+    }
 
     /**
      * Shows any previous command based on the currentCommand variable
@@ -278,6 +292,7 @@ public class Controller {
 
     public static void setDisplayedList(EventList displayedList) {
         InputParser.getInstance().setDisplayedList(displayedList);
+        userInterfaceController.setWeekEventList(displayedList);
     }
 
     public static BlockingStateController getBlockingStateController() {

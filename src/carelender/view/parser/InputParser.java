@@ -576,6 +576,30 @@ public class InputParser {
         }
         return stringBuilder.toString();
     }
+    
+    /**
+     * Changes everything within quotation marks to '-'
+     * @param input User input
+     * @return Processed input
+     */
+    public String removeQuotes ( String input ) {
+    	StringBuilder stringBuilder = new StringBuilder();
+    	boolean masking = false;
+    	for ( int i = 0; i < input.length(); i++ ) {
+    		char letter = input.charAt(i);
+    		if ( letter == '"') {
+    			masking = !masking;
+    			stringBuilder.append(letter);
+    		} else {
+	    		if ( masking ) {
+	    			stringBuilder.append('-');
+	    		} else {
+	    			stringBuilder.append(letter);
+	    		}
+    		}
+    	}
+    	return stringBuilder.toString();
+    }
 
     /**
      * Splits up the query into it's individual parts.
