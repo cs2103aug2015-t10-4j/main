@@ -8,10 +8,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.logging.*;
 import com.google.gson.Gson;
 import carelender.model.AppSettings.SettingName;
@@ -31,11 +29,10 @@ public class Model {
 		}
 		return singleton;
 	}
+	
 	private static Logger log;
-	private String filename;
 	private EventList events;
-	private ArrayList<EventList> cache;
-	private ArrayList<String> storage;
+
 	File fileName;
 	File folderName;
 
@@ -137,15 +134,19 @@ public class Model {
 	}
 
 	public void undoUpdatedEvent(EventList eventList) {
+		EventList redoEventList = new EventList();
+		
 		for (int i = 0; i < eventList.size(); i++) {
 			for (int j = 0; j < events.size(); j++) {
 				if (events.get(j).getUid() == eventList.get(i).getUid()) {
+					redoEventList.add(events.get(j));
 					events.remove(j);
 				}
 				saveToFile(fileName, events);
 			}
 			events.add(eventList.get(i));
 		}
+		UndoManager.getInstance().redoUpdate(redoEventList);
 		saveToFile(fileName, events);
 	}
 
@@ -179,7 +180,7 @@ public class Model {
 	}
 
 	public void setSaveFileName(String input) {
-		filename = input;
+		//filename = input;
 	}
 	
 	private boolean saveToFile(File filename, EventList eventList) {

@@ -15,6 +15,7 @@ import java.util.Date;
 public class Event implements Serializable{
     private long uid;
     private String name;
+    private boolean completed;
     //If timeRange is null, task is a FLOATING_TASK.
     //Deadline tasks have DateRange with same start and end date.
     private DateRange[] dateRange;
@@ -40,20 +41,26 @@ public class Event implements Serializable{
         this.dateRange = dateRangetoSet;
     }
 
-
-
     public void setUid(int uid){
     	this.uid = uid;
     }
-
-    public DateRange[] getDateRange () {
-        return this.dateRange;
+    
+    public void setCompleted(Boolean completed) {
+    	this.completed = completed;
     }
-
+    
     public void setDateRange (DateRange[] dateRangeToSet) {
         this.dateRange = dateRangeToSet;
     }
-
+    
+    public boolean getCompleted(){
+    	return completed;
+    }
+    
+    public DateRange[] getDateRange () {
+        return this.dateRange;
+    }
+    
     public Date getLatestDate () {
         Date lastDate = null;
         if ( this.dateRange == null ) return null;

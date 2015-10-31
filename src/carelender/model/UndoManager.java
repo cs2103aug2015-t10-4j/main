@@ -21,9 +21,11 @@ public class UndoManager {
 	}
 
 	private Stack<UndoStep> undoStack;
+	private Stack<UndoStep> redoStack;
 
 	private UndoManager() {
 		undoStack = new Stack<>();
+		redoStack = new Stack<>();
 	}
 
 	/**
@@ -34,7 +36,6 @@ public class UndoManager {
 	 */
 	public void add(EventList added) {
 		undoStack.push(new UndoStep(added, UndoStep.UndoType.ADD));
-
 	}
 
 	public void delete(EventList deleted) {
@@ -43,6 +44,10 @@ public class UndoManager {
 
 	public void update(EventList beforeUpdate) {
 		undoStack.push(new UndoStep(beforeUpdate, UndoStep.UndoType.UPDATE));
+	}
+	
+	public void redoUpdate(EventList beforeUpdate) {
+		redoStack.push(new UndoStep(beforeUpdate, UndoStep.UndoType.UPDATE));
 	}
 
 	/**
@@ -53,6 +58,7 @@ public class UndoManager {
 	public void undo() {
 		if (!undoStack.isEmpty()) {
 			UndoStep undoStep = undoStack.pop();
+			redoStack.push(undoStep);
 			switch (undoStep.getUndoType()) {
 			case ADD:
 				Model.getInstance().undoAddedEvent(undoStep.getUndoData());
@@ -67,6 +73,24 @@ public class UndoManager {
 				break;
 			}
 		}
-
+	}
+	public void redo() {
+		if (!redoStack.isEmpty()) {
+			UndoStep redoStep = redoStack.pop();
+			undoStack.push(redoStep);
+			switch (redoStep.getUndoType()) {
+			case ADD:
+				Model.getInstance().undoDeletedEvent(redoStep.getUndoData());
+				break;
+			case DELETE:
+				Model.getInstance().undoAddedEvent(redoStep.getUndoData());
+				break;
+			case UPDATE:
+				Model.getInstance().undoUpdatedEvent(redoStep.getUndoData());
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }

@@ -8,11 +8,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.google.gson.Gson;
 
 public class AppSettings {
 	
@@ -57,6 +55,7 @@ public class AppSettings {
 				ois.close();
 				fis.close();
 			}
+			br.close();
 			System.out.println(appSettingsHash.get(DataType.BOOLEAN).get(SettingName.ISFREE));
 		} catch (IOException ioe) {
 			ioe.printStackTrace();

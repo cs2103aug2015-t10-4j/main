@@ -129,6 +129,10 @@ public class InputParser {
         newCommand = new Command("undo", QueryType.UNDO);
         newCommand.setDescription("Undoes the last command");
         commandManager.addCommand(newCommand);
+        
+        newCommand = new Command("redo", QueryType.REDO);
+        newCommand.setDescription("Redoes the last undo");
+        commandManager.addCommand(newCommand);
 
         newCommand = new Command("exit", QueryType.EXIT);
         newCommand.setDescription("Closes the program");
@@ -287,6 +291,9 @@ public class InputParser {
                 break;
             case UNDO:
                 newQuery = new QueryUndo();
+                break;
+            case REDO:
+                newQuery = new QueryRedo();
                 break;
             default:
                 newQuery = new QueryGeneric(matchedCommand.getType());

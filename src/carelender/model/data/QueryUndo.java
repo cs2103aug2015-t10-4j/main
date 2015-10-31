@@ -19,3 +19,4 @@ public class QueryUndo extends QueryBase{
 		return null;
 	}
 }
+
