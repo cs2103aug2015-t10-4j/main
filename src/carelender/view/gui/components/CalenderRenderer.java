@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import carelender.controller.HintGenerator;
 import carelender.model.data.DateRange;
 import carelender.model.data.Event;
 import carelender.model.data.EventList;
@@ -63,6 +64,7 @@ public class CalenderRenderer extends CanvasRenderer {
 
     public void refreshEventList() {
         monthEvents = monthListQuery.searchExecute();
+        HintGenerator.getInstance().setEventList(monthEvents);
         updateEventNumbers();
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
