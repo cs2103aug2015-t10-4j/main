@@ -1,6 +1,7 @@
 package carelender.view.gui;
 
 import carelender.controller.Controller;
+import carelender.model.CommandAutomation;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
 import carelender.view.gui.components.PopupRenderer;
@@ -91,12 +92,17 @@ public class UserInterfaceController implements Initializable {
                                 case DOWN:
                                     Controller.processDownPress();
                                     break;
+                                default:
+                                    break;
                             }
                         } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
                             switch ( keyEvent.getCode() ) {
                                 case ENTER:
                                 case UP:
                                 case DOWN:
+                                    break;
+                                case ALT:
+                                    getAutomatedCommand();
                                     break;
                                 default:
                                     Controller.processIncompleteInput(inputText.getText());
@@ -118,10 +124,21 @@ public class UserInterfaceController implements Initializable {
         list.controllerExecute();
     }
 
+    public void getAutomatedCommand() {
+        String next = CommandAutomation.getInstance().getNext();
+        if ( next == null ) {
+            return;
+        }
+        setUserInput(next);
+        Controller.processIncompleteInput(inputText.getText());
+    }
 
     public void setTaskList ( EventList events ) {
         monthViewRenderer.setTaskview(events);
         timelineViewRenderer.setTaskview(events);
+    }
+
+    public void setWeekEventList ( EventList events ) {
         timelineViewRenderer.setWeekView(events);
     }
 
@@ -187,7 +204,7 @@ public class UserInterfaceController implements Initializable {
     }
 
     public void setUI(UIType type) {
-    	uiType = type;
+        uiType = type;
         switch ( uiType ) {
             case CALENDAR:
                 userInterfaceRenderer.setMainRenderer(monthViewRenderer);
