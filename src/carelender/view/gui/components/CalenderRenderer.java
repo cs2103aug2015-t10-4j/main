@@ -181,7 +181,6 @@ public class CalenderRenderer extends CanvasRenderer {
 
             String month = "";
             int date = c.get(Calendar.DATE);
-            System.out.println("The date I get is " + date);
             if (date == 1) {
                 month = (c.get(Calendar.MONTH) + 1) + "/";
             }
