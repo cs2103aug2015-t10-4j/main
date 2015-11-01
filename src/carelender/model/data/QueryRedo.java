@@ -2,15 +2,15 @@ package carelender.model.data;
 
 import carelender.model.UndoManager;
 
-public class QueryUndo extends QueryBase{
+public class QueryRedo extends QueryBase{
 
-    public QueryUndo() {
-        super(QueryType.UNDO);
+    public QueryRedo() {
+        super(QueryType.REDO);
     }
 
 	@Override
 	public void controllerExecute() {
-		UndoManager.getInstance().undo();
+		UndoManager.getInstance().redo();
 	}
 
 	@Override
