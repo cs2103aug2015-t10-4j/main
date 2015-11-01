@@ -166,6 +166,9 @@ public class InputParser {
 
         if ( (queryParts.length == 1 && userInput.endsWith(" ")) || queryParts.length > 1 ) {
             Command command = commandManager.matchCommand(queryParts[0]);
+            if ( command == null ) {
+                return null;
+            }
             CommandPart [] commandParts = command.processKeywords(queryParts);
 
             String usage = command.getUsage();

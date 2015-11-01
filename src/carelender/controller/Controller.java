@@ -259,7 +259,7 @@ public class Controller {
      * Refreshes the list of events.
      * It is called after every query the user inputs
      */
-    private static void refreshDisplay () {
+    public static void refreshDisplay () {
         if ( currentListQuery == null) {
             currentListQuery = new QueryList();
             currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
