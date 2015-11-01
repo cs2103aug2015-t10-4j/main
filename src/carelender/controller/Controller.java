@@ -135,15 +135,16 @@ public class Controller {
     public static void processIncompleteInput(String userInput) {
         incompleteInput = userInput;
         if ( stateManager.getAppState() == AppState.DEFAULT && !blockingStateController.isBlocked() ) {
-            String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput);
+            StringBuilder stringBuilder = new StringBuilder();
+            String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput, stringBuilder);
             if ( autocompleteOptions != null ) {
                 //System.out.println("Autocomplete size: " + autocompleteOptions.length);
             } else {
                 //System.out.println("No match");
             }
-            userInterfaceController.setAutocompleteOptions(autocompleteOptions);
+            userInterfaceController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
         } else {
-            userInterfaceController.setAutocompleteOptions(null);
+            userInterfaceController.setAutocompleteOptions(null, null);
         }
 
     }
@@ -154,7 +155,7 @@ public class Controller {
      * @param userInput The user input string
      */
     public static void processCompleteInput(String userInput) {
-        userInterfaceController.setAutocompleteOptions(null);
+        userInterfaceController.setAutocompleteOptions(null, null);
         userInput = userInput.trim();
         saveUserCommand(userInput);
 
@@ -301,5 +302,9 @@ public class Controller {
 
     public static UserInterfaceController getGUI() {
     	return userInterfaceController;
+    }
+
+    public static void processTabPress() {
+        userInterfaceController.processTabPress();
     }
 }

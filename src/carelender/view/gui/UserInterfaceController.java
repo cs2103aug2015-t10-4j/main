@@ -41,6 +41,7 @@ public class UserInterfaceController implements Initializable {
 
     private PopupRenderer popupRenderer;
     private UserInterfaceRenderer userInterfaceRenderer;
+    private String firstOption;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -91,6 +92,9 @@ public class UserInterfaceController implements Initializable {
                                     break;
                                 case DOWN:
                                     Controller.processDownPress();
+                                    break;
+                                case TAB:
+                                    Controller.processTabPress();
                                     break;
                                 default:
                                     break;
@@ -153,6 +157,14 @@ public class UserInterfaceController implements Initializable {
         }
     }
 
+    public void processTabPress() {
+        if ( firstOption != null && firstOption.length() > 0 ) {
+            setUserInput(firstOption + " ");
+            Controller.processIncompleteInput(inputText.getText());
+        }
+    }
+
+
     /**
      * Called by UI when page up key is pressed
      */
@@ -177,8 +189,13 @@ public class UserInterfaceController implements Initializable {
     }
 
 
-    public void setAutocompleteOptions( String[] autocompleteOptions ) {
-        userInterfaceRenderer.setAutocompleteOptions(autocompleteOptions);
+    public void setAutocompleteOptions( String[] autocompleteOptions, String firstOption ) {
+        this.firstOption = firstOption;
+        boolean renderFirstLineBold = false;
+        if ( firstOption != null && firstOption.length() > 0 ) {
+            renderFirstLineBold = true;
+        }
+        userInterfaceRenderer.setAutocompleteOptions(autocompleteOptions, renderFirstLineBold);
         refresh();
     }
 
@@ -206,6 +223,7 @@ public class UserInterfaceController implements Initializable {
 
     public void setUserInput ( String inputText ) {
         this.inputText.setText(inputText);
+        this.inputText.positionCaret(inputText.length());
     }
 
     public void refreshOutputField() {
@@ -283,6 +301,7 @@ public class UserInterfaceController implements Initializable {
         userInterfaceRenderer.setPopupRenderer(null);
         refresh();
     }
+
 
     public enum UIType {
         CALENDAR, TIMELINE, FLOATING, SETTING
