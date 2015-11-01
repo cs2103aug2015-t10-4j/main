@@ -104,6 +104,12 @@ public class UserInterfaceController implements Initializable {
                                 case ALT:
                                     getAutomatedCommand();
                                     break;
+                                case PAGE_UP:
+                                    Controller.processPageUpPress();
+                                    break;
+                                case PAGE_DOWN:
+                                    Controller.processPageDownPress();
+                                    break;
                                 default:
                                     Controller.processIncompleteInput(inputText.getText());
                                     break;
@@ -131,6 +137,34 @@ public class UserInterfaceController implements Initializable {
         }
         setUserInput(next);
         Controller.processIncompleteInput(inputText.getText());
+    }
+
+    /**
+     * Called by UI when page down key is pressed
+     */
+    public void processPageDownPress() {
+        switch ( uiType ) {
+            case TIMELINE:
+                timelineViewRenderer.getTaskRenderer().scrollUp();
+                break;
+            case CALENDAR:
+                monthViewRenderer.getTaskRenderer().scrollUp();
+                break;
+        }
+    }
+
+    /**
+     * Called by UI when page up key is pressed
+     */
+    public void processPageUpPress() {
+        switch ( uiType ) {
+            case TIMELINE:
+                timelineViewRenderer.getTaskRenderer().scrollDown();
+                break;
+            case CALENDAR:
+                monthViewRenderer.getTaskRenderer().scrollDown();
+                break;
+        }
     }
 
     public void setTaskList ( EventList events ) {

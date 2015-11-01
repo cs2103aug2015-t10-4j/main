@@ -112,6 +112,10 @@ public class MonthViewRenderer extends CanvasRenderer {
         redraw();
     }
 
+    public TaskRenderer getTaskRenderer() {
+        return tasks;
+    }
+
 
 
     public void refreshData() {

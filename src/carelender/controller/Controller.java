@@ -88,14 +88,14 @@ public class Controller {
      * Called by UI when page down key is pressed
      */
     public static void processPageDownPress() {
-    	
+        userInterfaceController.processPageDownPress();
     }
-    
+
     /**
      * Called by UI when page up key is pressed
      */
     public static void processPageUpPress() {
-    	
+    	userInterfaceController.processPageUpPress();
     }
 
     /**
