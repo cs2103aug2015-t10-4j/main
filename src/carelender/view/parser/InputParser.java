@@ -284,7 +284,7 @@ public class InputParser {
                 newQuery = parseDeleteCommand(commandParts);
                 break;
             case COMPLETE:
-                newQuery = parseCompleteCommand(commandParts);
+                newQuery = parseCompleteCommand(commandParts, true);
                 break;    
                 
             case UPDATE:
@@ -464,11 +464,11 @@ public class InputParser {
         for ( int i : indexList ) {
             Event event = displayedList.get(i);
             if ( event != null ) {
-                queryDelete.addEvent(event);
+                queryComplete.addEvent(event);
             }
         }
 
-        return queryDelete;
+        return queryComplete;
     }
 
     public QueryBase parseRemindCommand ( CommandPart [] commandParts ) {

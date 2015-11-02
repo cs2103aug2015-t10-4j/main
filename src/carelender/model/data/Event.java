@@ -72,29 +72,18 @@ public class Event implements Serializable{
     public void setDateRange (DateRange[] dateRangeToSet) {
         this.dateRange = dateRangeToSet;
     }
-<<<<<<< HEAD
     public DateRange[] getDateRange () {
         return this.dateRange;
-=======
-    
-    public Date getDateCreated() {
-        return dateCreated;
->>>>>>> 0157489c672294174247ccdf28fda9582c1afe9a
     }
-    
+
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
-<<<<<<< HEAD
+
     public Date getDateCreated() {
     	return dateCreated;
-=======
-    
-    public boolean getCompleted(){
-        return completed;
->>>>>>> 0157489c672294174247ccdf28fda9582c1afe9a
     }
-    
+ 
     public void setCategory(String category) {
     	this.category = category;
     }
