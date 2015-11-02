@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import carelender.model.strings.AppColours;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -50,25 +51,23 @@ public class TimelineRenderer extends CanvasRenderer {
         barHeight = (barHeight > this.maxBarHeight) ? this.maxBarHeight : barHeight;
         
         double usableWidth = width - this.labelWidth - (this.yPadding * 2);
-        
-        
 
-        gc.strokeRect(x, y, width, height);
+		gc.setFill(AppColours.panelBackground);
+        gc.fillRect(x, y, width, height);
 
-        int index = 1;
         double xCurrent = x + this.xPadding + labelWidth;
         double yCurrent = y + (this.yPadding * 2) + font.getSize();
         
         double divisorWidth = (1 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
         for (int i = 0; i <= 24; i++) {
-        	gc.setFill(Color.web("757575"));
+        	gc.setFill(AppColours.tasklistRowBackground);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setFont(font);
             gc.setTextBaseline(VPos.TOP);
             
             gc.fillText ( String.valueOf((i % 12) == 0 ? 12 : i % 12), xCurrent, y + this.yPadding );
             
-        	gc.setFill(Color.web("4ecdc4"));
+        	gc.setFill(AppColours.primaryColour);
 			gc.fillRect(xCurrent, y + this.yPadding + font.getSize(), divisorWidth, height - (this.xPadding * 2) - font.getSize());
         	xCurrent += (60 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
         }
@@ -78,7 +77,7 @@ public class TimelineRenderer extends CanvasRenderer {
             String key = entry.getKey();
             ArrayList<TimelineBarRenderer> value = entry.getValue();
             
-            gc.setFill(Color.web("4ecdc4"));
+            gc.setFill(AppColours.primaryColour);
             gc.setTextAlign(TextAlignment.RIGHT);
             gc.setFont(font);
             gc.setTextBaseline(VPos.CENTER);
@@ -87,7 +86,7 @@ public class TimelineRenderer extends CanvasRenderer {
             gc.fillText ( keyWords[1] + " " + keyWords[2], xCurrent - this.xPadding, yCurrent + (barHeight * 0.5) );
             
             for (TimelineBarRenderer bar : value) {
-                bar.draw(gc, "757575", "4ecdc4", xCurrent + this.xPadding, yCurrent, usableWidth, barHeight);
+                bar.draw(gc, AppColours.tasklistRowBackground, AppColours.primaryColour, xCurrent + this.xPadding, yCurrent, usableWidth, barHeight);
             }
             yCurrent += ( barHeight + this.yPadding );
         }
@@ -102,6 +101,9 @@ public class TimelineRenderer extends CanvasRenderer {
 		int index = 1;
 		for ( Event event : toDisplay ) {
 			DateRange [] dateRange = event.getDateRange();
+			if ( dateRange == null ) {
+				continue;
+			}
 			for ( DateRange date : dateRange ) {
 				if ( date.getDaysBetween() == 0 ) {
 					this.addDateRangeToDisplay(dateFormat.format(date.getStart()),

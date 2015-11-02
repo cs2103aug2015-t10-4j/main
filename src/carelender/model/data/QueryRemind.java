@@ -3,6 +3,7 @@ package carelender.model.data;
 
 import carelender.controller.Controller;
 import carelender.model.ReminderManager;
+import carelender.model.strings.QueryFeedback;
 
 import java.util.Calendar;
 
@@ -38,9 +39,9 @@ public class QueryRemind extends QueryBase {
 
         Controller.clearMessages();
         if ( events.size() == 1 ) {
-            Controller.displayMessage("Reminder added!");
+            Controller.displayMessage(QueryFeedback.reminderAdded());
         } else {
-            Controller.displayMessage(events.size() + " reminders added!");
+            Controller.displayMessage(QueryFeedback.reminderAdded(events.size()));
         }
     }
 

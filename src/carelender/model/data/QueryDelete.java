@@ -1,10 +1,9 @@
 package carelender.model.data;
 
 import carelender.controller.Controller;
-import carelender.controller.Search;
 import carelender.controller.callbacks.OnConfirmedCallback;
-import carelender.controller.callbacks.OnEventSelectedCallback;
 import carelender.model.Model;
+import carelender.model.strings.QueryFeedback;
 
 /**
  * Used for delete queries
@@ -16,7 +15,7 @@ public class QueryDelete extends QueryBase {
         events = new EventList();
     }
 
-	//private Event selectedObject; // Used for confirmation
+    //private Event selectedObject; // Used for confirmation
 
     public void addEvent ( Event e ) {
         events.add(e.copy());
@@ -27,59 +26,63 @@ public class QueryDelete extends QueryBase {
     }
     
     @Override
-	public void controllerExecute() {
-		Controller.clearMessages();
-		final OnConfirmedCallback deleteConfirmedCallback = new OnConfirmedCallback() {
-			@Override
-			public void onConfirmed(boolean confirmed) {
-				if ( confirmed ) {
-					Model.getInstance().deleteEvent(events);
-					Controller.displayMessage("Deleting " + events.size() + " tasks");
-				} else {
-					Controller.displayMessage("Cancelled delete");
-				}
-				Controller.refreshDisplay();
-			}
-		};
+    public void controllerExecute() {
+        Controller.clearMessages();
+        final OnConfirmedCallback deleteConfirmedCallback = new OnConfirmedCallback() {
+            @Override
+            public void onConfirmed(boolean confirmed) {
+                if ( confirmed ) {
+                    Model.getInstance().deleteEvent(events);
+                    Controller.displayMessage(QueryFeedback.deleteTask(events.size()));
+                } else {
+                    Controller.displayMessage(QueryFeedback.deleteCancelled());
+                }
+                Controller.refreshDisplay();
+            }
+        };
 
-        if ( events != null && events.size() > 0) {
-            Controller.getBlockingStateController()
-                    .startConfirmation("Are you sure you want to delete " + events.size() + " events? [Y/N]", deleteConfirmedCallback);
+        if ( events != null && events.size() > 0 ) {
+            if ( events.size() == 1 ) {
+                Controller.getBlockingStateController()
+                        .startConfirmation(QueryFeedback.deleteConfirmation(events.size()), deleteConfirmedCallback);
+            } else {
+                deleteConfirmedCallback.onConfirmed(true);
+            }
         }
 
 
-		/*final OnEventSelectedCallback deleteCallback = new OnEventSelectedCallback() {
-			@Override
-			public void onChosen(Event selected) {
-				selectedObject = selected;
-				Controller.getBlockingStateController()
-						.startConfirmation("Are you sure you want to delete \"" + selected.getName() + "\"? [Y/N]", deleteConfirmedCallback);
-			}
-		};*/
+        /*final OnEventSelectedCallback deleteCallback = new OnEventSelectedCallback() {
+            @Override
+            public void onChosen(Event selected) {
+                selectedObject = selected;
+                Controller.getBlockingStateController()
+                        .startConfirmation("Are you sure you want to delete \"" + selected.getName() + "\"? [Y/N]", deleteConfirmedCallback);
+            }
+        };*/
 
-		/*if ( searchResults.size() == 0 ) {
-			Controller.displayMessage("There is no task called " + getName());
-		} else if ( searchResults.size() > 1 ) {
-			String message = "There are multiple \""+ getName()+"\" tasks, please choose the one to delete.";
-			Controller.getBlockingStateController().startEventSelection(message, searchResults, deleteCallback);
-		} else {
-			deleteCallback.onChosen(searchResults.get(0));
-		}*/
+        /*if ( searchResults.size() == 0 ) {
+            Controller.displayMessage("There is no task called " + getName());
+        } else if ( searchResults.size() > 1 ) {
+            String message = "There are multiple \""+ getName()+"\" tasks, please choose the one to delete.";
+            Controller.getBlockingStateController().startEventSelection(message, searchResults, deleteCallback);
+        } else {
+            deleteCallback.onChosen(searchResults.get(0));
+        }*/
 
 
-	}
+    }
 
-	@Override
-	public EventList searchExecute() {
-		EventList returnList = new EventList();
-		
-		/*if (Model.getInstance().retrieveEvent() != null) {
-			for (Event event : Model.getInstance().retrieveEvent()) {
-				if (Search.isEventNameExact(event, getName())) {
-					returnList.add(event.copy());
-				}
-			}
-		}*/
-		return returnList;
-	}
+    @Override
+    public EventList searchExecute() {
+        EventList returnList = new EventList();
+
+        /*if (Model.getInstance().retrieveEvent() != null) {
+            for (Event event : Model.getInstance().retrieveEvent()) {
+                if (Search.isEventNameExact(event, getName())) {
+                    returnList.add(event.copy());
+                }
+            }
+        }*/
+        return returnList;
+    }
 }

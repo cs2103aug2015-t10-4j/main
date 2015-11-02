@@ -1,6 +1,8 @@
 package carelender.view.gui.views;
 
 import carelender.model.data.EventList;
+import carelender.model.data.QueryList;
+import carelender.model.strings.AppColours;
 import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
@@ -14,16 +16,20 @@ public class FloatingViewRenderer extends CanvasRenderer {
     TextRenderer announcementBox;
     CalenderRenderer calender;
 
+    private QueryList resultsList;
     private EventList listResults;
     private TaskRenderer tasks;
 
-    String messageText;
+    String messageText, announcementText;
     private TabRenderer tab;
 
     public FloatingViewRenderer() {
         tasks = new TaskRenderer();
         tasks.setParams(10, 10, 0.7, 0.1, 0.2, 0.1);
 
+        resultsList = new QueryList();
+        resultsList.addSearchParam(QueryList.SearchParam.DATE_START, null);
+        resultsList.addSearchParam(QueryList.SearchParam.DATE_END, null);
         listResults = new EventList();
         calender = new CalenderRenderer();
         announcementBox = new TextRenderer();
@@ -43,22 +49,18 @@ public class FloatingViewRenderer extends CanvasRenderer {
         double textboxInnerPadding = 8;
         double topBarHeight = height * 0.13;
         double remainderHeight = height - topBarHeight;
-        double announcementBoxH = remainderHeight * 0.3 - windowPadding;
-        double messageBoxH = remainderHeight * 0.7 - windowPadding;
 
         double announcementBoxY = topBarHeight + windowPadding;
-        double messageBoxY = announcementBoxY + announcementBoxH + windowPadding;
 
-        double leftColumnWidth = 0.4 * width - windowPadding;
-        double rightColumnWidth = 0.6 * width - 2*windowPadding;
-        double leftColumnX = windowPadding;
-        double rightColumnX = leftColumnX + leftColumnWidth + windowPadding;
+        double leftColumnX = 0;
 
-        double calendarHeight = remainderHeight * 0.4 - windowPadding;
-        double taskviewHeight = remainderHeight - calendarHeight - 2* windowPadding;
+        double announcementHeight = fontSize + textboxInnerPadding * 2;
+        double messageBoxHeight = fontSize + textboxInnerPadding * 2;
+        double mainContentHeight = remainderHeight - announcementHeight - messageBoxHeight - windowPadding * 3;
 
 
-        tab.draw(gc, 0, 0, width, topBarHeight, 2 );
+
+        tab.draw(gc, 0, 0, width, topBarHeight, 2);
 
         /* Todo
          * replace magic numbers;
@@ -66,30 +68,51 @@ public class FloatingViewRenderer extends CanvasRenderer {
          */
 
         announcementBox.setParams(gc, leftColumnX, announcementBoxY,
-                leftColumnWidth, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
+                width, announcementHeight,
+                textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
-        announcementBox.addText("This is a announcementRenderer.\n");
-        announcementBox.drawText();
+        announcementBox.addText(announcementText);
+        announcementBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
-        messageBox.setParams(gc, rightColumnX, announcementBoxY, rightColumnWidth, calendarHeight,
+        tasks.draw(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding,
+                width, mainContentHeight);
+
+        messageBox.setParams(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding * 2 + mainContentHeight,
+                width, messageBoxHeight,
                 textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
         messageBox.addText(messageText);
-        messageBox.drawText();
-
-        calender.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
-        tasks.draw(gc, leftColumnX, messageBoxY, leftColumnWidth, messageBoxH);
+        messageBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
 
     }
 
+    /**
+     * Sets the text of the announcement box
+     * @param text Text to set
+     */
+    public void setAnnouncementBoxText ( String text ) {
+        if ( text != null ) {
+            announcementText = text;
+        }
+    }
+
+    /**
+     * Sets the text for the message box
+     * @param text Text to set
+     */
     public void setMessageBoxText(String text) {
-        messageText = text;
+        if ( text != null ) {
+            messageText = text;
+        }
     }
 
-    public void setTaskview(EventList tasks) {
-        this.listResults = tasks;
-        this.tasks.clearEvents();
+    public TaskRenderer getTaskRenderer() {
+        return tasks;
+    }
+
+    public void setTaskview() {
+        this.listResults = resultsList.searchExecute();
         this.tasks.addEvents(this.listResults);
         redraw();
     }

@@ -36,7 +36,9 @@ public class Search {
 		if (hasDateRange(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
-			if (startDate instanceof Date && endDate instanceof Date) {
+			if ( startDate == null || endDate == null ) {
+				match = isEventFloating(eventToCheck);
+			} else if (startDate instanceof Date && endDate instanceof Date) {
 				match = isEventInDateRange(eventToCheck, 
 												(Date)startDate, (Date)endDate);
 			}
@@ -131,19 +133,23 @@ public class Search {
 		}
 		return false;
 	}
-	
+	public static boolean isEventFloating ( Event eventToCheck ) {
+		if ( eventToCheck != null ) {
+			if (eventToCheck.getDateRange() == null) {
+				return true;
+			}
+		}
+		return false;
+	}
 	public static boolean isEventInDateRange (Event eventToCheck,
 										Date startDate, Date endDate) {
 		if ( eventToCheck != null ) {
-			if ( eventToCheck.getDateRange() == null ) {
-				if ( startDate == null || endDate == null ) {
-					return true;
-				}
-			}
-			for ( DateRange dateRange : eventToCheck.getDateRange() ) {
-				if ((!dateRange.getStart().before(startDate) && !dateRange.getStart().after(endDate))
-					|| (!dateRange.getEnd().before(startDate) && !dateRange.getEnd().after(endDate))) {
-					return true;
+			if ( eventToCheck.getDateRange() != null ) {
+				for (DateRange dateRange : eventToCheck.getDateRange()) {
+					if ((!dateRange.getStart().before(startDate) && !dateRange.getStart().after(endDate))
+							|| (!dateRange.getEnd().before(startDate) && !dateRange.getEnd().after(endDate))) {
+						return true;
+					}
 				}
 			}
 		}

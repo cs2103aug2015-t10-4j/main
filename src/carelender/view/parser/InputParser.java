@@ -2,6 +2,7 @@ package carelender.view.parser;
 
 import carelender.model.data.*;
 import carelender.model.data.QueryUpdate.UpdateParam;
+import carelender.model.strings.ErrorMessages;
 import carelender.view.gui.UserInterfaceController;
 import carelender.view.parser.CommandKeyword.DataPosition;
 
@@ -268,7 +269,7 @@ public class InputParser {
         Command matchedCommand = commandManager.matchCommand(commandString);
 
         if ( matchedCommand == null ) { //Error. Command not found.
-            return new QueryError("[" + commandString + "] is not a valid command.");
+            return new QueryError(ErrorMessages.invalidCommand(commandString));
         }
 
         CommandPart[] commandPartsNoDate = matchedCommand.processKeywords(queryPartsNoDate);
@@ -351,7 +352,7 @@ public class InputParser {
                 }
                 pass = true;
             } else {
-                return new QueryError("Please input at most one date range");
+                return new QueryError(ErrorMessages.tooManyDateRange());
             }
         }
 
@@ -366,7 +367,7 @@ public class InputParser {
         }
 
         if ( !pass ) {
-            return new QueryError("Please input something to search");
+            return new QueryError(ErrorMessages.emptySearch());
         }
 
         return queryList;
@@ -424,16 +425,16 @@ public class InputParser {
     
     public QueryBase parseDeleteCommand ( CommandPart [] commandParts ) {
         if ( commandParts.length < 1 ) {
-            return new QueryError("What do you want to delete?");
+            return new QueryError(ErrorMessages.deleteNoParameters());
         }
         if ( displayedList == null ) {
-            return new QueryError("Nothing displayed");
+            return new QueryError(ErrorMessages.nothingListed());
         }
 
         Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
 
         if ( indexList == null ) {
-            return new QueryError("Error parsing indices");
+            return new QueryError(ErrorMessages.invalidIndices());
         }
         QueryDelete queryDelete = new QueryDelete();
         for ( int i : indexList ) {
@@ -472,16 +473,16 @@ public class InputParser {
 
     public QueryBase parseRemindCommand ( CommandPart [] commandParts ) {
         if ( commandParts.length < 1 ) {
-            return new QueryError("What do you want a reminder for?");
+            return new QueryError(ErrorMessages.remindNoParameters());
         }
         if ( displayedList == null ) {
-            return new QueryError("Nothing displayed");
+            return new QueryError(ErrorMessages.nothingListed());
         }
 
         Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
 
         if ( indexList == null ) {
-            return new QueryError("Error parsing indices");
+            return new QueryError(ErrorMessages.invalidIndices());
         }
         QueryRemind queryRemind = new QueryRemind();
         for ( int i : indexList ) {
@@ -506,7 +507,7 @@ public class InputParser {
                         timeOffset *= 60 * 24;
                     }
                 } catch (NumberFormatException e ) {
-                    return new QueryError(data + " is not a number");
+                    return new QueryError(ErrorMessages.invalidNumber(data));
                 }
             }
         }
@@ -525,10 +526,10 @@ public class InputParser {
         boolean pass = false;
         
         if ( commandParts.length < 1 ) {
-            return new QueryError("What do you want to update?");
+            return new QueryError(ErrorMessages.updateNoParameters());
         }
         if ( displayedList == null ) {
-            return new QueryError("Nothing displayed");
+            return new QueryError(ErrorMessages.nothingListed());
         }
         
         
@@ -536,7 +537,7 @@ public class InputParser {
         Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
 
         if ( indexList == null ) {
-            return new QueryError("Error parsing indices");
+            return new QueryError(ErrorMessages.invalidIndices());
         }
         
         for ( int i : indexList ) {
@@ -569,7 +570,7 @@ public class InputParser {
         }
         
         if ( !pass ) {
-        	return new QueryError("Update command invalid");
+        	return new QueryError(ErrorMessages.invalidUpdate());
         }
         
 
@@ -580,7 +581,7 @@ public class InputParser {
         QueryAdd queryAdd = new QueryAdd();
 
         if ( commandParts.length == 0 ) {
-            return new QueryError("Type something to add");
+            return new QueryError(ErrorMessages.adddNoParameters());
         }
         String name = commandParts[0].getQueryPart(); //First item should be the name
         queryAdd.setName(name);

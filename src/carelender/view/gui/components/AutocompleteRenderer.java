@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import carelender.model.strings.AppColours;
 import carelender.view.gui.components.CanvasRenderer;
 import carelender.view.gui.components.TextRenderer;
 import javafx.geometry.VPos;
@@ -47,7 +48,7 @@ public class AutocompleteRenderer extends CanvasRenderer {
                 autoComplete.addTextEllipsis(autocompleteOption);
             }
 
-            autoComplete.drawText("#e8e8e8", "#000", renderFirstLineBold?1:0);
+            autoComplete.drawText(AppColours.autocompleteBackground, AppColours.autocompleteText, renderFirstLineBold?1:0);
         }
     }
 

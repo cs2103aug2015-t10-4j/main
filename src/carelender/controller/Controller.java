@@ -33,6 +33,8 @@ public class Controller {
     private static String userName;
 
     private static QueryList currentListQuery;
+    private static TimerTask reminder;
+    private static Timer timer;
 
     public static void initialize() throws Exception {
         //messageList = new ArrayList<>();
@@ -41,9 +43,15 @@ public class Controller {
         blockingStateController = new BlockingStateController();
         
         //Initialize timer for reminder
+<<<<<<< HEAD
         TimerTask reminder = new ReminderCaller();
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(reminder,5000,1000);
+=======
+        TimerTask reminder = new Reminder();
+        timer = new Timer();
+        timer.scheduleAtFixedRate(reminder,5000,10000);
+>>>>>>> 0157489c672294174247ccdf28fda9582c1afe9a
         
         userName = null;
         if(AppSettings.getInstance().getStringSetting(SettingName.USERNAME) != null){
@@ -53,6 +61,10 @@ public class Controller {
         currentCommand = 0;
 
 
+    }
+
+    public static void stopTimer() {
+        timer.cancel();
     }
 
 

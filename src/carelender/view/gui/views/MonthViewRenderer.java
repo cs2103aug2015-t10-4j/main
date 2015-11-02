@@ -1,6 +1,7 @@
 package carelender.view.gui.views;
 
 import carelender.model.data.EventList;
+import carelender.model.strings.AppColours;
 import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
@@ -48,19 +49,17 @@ public class MonthViewRenderer extends CanvasRenderer {
         double textboxInnerPadding = 8;
         double topBarHeight = height * 0.13;
         double remainderHeight = height - topBarHeight;
-        double announcementBoxH = remainderHeight * 0.3 - windowPadding;
-        double messageBoxH = remainderHeight * 0.7 - windowPadding;
 
         double announcementBoxY = topBarHeight + windowPadding;
-        double messageBoxY = announcementBoxY + announcementBoxH + windowPadding;
 
-        double leftColumnWidth = 0.4 * width - windowPadding;
-        double rightColumnWidth = 0.6 * width - 2*windowPadding;
-        double leftColumnX = windowPadding;
+        double leftColumnWidth = 0.5 * width - windowPadding;
+        double rightColumnWidth = 0.5 * width;
+        double leftColumnX = 0;
         double rightColumnX = leftColumnX + leftColumnWidth + windowPadding;
 
-		double calendarHeight = remainderHeight * 0.4 - windowPadding;
-		double taskviewHeight = remainderHeight - calendarHeight - 2* windowPadding;
+        double announcementHeight = fontSize + textboxInnerPadding * 2;
+        double messageBoxHeight = fontSize + textboxInnerPadding * 2;
+        double mainContentHeight = remainderHeight - announcementHeight - messageBoxHeight - windowPadding * 3;
 
         tab.draw(gc, 0, 0, width, topBarHeight, 1);
 
@@ -70,19 +69,25 @@ public class MonthViewRenderer extends CanvasRenderer {
          */
 
         announcementBox.setParams(gc, leftColumnX, announcementBoxY,
-                leftColumnWidth, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
+                width, announcementHeight,
+                textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
         announcementBox.addText(announcementText);
-        announcementBox.drawText();
+        announcementBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
-        messageBox.setParams(gc, rightColumnX, announcementBoxY, rightColumnWidth, calendarHeight,
+        calender.draw(gc, rightColumnX, announcementBoxY + announcementHeight + windowPadding,
+                rightColumnWidth, mainContentHeight);
+        tasks.draw(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding,
+                leftColumnWidth, mainContentHeight);
+
+        messageBox.setParams(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding*2 + mainContentHeight,
+                width , messageBoxHeight,
                 textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
         messageBox.addText(messageText);
-        messageBox.drawText();
+        messageBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
-        calender.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
-        tasks.draw(gc, leftColumnX, messageBoxY, leftColumnWidth, messageBoxH);
+
     }
 
     /**

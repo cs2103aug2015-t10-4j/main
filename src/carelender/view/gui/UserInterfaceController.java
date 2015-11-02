@@ -39,9 +39,12 @@ public class UserInterfaceController implements Initializable {
     private FloatingViewRenderer floatingViewRenderer;
     private SettingViewRenderer settingViewRenderer;
 
+
     private PopupRenderer popupRenderer;
     private UserInterfaceRenderer userInterfaceRenderer;
     private String firstOption;
+
+    private String pendingAnnouncementMessage = null; //Used for the automation part
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -75,7 +78,7 @@ public class UserInterfaceController implements Initializable {
 
         uiType = UIType.CALENDAR;
         this.setUI(uiType);
-        
+
         Controller.printWelcomeMessage();
         final EventHandler<KeyEvent> keyEventHandler =
                 new EventHandler<KeyEvent>() {
@@ -85,6 +88,11 @@ public class UserInterfaceController implements Initializable {
                                 case ENTER:
                                     String text = inputText.getText();
                                     inputText.setText("");
+                                    if ( pendingAnnouncementMessage != null ) {
+                                        Controller.stopTimer();
+                                        setAnnouncementMessage(pendingAnnouncementMessage);
+                                        pendingAnnouncementMessage = null;
+                                    }
                                     Controller.processCompleteInput(text);
                                     break;
                                 case UP:
@@ -139,7 +147,11 @@ public class UserInterfaceController implements Initializable {
         if ( next == null ) {
             return;
         }
-        setUserInput(next);
+        String [] parts = next.split(" // ");
+        if ( parts.length == 2 ) {
+            pendingAnnouncementMessage = parts[1];
+        }
+        setUserInput(parts[0]);
         Controller.processIncompleteInput(inputText.getText());
     }
 
@@ -154,16 +166,11 @@ public class UserInterfaceController implements Initializable {
             case CALENDAR:
                 monthViewRenderer.getTaskRenderer().scrollUp();
                 break;
+            case FLOATING:
+                floatingViewRenderer.getTaskRenderer().scrollUp();
+                break;
         }
     }
-
-    public void processTabPress() {
-        if ( firstOption != null && firstOption.length() > 0 ) {
-            setUserInput(firstOption + " ");
-            Controller.processIncompleteInput(inputText.getText());
-        }
-    }
-
 
     /**
      * Called by UI when page up key is pressed
@@ -176,12 +183,23 @@ public class UserInterfaceController implements Initializable {
             case CALENDAR:
                 monthViewRenderer.getTaskRenderer().scrollDown();
                 break;
+            case FLOATING:
+                floatingViewRenderer.getTaskRenderer().scrollDown();
+                break;
+        }
+    }
+
+    public void processTabPress() {
+        if ( firstOption != null && firstOption.length() > 0 ) {
+            setUserInput(firstOption + " ");
+            Controller.processIncompleteInput(inputText.getText());
         }
     }
 
     public void setTaskList ( EventList events ) {
         monthViewRenderer.setTaskview(events);
         timelineViewRenderer.setTaskview(events);
+        floatingViewRenderer.setTaskview();
     }
 
     public void setWeekEventList ( EventList events ) {
@@ -206,15 +224,14 @@ public class UserInterfaceController implements Initializable {
     public void setAnnouncementMessage ( String message ) {
         monthViewRenderer.setAnnouncementBoxText(message);
         timelineViewRenderer.setAnnouncementBoxText(message);
+        floatingViewRenderer.setAnnouncementBoxText(message);
     }
     public void clearMessageLog() {
-        System.out.println("Clear message");
         messageList.clear();
         refreshOutputField();
     }
 
     public void displayMessage( String message ) {
-        System.out.println("Add message " + message);
         messageList.add(message);
         refreshOutputField();
     }
@@ -240,8 +257,12 @@ public class UserInterfaceController implements Initializable {
                 monthViewRenderer.refreshData();
                 break;
             case TIMELINE:
-                monthViewRenderer.setMessageBoxText(stringBuilder.toString());
-                monthViewRenderer.refreshData();
+                timelineViewRenderer.setMessageBoxText(stringBuilder.toString());
+                timelineViewRenderer.refreshData();
+                break;
+            case FLOATING:
+                floatingViewRenderer.setMessageBoxText(stringBuilder.toString());
+                floatingViewRenderer.refreshData();
                 break;
 
             case SETTING:
@@ -290,13 +311,13 @@ public class UserInterfaceController implements Initializable {
             }
         }
     }
-    
+
     public void displayPopup( String message ) {
         popupRenderer.setMessage(message);
         userInterfaceRenderer.setPopupRenderer(popupRenderer);
         refresh();
     }
-    
+
     public void clearPopup(){
         userInterfaceRenderer.setPopupRenderer(null);
         refresh();

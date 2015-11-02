@@ -27,13 +27,18 @@ public class Event implements Serializable{
         uid = eventObject.uid;
         name = eventObject.name;
         DateRange [] eventObjectDateRange = eventObject.dateRange;
-        dateRange = new DateRange[eventObjectDateRange.length];
-        for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
-            dateRange[i] = eventObjectDateRange[i].copy();
+        if ( eventObjectDateRange != null ) {
+            dateRange = new DateRange[eventObjectDateRange.length];
+            for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
+                dateRange[i] = eventObjectDateRange[i].copy();
 
+            }
+        } else {
+            dateRange = null;
         }
+
         if(dateRecurrence != null) {
-        	dateRecurrence = eventObject.dateRecurrence.copy();
+            dateRecurrence = eventObject.dateRecurrence.copy();
         }
     }
     public Event (int uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
@@ -44,7 +49,7 @@ public class Event implements Serializable{
     }
 
     public void setUid(int uid){
-    	this.uid = uid;
+        this.uid = uid;
     }
     public int getUid() {
         return uid;
@@ -58,7 +63,7 @@ public class Event implements Serializable{
     }
   
     public void setCompleted(Boolean completed) {
-    	this.completed = completed;
+        this.completed = completed;
     }
     public boolean getCompleted(){
     	return completed;
@@ -67,15 +72,27 @@ public class Event implements Serializable{
     public void setDateRange (DateRange[] dateRangeToSet) {
         this.dateRange = dateRangeToSet;
     }
+<<<<<<< HEAD
     public DateRange[] getDateRange () {
         return this.dateRange;
+=======
+    
+    public Date getDateCreated() {
+        return dateCreated;
+>>>>>>> 0157489c672294174247ccdf28fda9582c1afe9a
     }
     
     public void setDateCreated(Date dateCreated) {
-    	this.dateCreated = dateCreated;
+        this.dateCreated = dateCreated;
     }
+<<<<<<< HEAD
     public Date getDateCreated() {
     	return dateCreated;
+=======
+    
+    public boolean getCompleted(){
+        return completed;
+>>>>>>> 0157489c672294174247ccdf28fda9582c1afe9a
     }
     
     public void setCategory(String category) {
@@ -116,19 +133,19 @@ public class Event implements Serializable{
     }
     
     public Date getEarliestDateFromNow () {
-    	Date currentDate = new Date();
+        Date currentDate = new Date();
         Date firstDate = null;
         if ( this.dateRange == null ) return null;
         for (DateRange dateR : this.dateRange) {
-        	if (dateR.getStart().after(currentDate)) {
-	            if (firstDate == null) {
-	                firstDate = dateR.getStart();
-	            } else {
-	                if (dateR.getStart().before(firstDate)) {
-	                    firstDate = dateR.getStart();
-	                }
-	            }
-        	}
+            if (dateR.getStart().after(currentDate)) {
+                if (firstDate == null) {
+                    firstDate = dateR.getStart();
+                } else {
+                    if (dateR.getStart().before(firstDate)) {
+                        firstDate = dateR.getStart();
+                    }
+                }
+            }
         }
         return firstDate;
     }
