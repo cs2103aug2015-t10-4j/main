@@ -101,6 +101,9 @@ public class TimelineRenderer extends CanvasRenderer {
 		int index = 1;
 		for ( Event event : toDisplay ) {
 			DateRange [] dateRange = event.getDateRange();
+			if ( dateRange == null ) {
+				continue;
+			}
 			for ( DateRange date : dateRange ) {
 				if ( date.getDaysBetween() == 0 ) {
 					this.addDateRangeToDisplay(dateFormat.format(date.getStart()),

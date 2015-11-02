@@ -124,4 +124,8 @@ public class TimelineViewRenderer extends CanvasRenderer {
         this.weekView.addEvents(this.listResults);
         redraw();
     }
+
+    public void refreshData() {
+        //weekView.redraw();
+    }
 }

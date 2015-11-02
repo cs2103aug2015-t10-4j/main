@@ -41,7 +41,7 @@ public class TaskRenderer extends CanvasRenderer {
         
         this.totalTasks = 0;
         this.displayStart = 0;
-	}
+    }
 
     public void setParams (double xPad, double yPad,
                            double taskWidthRatio, double taskHeightRatio,
@@ -98,28 +98,28 @@ public class TaskRenderer extends CanvasRenderer {
             yPositionDate = yCurrent;
             
             for (Event event : value) {
-            	if ( currentTaskToDisplay >= this.displayStart ) {
-	                this.taskBarRender.setPosition(xCurrent + dateBarWidth + this.xPadding, yCurrent);
-	                this.taskBarRender.setContent(event);
-	                
-	                if ( (remainingHeight - this.taskBarRender.getHeight()) >= 0 ) {
-	                	this.gc.setFill(AppColours.tasklistRowBackground);
-	                    this.gc.setTextAlign(TextAlignment.RIGHT);
-	                    this.gc.setFont(font);
-	                    this.gc.setTextBaseline(VPos.TOP);
-	                    
-	                    this.gc.fillText ( String.valueOf(index), xCurrent + dateBarWidth, yCurrent );
-	                    
-		                this.taskBarRender.drawTaskBar(AppColours.tasklistRowBackground, Color.web("eeeff0"));
-		                yCurrent += ( this.taskBarRender.getHeight() + this.yPadding );
-		                
-		                remainingHeight -= (this.taskBarRender.getHeight() + this.yPadding);
-		                index++;
-	                } else {
-	                	return;
-	                }
-            	}
-            	currentTaskToDisplay++;
+                if ( currentTaskToDisplay >= this.displayStart ) {
+                    this.taskBarRender.setPosition(xCurrent + dateBarWidth + this.xPadding, yCurrent);
+                    this.taskBarRender.setContent(event);
+
+                    if ( (remainingHeight - this.taskBarRender.getHeight()) >= 0 ) {
+                        this.gc.setFill(AppColours.tasklistRowBackground);
+                        this.gc.setTextAlign(TextAlignment.RIGHT);
+                        this.gc.setFont(font);
+                        this.gc.setTextBaseline(VPos.TOP);
+
+                        this.gc.fillText(String.valueOf(index), xCurrent + dateBarWidth, yCurrent);
+
+                        this.taskBarRender.drawTaskBar(AppColours.tasklistRowBackground, Color.web("eeeff0"));
+                        yCurrent += ( this.taskBarRender.getHeight() + this.yPadding );
+
+                        remainingHeight -= (this.taskBarRender.getHeight() + this.yPadding);
+                        index++;
+                    } else {
+                        return;
+                    }
+                }
+                currentTaskToDisplay++;
             }
             
             /*this.gc.setFill (Color.web("999"));
@@ -131,21 +131,23 @@ public class TaskRenderer extends CanvasRenderer {
             this.gc.setTextBaseline(VPos.TOP);
 
             String [] keyWords = key.split(" ");
-            this.gc.fillText ( keyWords[1], xPositionDate, yPositionDate );
-            this.gc.fillText ( keyWords[2], xPositionDate, yPositionDate + font.getSize() );
+            if ( keyWords.length > 2 ) {
+                this.gc.fillText(keyWords[1], xPositionDate, yPositionDate);
+                this.gc.fillText(keyWords[2], xPositionDate, yPositionDate + font.getSize());
+            }
         }
     }
     
     public void scrollDown () {
-    	if ( this.displayStart > 0 ) {
-    		this.displayStart--;
-    	}
+        if ( this.displayStart > 0 ) {
+            this.displayStart--;
+        }
     }
     
     public void scrollUp () {
-    	if ( this.displayStart < this.totalTasks ) {
-    		this.displayStart++;
-    	}
+        if ( this.displayStart < this.totalTasks ) {
+            this.displayStart++;
+        }
     }
 
     public void clearEvents () {
@@ -154,59 +156,71 @@ public class TaskRenderer extends CanvasRenderer {
     }
 
     public void addEvents ( EventList toDisplay ) {
-    	SimpleDateFormat dateFormat = new SimpleDateFormat("D d EEE");
-		for ( Event event : toDisplay ) {
-			Date currentDay = event.getEarliestDateFromNow();
-			String day = dateFormat.format(currentDay);
-			if (this.taskDisplay.containsKey(day)) {
-				if (!this.taskDisplay.get(day).contains(event)) {
-					this.taskDisplay.get(day).add(event);
-				}
-			} else {
-				EventList tasksOnDay = new EventList();
-				tasksOnDay.add(event);
-				this.taskDisplay.put (day, tasksOnDay);
-			}
-			this.totalTasks++;
-		}
-		this.setDisplayList();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("D d EEE");
+        for ( Event event : toDisplay ) {
+            Date currentDay = event.getEarliestDateFromNow();
+            if ( currentDay == null ) { //Floating task
+                if (this.taskDisplay.containsKey("F")) {
+                    if (!this.taskDisplay.get("F").contains(event)) {
+                        this.taskDisplay.get("F").add(event);
+                    }
+                } else {
+                    EventList tasksOnDay = new EventList();
+                    tasksOnDay.add(event);
+                    this.taskDisplay.put("F", tasksOnDay);
+                }
+            } else { //Day tasks
+                String day = dateFormat.format(currentDay);
+                if (this.taskDisplay.containsKey(day)) {
+                    if (!this.taskDisplay.get(day).contains(event)) {
+                        this.taskDisplay.get(day).add(event);
+                    }
+                } else {
+                    EventList tasksOnDay = new EventList();
+                    tasksOnDay.add(event);
+                    this.taskDisplay.put(day, tasksOnDay);
+                }
+            }
+            this.totalTasks++;
+        }
+        this.setDisplayList();
     }
     
     private void setDisplayList () {
-    	List<Event> concatList = new EventList();
-    	for ( EventList events : this.taskDisplay.values()) {
+        List<Event> concatList = new EventList();
+        for ( EventList events : this.taskDisplay.values()) {
             concatList.addAll(events);
-    	}
-    	Controller.setDisplayedList((EventList)concatList);
+        }
+        Controller.setDisplayedList((EventList)concatList);
     }
     
     public EventList getDisplayList () {
-    	List<Event> concatList = new EventList();
-    	for ( EventList events : this.taskDisplay.values()) {
+        List<Event> concatList = new EventList();
+        for ( EventList events : this.taskDisplay.values()) {
             concatList.addAll(events);
-    	}
-    	return (EventList)concatList;
+        }
+        return (EventList)concatList;
     }
     /*
-	public void addEvents ( EventList toDisplay ) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("d EEE");
-		for ( Event event : toDisplay ) {
-			DateRange [] dateRange = event.getDateRange();
-			for ( DateRange date : dateRange ) {
-				Date currentDay = date.getStart();
-				while (!currentDay.after(date.getEnd())) {
-					String day = dateFormat.format(currentDay);
-					if (this.taskDisplay.containsKey(day)) {
-						if (!this.taskDisplay.get(day).contains(event)) {
-							this.taskDisplay.get(day).add(event);
-						}
-					} else {
-						EventList tasksOnDay = new EventList();
-						tasksOnDay.add(event);
-						this.taskDisplay.put (day, tasksOnDay);
-					}
-					currentDay = this.addDays(currentDay, 1);
-				}
+    public void addEvents ( EventList toDisplay ) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d EEE");
+        for ( Event event : toDisplay ) {
+            DateRange [] dateRange = event.getDateRange();
+            for ( DateRange date : dateRange ) {
+                Date currentDay = date.getStart();
+                while (!currentDay.after(date.getEnd())) {
+                    String day = dateFormat.format(currentDay);
+                    if (this.taskDisplay.containsKey(day)) {
+                        if (!this.taskDisplay.get(day).contains(event)) {
+                            this.taskDisplay.get(day).add(event);
+                        }
+                    } else {
+                        EventList tasksOnDay = new EventList();
+                        tasksOnDay.add(event);
+                        this.taskDisplay.put (day, tasksOnDay);
+                    }
+                    currentDay = this.addDays(currentDay, 1);
+                }
                 if (!dateFormat.format(date.getStart()).equals(dateFormat.format(date.getEnd()))) {
                     String day = dateFormat.format(date.getEnd());
                     System.out.println(day);
@@ -218,12 +232,12 @@ public class TaskRenderer extends CanvasRenderer {
                         this.taskDisplay.put(day, tasksOnDay);
                     }
                 }
-			}
-		}
-	}
-	*/
-	
-	public Date addDays ( Date date, int days )
+            }
+        }
+    }
+    */
+
+    public Date addDays ( Date date, int days )
     {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
