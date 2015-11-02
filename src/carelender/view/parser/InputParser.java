@@ -157,21 +157,20 @@ public class InputParser {
 
     /**
      * Gets the list of helper options
-     * @param userInput
-     * @return
+     * @param userInput User's input
+     * @param firstOption Stringbuilder to get the first option of the autocomplete
+     * @return String array of options
      */
-    public String[] getAutocompleteOptions(String userInput) {
+    public String[] getAutocompleteOptions(String userInput, StringBuilder firstOption) {
         ArrayList <String> options = new ArrayList<>();
         String [] queryParts = splitQuery(userInput);
 
         if ( (queryParts.length == 1 && userInput.endsWith(" ")) || queryParts.length > 1 ) {
             Command command = commandManager.matchCommand(queryParts[0]);
-            CommandPart [] commandParts = command.processKeywords(queryParts);
-
-            String usage = command.getUsage();
-            if ( usage != null && usage.length() > 0 ) {
-                options.add(usage);
+            if ( command == null ) {
+                return null;
             }
+            CommandPart [] commandParts = command.processKeywords(queryParts);
 
             if ( userInput.endsWith(" ") ) {
                 //User is not midway through typing a word
@@ -180,6 +179,9 @@ public class InputParser {
                     if ( commandPart == null ) {
                         //This keyword doesn't exist in the string
                         options.add(userInput + keyword.getKeyword());
+                        if ( firstOption != null && firstOption.length() == 0 ) {
+                            firstOption.append(userInput + keyword.getKeyword());
+                        }
                     }
                 }
             } else {
@@ -191,6 +193,9 @@ public class InputParser {
                         //This keyword doesn't exist in the string
                         if ( keyword.getKeyword().startsWith(lastWord) ) {
                             String inputWithoutLastWord = String.join(" ", queryParts);
+                            if ( firstOption != null && firstOption.length() == 0 ) {
+                                firstOption.append(inputWithoutLastWord + keyword.getKeyword());
+                            }
                             options.add(inputWithoutLastWord + keyword.getKeyword());
                         }
                     }
@@ -198,6 +203,10 @@ public class InputParser {
                 }
             }
 
+            String usage = command.getUsage();
+            if ( usage != null && usage.length() > 0 ) {
+                options.add(usage);
+            }
 
             /*for ( CommandKeyword keyword : command.keywords  ) {
                 CommandPart commandPart = getCommandPart(keyword.getKeyword(), commandParts);
@@ -215,6 +224,9 @@ public class InputParser {
             //Still on first word
             for ( Command command: commandManager.commands ) {
                 if ( command.getCommand().toLowerCase().startsWith(userInput.toLowerCase()) ) {
+                    if ( firstOption != null && firstOption.length() == 0 ) {
+                        firstOption.append(command.getCommand());
+                    }
                     options.add(command.getCommand() + " - " + command.getDescription());
                 }
             }

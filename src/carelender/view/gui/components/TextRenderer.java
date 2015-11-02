@@ -172,28 +172,42 @@ public class TextRenderer {
 	        }
     	}
     }
+
+	public void drawText ( String background, String text, int boldFirst ) {
+		if (this.gc == null) {
+			System.out.println("Error");
+		} else {
+			double xCurrent = this.xPosition + this.xPadding;
+			double yCurrent = this.yPosition + (this.yPadding + this.charHeight);
+
+			gc.setFill(Color.web(background));
+			gc.fillRect(this.xPosition, this.yPosition, this.width, this.height);
+
+			this.gc.setFill(Color.web(text));
+			for ( String lineToDraw : this.textLines ) {
+
+				this.gc.setStroke(Color.web(text));
+				this.gc.setFill(Color.web(text));
+				this.gc.setTextAlign(TextAlignment.LEFT);
+				this.gc.setFont(this.font);
+				this.gc.setTextBaseline(VPos.BOTTOM);
+
+				this.gc.fillText ( lineToDraw, xCurrent, yCurrent );
+				if ( boldFirst > 0 ) {
+					this.gc.strokeText( lineToDraw, xCurrent, yCurrent );
+					boldFirst--;
+				}
+				yCurrent += ( this.lineSpace + this.charHeight );
+			}
+		}
+	}
     
     public void drawText ( String background, String text ) {
-    	if (this.gc == null) {
-    		System.out.println("Error");
-    	} else {
-	        double xCurrent = this.xPosition + this.xPadding;
-	        double yCurrent = this.yPosition + (this.yPadding + this.charHeight);
-	
-	        gc.setFill(Color.web(background));
-	        gc.fillRect(this.xPosition, this.yPosition, this.width, this.height);
-	
-	        for ( String lineToDraw : this.textLines ) {
-	
-	            this.gc.setFill(Color.web(text));
-	            this.gc.setTextAlign(TextAlignment.LEFT);
-	            this.gc.setFont(this.font);
-	            this.gc.setTextBaseline(VPos.BOTTOM);
-	
-	            this.gc.fillText ( lineToDraw, xCurrent, yCurrent );
-	            yCurrent += ( this.lineSpace + this.charHeight );
-	        }
-    	}
+		if (this.gc == null) {
+			System.out.println("Error");
+		} else {
+			drawText(background, text, 0);
+		}
     }
     
     public void drawText (String background) {

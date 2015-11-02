@@ -88,14 +88,14 @@ public class Controller {
      * Called by UI when page down key is pressed
      */
     public static void processPageDownPress() {
-    	
+        userInterfaceController.processPageDownPress();
     }
-    
+
     /**
      * Called by UI when page up key is pressed
      */
     public static void processPageUpPress() {
-    	
+    	userInterfaceController.processPageUpPress();
     }
 
     /**
@@ -135,15 +135,16 @@ public class Controller {
     public static void processIncompleteInput(String userInput) {
         incompleteInput = userInput;
         if ( stateManager.getAppState() == AppState.DEFAULT && !blockingStateController.isBlocked() ) {
-            String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput);
+            StringBuilder stringBuilder = new StringBuilder();
+            String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput, stringBuilder);
             if ( autocompleteOptions != null ) {
                 //System.out.println("Autocomplete size: " + autocompleteOptions.length);
             } else {
                 //System.out.println("No match");
             }
-            userInterfaceController.setAutocompleteOptions(autocompleteOptions);
+            userInterfaceController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
         } else {
-            userInterfaceController.setAutocompleteOptions(null);
+            userInterfaceController.setAutocompleteOptions(null, null);
         }
 
     }
@@ -154,7 +155,7 @@ public class Controller {
      * @param userInput The user input string
      */
     public static void processCompleteInput(String userInput) {
-        userInterfaceController.setAutocompleteOptions(null);
+        userInterfaceController.setAutocompleteOptions(null, null);
         userInput = userInput.trim();
         saveUserCommand(userInput);
 
@@ -259,7 +260,7 @@ public class Controller {
      * Refreshes the list of events.
      * It is called after every query the user inputs
      */
-    private static void refreshDisplay () {
+    public static void refreshDisplay () {
         if ( currentListQuery == null) {
             currentListQuery = new QueryList();
             currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
@@ -301,5 +302,9 @@ public class Controller {
 
     public static UserInterfaceController getGUI() {
     	return userInterfaceController;
+    }
+
+    public static void processTabPress() {
+        userInterfaceController.processTabPress();
     }
 }

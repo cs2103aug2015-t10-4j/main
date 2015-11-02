@@ -154,7 +154,7 @@ public class TaskRenderer extends CanvasRenderer {
     public void addEvents ( EventList toDisplay ) {
     	SimpleDateFormat dateFormat = new SimpleDateFormat("D d EEE");
 		for ( Event event : toDisplay ) {
-			Date currentDay = event.getEarliestDate();
+			Date currentDay = event.getEarliestDateFromNow();
 			String day = dateFormat.format(currentDay);
 			if (this.taskDisplay.containsKey(day)) {
 				if (!this.taskDisplay.get(day).contains(event)) {

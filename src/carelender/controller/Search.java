@@ -98,15 +98,17 @@ public class Search {
 	
 	public static boolean isEventBeforeDate (Event eventToCheck,
 										Date startDate) {
-		Date latestDate = eventToCheck.getLatestDate();
-		if (latestDate != null) {
-			System.out.println ( latestDate.getTime() + "     " + startDate.getTime());
-			if (!latestDate.after(startDate)) {
-				return true;
+		if ( eventToCheck != null ) {
+			if ( eventToCheck.getDateRange() == null ) {
+				if ( startDate == null ) {
+					return true;
+				}
 			}
-		} else {
-			if ( startDate == null ) {
-				return true;
+			Date latestDate = eventToCheck.getLatestDate();
+			if (latestDate != null) {
+				if (!latestDate.after(startDate)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -114,15 +116,17 @@ public class Search {
 	
 	public static boolean isEventAfterDate (Event eventToCheck,
 										Date endDate) {
-		Date earliestDate = eventToCheck.getEarliestDateFromNow();
-		if (earliestDate != null) {
-			System.out.println ( earliestDate.getTime() + "     " + endDate.getTime());
-			if (!earliestDate.before(endDate)) {
-				return true;
+		if ( eventToCheck != null ) {
+			if ( eventToCheck.getDateRange() == null ) {
+				if ( endDate == null ) {
+					return true;
+				}
 			}
-		} else {
-			if ( endDate == null ) {
-				return true;
+			Date earliestDate = eventToCheck.getEarliestDateFromNow();
+			if (earliestDate != null) {
+				if (!earliestDate.before(endDate)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -130,27 +134,29 @@ public class Search {
 	
 	public static boolean isEventInDateRange (Event eventToCheck,
 										Date startDate, Date endDate) {
-		if ( eventToCheck.getDateRange() == null ) {
-			if ( startDate == null || endDate == null )
-			{
-				return true;
+		if ( eventToCheck != null ) {
+			if ( eventToCheck.getDateRange() == null ) {
+				if ( startDate == null || endDate == null ) {
+					return true;
+				}
 			}
-			return false;
-		}
-		for ( DateRange dateRange : eventToCheck.getDateRange() ) {
-			if (!dateRange.getStart().before(startDate) && !dateRange.getEnd().after(endDate)) {
-				return true;
+			for ( DateRange dateRange : eventToCheck.getDateRange() ) {
+				if ((!dateRange.getStart().before(startDate) && !dateRange.getStart().after(endDate))
+					|| (!dateRange.getEnd().before(startDate) && !dateRange.getEnd().after(endDate))) {
+					return true;
+				}
 			}
 		}
-		
 		return false;
 	}
 	
 	public static boolean isDateInEvent (Event eventToCheck, Date date) {
-		for ( DateRange dateRange : eventToCheck.getDateRange() ) {
-			if ((date.before(dateRange.getEnd()) || date.equals(dateRange.getEnd()))
-				&& (date.after(dateRange.getStart()) || date.equals(dateRange.getStart()))) {
-				return true;
+		if ( eventToCheck != null ) {
+			for ( DateRange dateRange : eventToCheck.getDateRange() ) {
+				if ((date.before(dateRange.getEnd()) || date.equals(dateRange.getEnd()))
+					&& (date.after(dateRange.getStart()) || date.equals(dateRange.getStart()))) {
+					return true;
+				}
 			}
 		}
 		return false;

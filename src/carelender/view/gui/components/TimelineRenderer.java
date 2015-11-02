@@ -44,12 +44,14 @@ public class TimelineRenderer extends CanvasRenderer {
     public void draw(GraphicsContext gc, double x, double y, double width, double height) {
     	super.draw(gc, x, y, width, height);
 
-        double barHeight = (height - (this.yPadding * 2)) / (this.weekDisplay.size() + 2);
-        barHeight = (barHeight > maxBarHeight) ? maxBarHeight : barHeight;
+    	Font font = Font.loadFont("file:res/monaco.ttf", this.labelWidth/5);
+    	
+        double barHeight = (height - (this.yPadding * this.weekDisplay.size() * 2) - font.getSize()) / (this.weekDisplay.size());
+        barHeight = (barHeight > this.maxBarHeight) ? this.maxBarHeight : barHeight;
         
         double usableWidth = width - this.labelWidth - (this.yPadding * 2);
         
-        Font font = Font.loadFont("file:res/monaco.ttf", labelWidth/5);
+        
 
         gc.strokeRect(x, y, width, height);
 
@@ -110,7 +112,7 @@ public class TimelineRenderer extends CanvasRenderer {
 												this.getTimeInMinutes(date.getStart()),
 												TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
 					Date currentDay = date.getStart();
-					for ( int i = 1; i < date.getDaysBetween(); i++ ) {
+					for ( int i = 0; i < date.getDaysBetween(); i++ ) {
 						currentDay = this.addDays(currentDay, 1);
 						this.addDateRangeToDisplay(dateFormat.format(currentDay),
 													0, TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));

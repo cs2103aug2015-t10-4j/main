@@ -44,6 +44,7 @@ public class CalenderRenderer extends CanvasRenderer {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR, 0);
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         monthStartTime = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, squaresToDraw);
@@ -66,6 +67,7 @@ public class CalenderRenderer extends CanvasRenderer {
         monthEvents = monthListQuery.searchExecute();
         HintGenerator.getInstance().setEventList(monthEvents);
         updateEventNumbers();
+        HintGenerator.getInstance().setDailyEventNumbers(monthEventNumbers);
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
     
@@ -153,6 +155,7 @@ public class CalenderRenderer extends CanvasRenderer {
         calulateCellProperties();
         
         Calendar c = Calendar.getInstance();
+        c.setFirstDayOfWeek(Calendar.MONDAY);
         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY );
 
         gc.strokeRect(x, y, width, height);

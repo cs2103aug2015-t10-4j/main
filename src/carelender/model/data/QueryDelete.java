@@ -33,11 +33,12 @@ public class QueryDelete extends QueryBase {
 			@Override
 			public void onConfirmed(boolean confirmed) {
 				if ( confirmed ) {
-					Controller.displayMessage("Deleting " + events.size() + " tasks");
 					Model.getInstance().deleteEvent(events);
+					Controller.displayMessage("Deleting " + events.size() + " tasks");
 				} else {
 					Controller.displayMessage("Cancelled delete");
 				}
+				Controller.refreshDisplay();
 			}
 		};
 

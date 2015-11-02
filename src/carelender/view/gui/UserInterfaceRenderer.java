@@ -43,7 +43,8 @@ public class UserInterfaceRenderer extends CanvasRenderer {
         this.popupRenderer = popupRenderer;
     }
 
-    public void setAutocompleteOptions ( String [] options ) {
-        autocompleteRenderer.setAutocompleteOptions(options);
+    public void setAutocompleteOptions ( String [] options, boolean renderFirstLineBold ) {
+
+        autocompleteRenderer.setAutocompleteOptions(options, renderFirstLineBold);
     }
 }

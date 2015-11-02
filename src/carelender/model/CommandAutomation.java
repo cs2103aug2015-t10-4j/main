@@ -15,11 +15,7 @@ public class CommandAutomation {
     int i = 0;
     String [] commands;
     private CommandAutomation() {
-        commands = new String[4];
-        commands[0] = "Test1";
-        commands[1] = "Test2";
-        commands[2] = "Test3";
-        commands[3] = "Test4";
+        commands = Model.getInstance().loadStringArray("automation.dat");
     }
 
     public String getNext() {

@@ -100,6 +100,10 @@ public class TimelineViewRenderer extends CanvasRenderer {
         }
     }
 
+    public TaskRenderer getTaskRenderer() {
+        return taskView;
+    }
+
     public void setTaskview(EventList tasks) {
         this.listResults = tasks;
         this.taskView.clearEvents();

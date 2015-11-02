@@ -1,5 +1,8 @@
 package carelender.controller;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import carelender.model.data.EventList;
 
 /**
@@ -7,6 +10,7 @@ import carelender.model.data.EventList;
  */
 public class HintGenerator {
     private static HintGenerator singleton = null;
+    private int[] dailyEventNumbers;
     public static HintGenerator getInstance() {
         if ( singleton == null ) {
             singleton = new HintGenerator();
@@ -20,12 +24,13 @@ public class HintGenerator {
 
     String [] availableHints;
     private HintGenerator() {
-        availableHints = new String[5];
-        availableHints[0] = "It seems you have free time this week, would you like to add more tasks?";
-        availableHints[1] = "You seem busy on sunday, you could move tasks to tuesday instead.";
-        availableHints[2] = "Don't forget all those deadlines tomorrow!";
-        availableHints[3] = "This month looks clear, why not plan a vacation?";
-        availableHints[4] = "You've been planning lot's of tasks recently, take a break.";
+        availableHints = new String[4];
+        availableHints[0] = "Have a nice day :)";
+        availableHints[1] = "Have a nice day :)";
+        availableHints[2] = "Have a nice day :)";
+        availableHints[3] = "Have a nice day :)";
+        
+        dailyEventNumbers = new int[28];
     }
 
     /**
@@ -39,10 +44,55 @@ public class HintGenerator {
 
 
     public void generateHints() {
-        //TODO: Make use of monthEvents to generate hints and put into availableHints
+    	Calendar c = Calendar.getInstance();
+    	c.setFirstDayOfWeek(Calendar.MONDAY);
+    	c.setTime(new Date());
+    	int todayIndex = c.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
+    	if(todayIndex<0){
+    		todayIndex = 6;
+    	}
+    	int tomorrowIndex = todayIndex++;
+    	//Is tomorrow busy
+    	if(dailyEventNumbers[tomorrowIndex] > 9) {
+    		availableHints[0] = "Don't forget all those deadlines tomorrow!";
+    	} else {
+    		availableHints[0] = "Have a nice day :)";
+    	}
+    	//Is the following three days busy
+    	int threeDaysTasks = 0;
+    	for(int i=0; i<3; i++){
+    		threeDaysTasks += dailyEventNumbers[todayIndex + i];
+    	}
+    	if(threeDaysTasks >= 27){
+    		availableHints[1] = "You've been planning lot's of tasks recently, take a break.";
+    	} else {
+    		availableHints[1] = "Have a nice day :)";
+    	}
+    	//Is this week busy
+    	int sevenDaysTasks = 0;
+    	for(int i=0; i<7; i++){
+    		sevenDaysTasks += dailyEventNumbers[todayIndex + i];
+    	}
+    	if(sevenDaysTasks >= 42){
+    		availableHints[2] = "It seems you have many tasks this week, would you like to move some tasks to next week?";
+    	} else if(sevenDaysTasks < 21) {
+    		availableHints[2] = "It seems you have free time this week, would you like to add more tasks?";
+    	} else {
+    		availableHints[2] = "Have a nice day :)";
+    	}
+    	//Is this month busy
+    	int monthTasks = 0;
+    	for(int i=0; i<28; i++){
+    		monthTasks += dailyEventNumbers[i];
+    	}
+    	if(monthTasks < 10) {
+    		availableHints[3] = "This month looks clear, why not plan a vacation?";
+    	} else {
+    		availableHints[3] = "Have a nice day :)";
+    	}
     }
 
-    /**
+	/**
      * Called by the UI to display a random hint every minute or so
      * @return Hint from availableHints
      */
@@ -59,4 +109,19 @@ public class HintGenerator {
         MONTH_FREE,
         MONTH_BUSY,
     }
+    
+    private void resetDailyEventNumbers(){
+    	for(int i=0; i<dailyEventNumbers.length; i++){
+    		dailyEventNumbers[i] = 0;
+    	}
+    }
+
+	public void setDailyEventNumbers(int[][] monthEventNumbers) {
+		resetDailyEventNumbers();
+		for(int i=0; i<monthEventNumbers.length; i++){
+			for(int j=0; j<monthEventNumbers[i].length; j++){
+				dailyEventNumbers[i] += monthEventNumbers[i][j];
+			}
+		}
+	}
 }
