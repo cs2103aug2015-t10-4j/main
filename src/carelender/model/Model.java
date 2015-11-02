@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.*;
 import com.google.gson.Gson;
 import carelender.model.AppSettings.SettingName;
@@ -42,13 +42,12 @@ public class Model {
 		log = Logger.getLogger(Model.class.getName());
 		//Get current time
 		Calendar cal = Calendar.getInstance();
-		
-		System.out.println("Current Month: " + cal.get(Calendar.MONTH));
-		
+
 		//Initiate the Directory
 		folderName = new File(FOLDER_NAME);
 		folderName.mkdir();
 
+		//Get saved file/create one if none exists
 		fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
 		events = new EventList();	
 		if (!fileName.exists()) {
@@ -61,41 +60,36 @@ public class Model {
 		} else {
 			events = getFromFile(fileName);
 		}
-		
-
-		currentUid = 1;
+		//Get Unique ID number
 		if (AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX) != null) {
 			currentUid = AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX);
+		} else {
+			currentUid = 1;
 		}
-		System.out.println("CurrentID" + currentUid);
 	}
 
-	public boolean addEvent(Event eventObj) {
-		eventObj.setUid(currentUid += 1);// Set incremented UID to Event
-		AppSettings.getInstance().setIntSetting(SettingName.CURRENT_INDEX, currentUid);
+	public void addEvent(Event eventObj) {
+		eventObj.setDateCreated(new Date());
+		eventObj.setUid(currentUid);
 		events.add(eventObj);
-		updateUndoManager(eventObj, UndoType.ADD);		
-		//System.out.println("Added UID:" + currentUid + "Event Name: " + eventObj.getName());
-		//System.out.println("HEEEEELLLOOO" +saveToFile("events.dat", events));
-		return saveToFile(fileName, events);
+		updateUndoManager(eventObj, UndoType.ADD);	
+		AppSettings.getInstance().setIntSetting(SettingName.CURRENT_INDEX, currentUid +=1);
+		saveToFile(fileName, events);
 	}
 
 	public EventList retrieveEvent() {
 		return events;
 	}
 
-	public boolean updateEvent(Event eventObj) {
+	public void updateEvent(Event eventObj) {
 		for (int i = 0; i < events.size(); i++) {
 			if (events.get(i).getUid() == eventObj.getUid()) {
 				updateUndoManager(events.get(i), UndoType.UPDATE);
-				int uid = (int) events.get(i).getUid();
 				events.remove(i);
-				eventObj.setUid(uid);
 				events.add(eventObj);
-				return saveToFile(fileName, events);
+				saveToFile(fileName, events);
 			}
 		}
-		return false;
 	}
 	// Delete single Event
 	public void deleteEvent(Event eventObj) {
@@ -126,6 +120,7 @@ public class Model {
 		for (int i = 0; i < events.size(); i++) {
 			for (Event eventObj : eventList) {
 				if (events.get(i).getUid() == eventObj.getUid()) {
+					System.out.println("REMOVED ID" + events.get(i).getUid());
 					events.remove(i);
 				}
 			}
@@ -183,7 +178,7 @@ public class Model {
 		//filename = input;
 	}
 	
-	private boolean saveToFile(File filename, EventList eventList) {
+	private void saveToFile(File filename, EventList eventList) {
 		try {
 			PrintWriter printWriter = new PrintWriter(filename);
 			Gson gson = new Gson();
@@ -192,11 +187,8 @@ public class Model {
 			printWriter.println(json);
 			printWriter.flush();
 			printWriter.close();
-
-			return true;
 		} catch (IOException ioe) {
-			log.log(Level.FINE, "Failed to save event to file");
-			return false;
+			log.log(Level.FINE, "Failed saving to file");
 		}
 	}
 
@@ -213,9 +205,8 @@ public class Model {
 			fileReader.close();
 
 			return eventList;
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
 		} catch (Exception e) {
+			log.log(Level.FINE, "Failed getting from file");
 		}
 		return new EventList();
 	}

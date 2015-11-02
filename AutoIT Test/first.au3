@@ -26,7 +26,7 @@ Send('update 5 date Monday 12pm' & @CR)
 Sleep(500);
 Send('update 6 date next Thursday 7pm' & @CR)
 Sleep(500);
-Send('add "Bungee Jumping Class" Wednesday 12pm' & @CR)
+Send('add "Bungee Jumping Class" next Wednesday 12pm' & @CR)
 Sleep(500);
 Send('update 6 date next Thursday 3pm' & @CR)
 Sleep(500);

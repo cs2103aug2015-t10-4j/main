@@ -13,13 +13,14 @@ import java.util.Date;
  */
 
 public class Event implements Serializable{
-    private long uid;
+    private int uid;
     private String name;
     private boolean completed;
-    //If timeRange is null, task is a FLOATING_TASK.
+    //If dateRange is null, task is a FLOATING_TASK.
     //Deadline tasks have DateRange with same start and end date.
     private DateRange[] dateRange;
     private DateRecurrence dateRecurrence;
+    private Date dateCreated;
 
     public Event ( Event eventObject ) {
         uid = eventObject.uid;
@@ -34,7 +35,7 @@ public class Event implements Serializable{
         	dateRecurrence = eventObject.dateRecurrence.copy();
         }
     }
-    public Event (long uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
+    public Event (int uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
         //TODO: Initialize internal fields.
         this.uid = uidToSet;
         this.name = nameToSet;
@@ -51,6 +52,14 @@ public class Event implements Serializable{
     
     public void setDateRange (DateRange[] dateRangeToSet) {
         this.dateRange = dateRangeToSet;
+    }
+    
+    public Date getDateCreated() {
+    	return dateCreated;
+    }
+    
+    public void setDateCreated(Date dateCreated) {
+    	this.dateCreated = dateCreated;
     }
     
     public boolean getCompleted(){
@@ -109,7 +118,7 @@ public class Event implements Serializable{
         return firstDate;
     }
 
-    public long getUid() {
+    public int getUid() {
         return uid;
     }
 
