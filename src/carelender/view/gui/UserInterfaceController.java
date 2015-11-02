@@ -39,9 +39,12 @@ public class UserInterfaceController implements Initializable {
     private FloatingViewRenderer floatingViewRenderer;
     private SettingViewRenderer settingViewRenderer;
 
+
     private PopupRenderer popupRenderer;
     private UserInterfaceRenderer userInterfaceRenderer;
     private String firstOption;
+
+    private String pendingAnnouncementMessage = null; //Used for the automation part
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -85,6 +88,11 @@ public class UserInterfaceController implements Initializable {
                                 case ENTER:
                                     String text = inputText.getText();
                                     inputText.setText("");
+                                    if ( pendingAnnouncementMessage != null ) {
+                                        Controller.stopTimer();
+                                        setAnnouncementMessage(pendingAnnouncementMessage);
+                                        pendingAnnouncementMessage = null;
+                                    }
                                     Controller.processCompleteInput(text);
                                     break;
                                 case UP:
@@ -139,7 +147,11 @@ public class UserInterfaceController implements Initializable {
         if ( next == null ) {
             return;
         }
-        setUserInput(next);
+        String [] parts = next.split(" // ");
+        if ( parts.length == 2 ) {
+            pendingAnnouncementMessage = parts[1];
+        }
+        setUserInput(parts[0]);
         Controller.processIncompleteInput(inputText.getText());
     }
 
