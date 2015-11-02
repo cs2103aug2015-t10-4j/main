@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import carelender.model.strings.AppColours;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -50,12 +51,10 @@ public class TimelineRenderer extends CanvasRenderer {
         barHeight = (barHeight > this.maxBarHeight) ? this.maxBarHeight : barHeight;
         
         double usableWidth = width - this.labelWidth - (this.yPadding * 2);
-        
-        
 
-        gc.strokeRect(x, y, width, height);
+		gc.setFill(AppColours.panelBackground);
+        gc.fillRect(x, y, width, height);
 
-        int index = 1;
         double xCurrent = x + this.xPadding + labelWidth;
         double yCurrent = y + (this.yPadding * 2) + font.getSize();
         

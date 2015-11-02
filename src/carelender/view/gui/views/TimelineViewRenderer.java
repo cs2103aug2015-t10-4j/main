@@ -47,37 +47,41 @@ public class TimelineViewRenderer extends CanvasRenderer {
         double textboxInnerPadding = 8;
         double topBarHeight = height * 0.13;
         double remainderHeight = height - topBarHeight;
-        double announcementBoxH = remainderHeight * 0.3 - windowPadding;
-        double messageBoxH = remainderHeight * 0.7 - windowPadding;
 
         double announcementBoxY = topBarHeight + windowPadding;
-        double messageBoxY = announcementBoxY + announcementBoxH + windowPadding;
 
-        double leftColumnWidth = 0.4 * width - windowPadding;
-        double rightColumnWidth = 0.6 * width - 2*windowPadding;
-        double leftColumnX = windowPadding;
+        double leftColumnWidth = 0.5 * width - windowPadding;
+        double rightColumnWidth = 0.5 * width;
+        double leftColumnX = 0;
         double rightColumnX = leftColumnX + leftColumnWidth + windowPadding;
 
-		double calendarHeight = remainderHeight * 0.4 - windowPadding;
-		double taskviewHeight = remainderHeight - calendarHeight - 2* windowPadding;
+        double announcementHeight = fontSize + textboxInnerPadding * 2;
+        double messageBoxHeight = fontSize + textboxInnerPadding * 2;
+        double mainContentHeight = remainderHeight - announcementHeight - messageBoxHeight - windowPadding * 3;
 
 
         tab.draw(gc, 0, 0, width, topBarHeight, 0);
 
         announcementBox.setParams(gc, leftColumnX, announcementBoxY,
-                leftColumnWidth, announcementBoxH, textboxInnerPadding, textboxInnerPadding,
+                width, announcementHeight,
+                textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
         announcementBox.addText(announcementText);
-        announcementBox.drawText();
+        announcementBox.drawText("#FFF", "#000");
 
-        messageBox.setParams(gc, rightColumnX, announcementBoxY, rightColumnWidth, calendarHeight,
+        weekView.draw(gc, rightColumnX, announcementBoxY + announcementHeight + windowPadding,
+                rightColumnWidth, mainContentHeight);
+        taskView.draw(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding,
+                leftColumnWidth, mainContentHeight);
+
+        messageBox.setParams(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding * 2 + mainContentHeight,
+                width, messageBoxHeight,
                 textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
         messageBox.addText(messageText);
-        messageBox.drawText();
+        messageBox.drawText("#FFF", "#000");
 
-        this.taskView.draw(gc, leftColumnX, messageBoxY, leftColumnWidth, messageBoxH);
-        this.weekView.draw(gc, rightColumnX, announcementBoxY + calendarHeight + windowPadding , rightColumnWidth, taskviewHeight);
+
     }
 
     /**

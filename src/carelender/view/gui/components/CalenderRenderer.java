@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +10,7 @@ import carelender.model.data.DateRange;
 import carelender.model.data.Event;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
+import carelender.model.strings.AppColours;
 import carelender.view.gui.RenderHelper;
 import carelender.view.gui.components.CanvasRenderer;
 import javafx.geometry.VPos;
@@ -32,7 +34,7 @@ public class CalenderRenderer extends CanvasRenderer {
     private Date monthEndTime;
     
     public CalenderRenderer() {
-        squaresToDraw = 4*7;
+        squaresToDraw = 6*7;
         
         monthEventNumbers = new int[squaresToDraw][3];
         resetEventNumbers();
@@ -56,10 +58,10 @@ public class CalenderRenderer extends CanvasRenderer {
     }
     
     private void resetEventNumbers(){
-    	for(int i=0; i<squaresToDraw; i++) {
-        	for (int j=0; j<3; j++){
-        		monthEventNumbers[i][j] = 0;
-        	}
+        for(int i=0; i<squaresToDraw; i++) {
+            for (int j=0; j<3; j++){
+                monthEventNumbers[i][j] = 0;
+            }
         }
     }
 
@@ -72,71 +74,71 @@ public class CalenderRenderer extends CanvasRenderer {
     }
     
     private void updateEventNumbers() {
-    	resetEventNumbers();
-    	for (int i=0; i<monthEvents.size(); i++) {
-    		Event currentEvent = monthEvents.get(i);
-    		for (int j=0; j<currentEvent.getDateRange().length; j++) {
-    			DateRange currentRage = currentEvent.getDateRange()[j];
-    			Date taskStartTime = currentRage.getStart();
-    			//System.out.println("start time of the event " + taskStartTime);
-    			Date taskEndTime = currentRage.getEnd();
-    			//System.out.println("end time of the event " + taskEndTime);
-    			if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
+        resetEventNumbers();
+        for (int i=0; i<monthEvents.size(); i++) {
+            Event currentEvent = monthEvents.get(i);
+            for (int j=0; j<currentEvent.getDateRange().length; j++) {
+                DateRange currentRage = currentEvent.getDateRange()[j];
+                Date taskStartTime = currentRage.getStart();
+                //System.out.println("start time of the event " + taskStartTime);
+                Date taskEndTime = currentRage.getEnd();
+                //System.out.println("end time of the event " + taskEndTime);
+                if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
                     //System.out.println("In range");
-        			if (taskStartTime.before(monthStartTime)) {
-        				taskStartTime = monthStartTime;
-        			}
-        			if (taskEndTime.after(monthEndTime)) {
-        				taskEndTime = monthEndTime;
-        			}
+                    if (taskStartTime.before(monthStartTime)) {
+                        taskStartTime = monthStartTime;
+                    }
+                    if (taskEndTime.after(monthEndTime)) {
+                        taskEndTime = monthEndTime;
+                    }
 
-        			long offsetStartMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
-        			long offsetStartDays = TimeUnit.MILLISECONDS.toDays(offsetStartMilliseconds);
+                    long offsetStartMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
+                    long offsetStartDays = TimeUnit.MILLISECONDS.toDays(offsetStartMilliseconds);
                     //System.out.println("StartTime is away from the first day by " + offsetStartDays + " days");
-        			long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) 24;
+                    long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) 24;
                     //System.out.println("StartTime is away from the first day by " + TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) + " hours");
-        			//System.out.println("It starts at " + offsetStartHours + " of that day");
+                    //System.out.println("It starts at " + offsetStartHours + " of that day");
                     int offsetStartSlot = (int)offsetStartHours / 8;
                     //System.out.println("It should fill in the " + offsetStartSlot + " slot");
-        			
+
                     long offsetEndMilliseconds = taskEndTime.getTime() - monthStartTime.getTime();
-        			long offsetEndDays = TimeUnit.MILLISECONDS.toDays(offsetEndMilliseconds);
+                    long offsetEndDays = TimeUnit.MILLISECONDS.toDays(offsetEndMilliseconds);
                     //System.out.println("EndTime is away from the first day by " + offsetEndDays + " days");
-        			long offsetEndHours = TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) % (long) 24;
+                    long offsetEndHours = TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) % (long) 24;
                     //System.out.println("EndTime is away from the first day by " + TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) + " hours");
                     //System.out.println("It ends at " + offsetEndHours + " of that day");
-        			int offsetEndSlot = (int)offsetEndHours / 8;
+                    int offsetEndSlot = (int)offsetEndHours / 8;
                     //System.out.println("It should fill in the " + offsetEndSlot + " slot");
-        			
+
                     for(int t=(int)offsetStartDays; t<=(int)offsetEndDays; t++) {
-                    	if(t == (int) offsetStartDays && t == (int)offsetEndDays){
-                    		for(int a=offsetStartSlot; a<=offsetEndSlot; a++) {
-        						monthEventNumbers[t][a]++;
-        					}
-                    	} else if(t == (int) offsetStartDays){
-        					for(int a=offsetStartSlot; a<3; a++) {
-        						monthEventNumbers[t][a]++;
-        					}
-        				} else if (t == (int)offsetEndDays){
-        					for(int a=0; a<offsetEndSlot; a++) {
-        						monthEventNumbers[t][a]++;
-        					}
-        				} else {
-	        				for(int a=0; a<3; a++){
-	        					monthEventNumbers[t][a]++;
-	        				}
-        				}
-        			}
-    			}
-    		}
-    	}
-    	//drawEventArray();
+                        if(t == (int) offsetStartDays && t == (int)offsetEndDays){
+                            for(int a=offsetStartSlot; a<=offsetEndSlot; a++) {
+                                monthEventNumbers[t][a]++;
+                            }
+                        } else if(t == (int) offsetStartDays){
+                            for(int a=offsetStartSlot; a<3; a++) {
+                                monthEventNumbers[t][a]++;
+                            }
+                        } else if (t == (int)offsetEndDays){
+                            for(int a=0; a<offsetEndSlot; a++) {
+                                monthEventNumbers[t][a]++;
+                            }
+                        } else {
+                            for(int a=0; a<3; a++){
+                                monthEventNumbers[t][a]++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //drawEventArray();
     }
     
     private void drawEventArray(){
-    	for(int i=0; i<28; i++){
-    		System.out.println("Day " + i + " [" + monthEventNumbers[i][0] + "]" + " [" + monthEventNumbers[i][1] + "]" + " [" + monthEventNumbers[i][2] + "]\n");
-    	}
+        for(int i=0; i<28; i++){
+            System.out.println("Day " + i + " [" + monthEventNumbers[i][0] + "]" + " [" + monthEventNumbers[i][1] + "]" + " [" + monthEventNumbers[i][2] + "]\n");
+        }
     }
     
     double sidePadding;
@@ -156,39 +158,55 @@ public class CalenderRenderer extends CanvasRenderer {
         
         Calendar c = Calendar.getInstance();
         c.setFirstDayOfWeek(Calendar.MONDAY);
-        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY );
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-        gc.strokeRect(x, y, width, height);
+        gc.setFill(AppColours.panelBackground);
+        gc.fillRect(x, y, width, height);
 
         Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight * 0.5);
 
-        gc.setFill(Color.web("556370"));
+        gc.setFill(Color.web("#556370"));
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(font);
         gc.setTextBaseline(VPos.TOP);
         for (int i = 0 ; i < 7; i++ ) {
             double actualX = x + i * ( calCellWidth + calCellSpacing ) + sidePadding + offsetX + calCellWidth * 0.5;
-            double actualY = y + offsetY;
+            double actualY = y + offsetY + sidePadding;
             gc.fillText(days[i], actualX, actualY);
         }
 
         font = Font.loadFont("file:res/monaco.ttf", calCellHeight / 4.0);
+        double monthSpacer = 0;
         for (int i = 0; i < squaresToDraw; i++ ) {
             double actualX = x + i%7 * ( calCellWidth + calCellSpacing ) + sidePadding;
             double actualY = y + (i/7) * ( calCellHeight + calCellSpacing ) + sidePadding;
-            actualX += offsetX;
-            actualY += offsetY + calCellHeight * 0.5;
 
-            String month = "";
             int date = c.get(Calendar.DATE);
-            if (date == 1) {
-                month = (c.get(Calendar.MONTH) + 1) + "/";
+            if ( i == 0 ) {
+                monthSpacer += (calCellSpacing * 4) + sidePadding;
+            } else if ( date == 1 ) {
+                monthSpacer += (calCellHeight + calCellSpacing * 4) + sidePadding;
             }
+
+            actualX += offsetX;
+            actualY += offsetY + calCellHeight * 0.5 + monthSpacer;
+
+            if ( date == 1 || i == 0 ) {
+                gc.setFont(font);
+                gc.setFill(Color.web("#BBB"));
+                gc.fillRect(sidePadding + x + offsetX, actualY - calCellHeight * 0.6, scaledWidth - sidePadding * 2 - calCellShadowOffset, calCellHeight * 0.5);
+                gc.setFill(Color.web("#000"));
+                gc.setTextBaseline(VPos.TOP);
+                gc.setTextAlign(TextAlignment.LEFT);
+
+                gc.fillText(getMonth(c.get(Calendar.MONTH) ), sidePadding + x + offsetX + sidePadding, actualY - calCellHeight * 0.5);
+            }
+
             int[] dailyEventNumbers = monthEventNumbers[i];
 
             RenderHelper.calendarSquare(gc, actualX, actualY,
                     calCellWidth, calCellHeight,
-                    calCellShadowOffset, "556370", month + date, font, dailyEventNumbers);
+                    calCellShadowOffset, "#556370", date + "", font, dailyEventNumbers);
             c.add(Calendar.DATE, 1);
             
         }
@@ -207,8 +225,12 @@ public class CalenderRenderer extends CanvasRenderer {
         */
     }
 
+    public String getMonth(int month) {
+        return new DateFormatSymbols().getMonths()[month];
+    }
+
     private void calculateScaledDimensions(double width, double height) {
-        double aspect = 16.0/9.0;
+        double aspect = 9.0/9.5;
         double squareHeight = height * aspect;
 
         if ( width > squareHeight ) { //Height is the constraint
@@ -225,7 +247,7 @@ public class CalenderRenderer extends CanvasRenderer {
         //System.out.println("Height: " + scaledHeight + "/" + height);
 
         offsetX = (width - scaledWidth) * 0.5;
-        offsetY = (height - scaledHeight) * 0.5;
+        offsetY = 0;//(height - scaledHeight) * 0.5;
     }
 
     private void calulateCellProperties() {
@@ -234,7 +256,7 @@ public class CalenderRenderer extends CanvasRenderer {
         calCellWidth = usableWidth / 7.0;
         calCellSpacing = calCellWidth * 0.1; //Make spacing 10% of each cell size
         calCellWidth -= calCellSpacing;
-        calCellHeight = calCellWidth * 0.88;
+        calCellHeight = calCellWidth * 0.75;
         calCellShadowOffset = calCellSpacing * 0.7;
     }
 

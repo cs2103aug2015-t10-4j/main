@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import carelender.model.strings.AppColours;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -75,7 +76,8 @@ public class TaskRenderer extends CanvasRenderer {
 
         Font font = Font.loadFont("file:res/monaco.ttf", dateBarHeight * 0.5);
 
-        gc.strokeRect(x,y, width, height);
+        gc.setFill(AppColours.panelBackground);
+        gc.fillRect(x, y, width, height);
 
         int currentTaskToDisplay = 0;
         double remainingHeight = this.height - (this.yPadding * 2);

@@ -139,11 +139,12 @@ public class Search {
 				if ( startDate == null || endDate == null ) {
 					return true;
 				}
-			}
-			for ( DateRange dateRange : eventToCheck.getDateRange() ) {
-				if ((!dateRange.getStart().before(startDate) && !dateRange.getStart().after(endDate))
-					|| (!dateRange.getEnd().before(startDate) && !dateRange.getEnd().after(endDate))) {
-					return true;
+			} else {
+				for (DateRange dateRange : eventToCheck.getDateRange()) {
+					if ((!dateRange.getStart().before(startDate) && !dateRange.getStart().after(endDate))
+							|| (!dateRange.getEnd().before(startDate) && !dateRange.getEnd().after(endDate))) {
+						return true;
+					}
 				}
 			}
 		}

@@ -30,7 +30,7 @@ public class HintGenerator {
         availableHints[2] = "Have a nice day :)";
         availableHints[3] = "Have a nice day :)";
         
-        dailyEventNumbers = new int[28];
+        dailyEventNumbers = new int[6*7];
     }
 
     /**
