@@ -21,6 +21,7 @@ public class Event implements Serializable{
     private DateRange[] dateRange;
     private DateRecurrence dateRecurrence;
     private Date dateCreated;
+    private String category;
 
     public Event ( Event eventObject ) {
         uid = eventObject.uid;
@@ -45,29 +46,43 @@ public class Event implements Serializable{
     public void setUid(int uid){
     	this.uid = uid;
     }
-    
+    public int getUid() {
+        return uid;
+    }
+
+    public void setName (String nameToSet) {
+        this.name = nameToSet;
+    }
+    public String getName () {
+        return this.name;
+    }
+  
     public void setCompleted(Boolean completed) {
     	this.completed = completed;
+    }
+    public boolean getCompleted(){
+    	return completed;
     }
     
     public void setDateRange (DateRange[] dateRangeToSet) {
         this.dateRange = dateRangeToSet;
     }
-    
-    public Date getDateCreated() {
-    	return dateCreated;
+    public DateRange[] getDateRange () {
+        return this.dateRange;
     }
     
     public void setDateCreated(Date dateCreated) {
     	this.dateCreated = dateCreated;
     }
-    
-    public boolean getCompleted(){
-    	return completed;
+    public Date getDateCreated() {
+    	return dateCreated;
     }
     
-    public DateRange[] getDateRange () {
-        return this.dateRange;
+    public void setCategory(String category) {
+    	this.category = category;
+    }
+    public String getCategory() {
+    	return category;
     }
     
     public Date getLatestDate () {
@@ -118,17 +133,7 @@ public class Event implements Serializable{
         return firstDate;
     }
 
-    public int getUid() {
-        return uid;
-    }
 
-    public String getName () {
-        return this.name;
-    }
-
-    public void setName (String nameToSet) {
-        this.name = nameToSet;
-    }
 
     public EventType getEventType () {
         if (this.dateRecurrence == null) {

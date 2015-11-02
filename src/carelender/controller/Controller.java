@@ -41,7 +41,7 @@ public class Controller {
         blockingStateController = new BlockingStateController();
         
         //Initialize timer for reminder
-        TimerTask reminder = new Reminder();
+        TimerTask reminder = new ReminderCaller();
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(reminder,5000,1000);
         

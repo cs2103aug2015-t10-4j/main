@@ -66,6 +66,16 @@ public class InputParser {
         newCommand.setDescription("Deletes a specified event/task");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("complete", QueryType.COMPLETE );
+        newCommand.setUsage("complete <id>");
+        newCommand.setDescription("Completes a specified event/task");
+        commandManager.addCommand(newCommand);
+        
+        newCommand = new Command("uncomplete", QueryType.COMPLETE );
+        newCommand.setUsage("uncomplete <id>");
+        newCommand.setDescription("Uncompletes a specified event/task");
+        commandManager.addCommand(newCommand);
+        
         newCommand = new Command("reminder", QueryType.REMINDER );
         newCommand.setUsage("reminder <id> [minutes/hours/days X]");
         newCommand.addKeywords("time", "minute,minutes,hour,hours,day,days", DataPosition.AFTER);
@@ -272,6 +282,10 @@ public class InputParser {
             case DELETE:
                 newQuery = parseDeleteCommand(commandParts);
                 break;
+            case COMPLETE:
+                newQuery = parseCompleteCommand(commandParts);
+                break;    
+                
             case UPDATE:
                 newQuery = parseUpdateCommand(commandParts);
                 break;
@@ -422,6 +436,30 @@ public class InputParser {
             return new QueryError("Error parsing indices");
         }
         QueryDelete queryDelete = new QueryDelete();
+        for ( int i : indexList ) {
+            Event event = displayedList.get(i);
+            if ( event != null ) {
+                queryDelete.addEvent(event);
+            }
+        }
+
+        return queryDelete;
+    }
+    
+    public QueryBase parseCompleteCommand ( CommandPart [] commandParts, Boolean forComplete) {
+        if ( commandParts.length < 1 ) {
+            return new QueryError("What do you want to complete?");
+        }
+        if ( displayedList == null ) {
+            return new QueryError("Nothing displayed");
+        }
+
+        Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
+
+        if ( indexList == null ) {
+            return new QueryError("Error parsing indices");
+        }
+        QueryComplete queryComplete = new QueryComplete(forComplete);
         for ( int i : indexList ) {
             Event event = displayedList.get(i);
             if ( event != null ) {
