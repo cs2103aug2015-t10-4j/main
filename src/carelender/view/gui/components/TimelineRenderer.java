@@ -60,14 +60,14 @@ public class TimelineRenderer extends CanvasRenderer {
         
         double divisorWidth = (1 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
         for (int i = 0; i <= 24; i++) {
-        	gc.setFill(Color.web("757575"));
+        	gc.setFill(AppColours.tasklistRowBackground);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setFont(font);
             gc.setTextBaseline(VPos.TOP);
             
             gc.fillText ( String.valueOf((i % 12) == 0 ? 12 : i % 12), xCurrent, y + this.yPadding );
             
-        	gc.setFill(Color.web("4ecdc4"));
+        	gc.setFill(AppColours.primaryColour);
 			gc.fillRect(xCurrent, y + this.yPadding + font.getSize(), divisorWidth, height - (this.xPadding * 2) - font.getSize());
         	xCurrent += (60 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
         }
@@ -77,7 +77,7 @@ public class TimelineRenderer extends CanvasRenderer {
             String key = entry.getKey();
             ArrayList<TimelineBarRenderer> value = entry.getValue();
             
-            gc.setFill(Color.web("4ecdc4"));
+            gc.setFill(AppColours.primaryColour);
             gc.setTextAlign(TextAlignment.RIGHT);
             gc.setFont(font);
             gc.setTextBaseline(VPos.CENTER);
@@ -86,7 +86,7 @@ public class TimelineRenderer extends CanvasRenderer {
             gc.fillText ( keyWords[1] + " " + keyWords[2], xCurrent - this.xPadding, yCurrent + (barHeight * 0.5) );
             
             for (TimelineBarRenderer bar : value) {
-                bar.draw(gc, "757575", "4ecdc4", xCurrent + this.xPadding, yCurrent, usableWidth, barHeight);
+                bar.draw(gc, AppColours.tasklistRowBackground, AppColours.primaryColour, xCurrent + this.xPadding, yCurrent, usableWidth, barHeight);
             }
             yCurrent += ( barHeight + this.yPadding );
         }

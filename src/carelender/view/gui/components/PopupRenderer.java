@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import carelender.model.strings.AppColours;
 import carelender.view.gui.components.CanvasRenderer;
 import carelender.view.gui.components.TextRenderer;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,9 +23,9 @@ public class PopupRenderer extends CanvasRenderer {
 
 	@Override
 	public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
-		gc.setFill(Color.web("Black"));
+		gc.setFill(AppColours.popupBackground);
 		gc.strokeRoundRect(x, y, width, height, 10.0, 10.0);
-		gc.setFill(Color.web("BLUE"));
+		gc.setFill(AppColours.popupHeaderBackground);
 		gc.fillRoundRect(x, y, width, height/10.0, 10.0, 10.0);
 		
 		double fontSize = width / 40.0; //Temporary
@@ -32,6 +33,6 @@ public class PopupRenderer extends CanvasRenderer {
 		TextRenderer message = new TextRenderer();
 		message.setParams(gc, x, y+height/10.0, width, height*9.0/10.0, 3, 3, font, 0.6, 0.05);
 		message.addText(this.message);
-		message.drawText();
+		message.drawText(AppColours.popupBackground, AppColours.popupText);
 	}
 }

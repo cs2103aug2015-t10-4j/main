@@ -1,5 +1,6 @@
 package carelender.view.gui;
 
+import carelender.model.strings.AppColours;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -21,21 +22,22 @@ public class RenderHelper {
      * @param w Width
      * @param h Height
      * @param dropOffset Offset of drop shadow
-     * @param color Colour of square
+     * @param background Colour of square
+     * @param textColor Colour of text
      * @param text Text to show at bottom right
      * @param dailyEventNumbers Array of integers to show the dots
      */
-    public static void calendarSquare ( GraphicsContext gc,  double x, double y, double w, double h, double dropOffset, String color, String text, Font font, int[] dailyEventNumbers ) {
+    public static void calendarSquare ( GraphicsContext gc,  double x, double y, double w, double h, double dropOffset, Color background, Color textColor, String text, Font font, int[] dailyEventNumbers ) {
         gc.setFill(Color.web("#999"));
         gc.fillRect(x + dropOffset, y + dropOffset, w, h);
 
-        gc.setFill(Color.web(color));
+        gc.setFill(background);
         gc.fillRect(x, y, w, h);
 
-        gc.setFill(Color.web("4ecdc4"));
+        gc.setFill(textColor);
         gc.setTextAlign(TextAlignment.RIGHT);
-        gc.setFont(font);
         gc.setTextBaseline(VPos.BOTTOM);
+        gc.setFont(font);
         gc.fillText(text, x + w - dropOffset * 0.5 , y + h - dropOffset * 0.5 );
         
         double x_offset;
@@ -48,7 +50,7 @@ public class RenderHelper {
         		numArc = 3;
         	}
         	for (int j=0; j<numArc; j++) {
-        		gc.setFill(Color.web("4ecdc4"));
+        		gc.setFill(AppColours.primaryColour);
         		x_offset = x + w*((double) j)/10.0 + w*((double) j + 1.0)/20.0;
         		y_offset = y + h*((double) i)/10.0 + h*((double) i + 1.0)/20.0;
         		gc.fillRect(x_offset, y_offset, w/10.0, h/10.0);

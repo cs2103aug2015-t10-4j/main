@@ -1,6 +1,7 @@
 package carelender.view.gui.views;
 
 import carelender.model.data.EventList;
+import carelender.model.strings.AppColours;
 import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
@@ -67,7 +68,7 @@ public class TimelineViewRenderer extends CanvasRenderer {
                 textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
         announcementBox.addText(announcementText);
-        announcementBox.drawText("#FFF", "#000");
+        announcementBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
         weekView.draw(gc, rightColumnX, announcementBoxY + announcementHeight + windowPadding,
                 rightColumnWidth, mainContentHeight);
@@ -79,8 +80,7 @@ public class TimelineViewRenderer extends CanvasRenderer {
                 textboxInnerPadding, textboxInnerPadding,
                 font, 0.6, 0.05);
         messageBox.addText(messageText);
-        messageBox.drawText("#FFF", "#000");
-
+        messageBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
     }
 

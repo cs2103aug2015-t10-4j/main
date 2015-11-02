@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import carelender.model.strings.AppColours;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -39,7 +40,7 @@ public class TimelineBarRenderer {
 		this.text = content;
 	}
     
-	public void draw (GraphicsContext gc, String backgroundColour, String textColour,
+	public void draw (GraphicsContext gc, Color backgroundColour, Color textColour,
 						double xPosition, double yPosition, double width, double height ) {
 		if (gc == null) {
 			System.out.println("Error");
@@ -50,12 +51,12 @@ public class TimelineBarRenderer {
 				this.actualWidth = ((this.endTime - this.startTime) / TimelineBarRenderer.MINUTES_IN_DAY) * width;
 			}
 			
-			gc.setFill(Color.web(backgroundColour));
+			gc.setFill(backgroundColour);
 			gc.fillRect(xPosition + ((this.startTime / TimelineBarRenderer.MINUTES_IN_DAY) * width),
 						yPosition, this.actualWidth, height);
 			
 			Font font = Font.loadFont("file:res/monaco.ttf", height * 0.7);
-			gc.setFill(Color.web("4ecdc4"));
+			gc.setFill(AppColours.primaryColour);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setFont(font);
             gc.setTextBaseline(VPos.TOP);

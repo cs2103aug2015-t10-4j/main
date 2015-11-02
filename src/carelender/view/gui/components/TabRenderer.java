@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import carelender.model.strings.AppColours;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -27,7 +28,7 @@ public class TabRenderer extends CanvasRenderer {
 
         Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
 
-        gc.setFill(Color.web("#999"));
+        gc.setFill(AppColours.tabBackground);
         gc.fillRect(x, y, width, height);
 
         gc.setTextBaseline(VPos.CENTER);
@@ -37,9 +38,9 @@ public class TabRenderer extends CanvasRenderer {
         for ( int i = 0 ; i < tabText.length; i++ ) {
             double xPos = x + (i) * textPos + textPos * 0.5;
             if ( i == tab ) {
-                gc.setFill(Color.web("#FF0"));
+                gc.setFill(AppColours.tabHighlight);
             } else {
-                gc.setFill(Color.web("#555"));
+                gc.setFill(AppColours.tabText);
             }
             gc.fillText(tabText[i], xPos, height * 0.5 );
 

@@ -1,8 +1,10 @@
 package carelender.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import carelender.model.Model;
 import carelender.model.data.EventList;
 
 /**
@@ -10,7 +12,8 @@ import carelender.model.data.EventList;
  */
 public class HintGenerator {
     private static HintGenerator singleton = null;
-    private int[] dailyEventNumbers;
+    private int[] dailyEventNumbers, weeklyEventNumbers;
+	private int monthlyEventNumber;
     public static HintGenerator getInstance() {
         if ( singleton == null ) {
             singleton = new HintGenerator();
@@ -18,32 +21,23 @@ public class HintGenerator {
         return singleton;
     }
 
-    //Reference to the events happening in the next 4 weeks
-    private EventList monthEvents;
-
 
     String [] availableHints;
+	ArrayList<String> hints;
     private HintGenerator() {
-        availableHints = new String[4];
-        availableHints[0] = "Have a nice day :)";
-        availableHints[1] = "Have a nice day :)";
-        availableHints[2] = "Have a nice day :)";
-        availableHints[3] = "Have a nice day :)";
+		hints = new ArrayList<>();
+        availableHints = Model.getInstance().loadStringArray("hints.dat");
+
+
         
         dailyEventNumbers = new int[6*7];
-    }
-
-    /**
-     * Sets the event list used for generating the hints
-     * @param eventList List of events in the next 4 weeks
-     */
-    public void setEventList ( EventList eventList ) {
-        monthEvents = eventList;
-        generateHints();
+		weeklyEventNumbers = new int [6];
+		monthlyEventNumber = 0;
     }
 
 
     public void generateHints() {
+
     	Calendar c = Calendar.getInstance();
     	c.setFirstDayOfWeek(Calendar.MONDAY);
     	c.setTime(new Date());
@@ -51,6 +45,7 @@ public class HintGenerator {
     	if(todayIndex<0){
     		todayIndex = 6;
     	}
+
     	int tomorrowIndex = todayIndex++;
     	//Is tomorrow busy
     	if(dailyEventNumbers[tomorrowIndex] > 9) {
@@ -111,17 +106,26 @@ public class HintGenerator {
     }
     
     private void resetDailyEventNumbers(){
-    	for(int i=0; i<dailyEventNumbers.length; i++){
+    	for(int i=0; i < dailyEventNumbers.length; i++){
     		dailyEventNumbers[i] = 0;
     	}
+		monthlyEventNumber = 0;
+		for ( int i = 0 ; i < weeklyEventNumbers.length; i++) {
+			weeklyEventNumbers[i] = 0;
+		}
     }
 
 	public void setDailyEventNumbers(int[][] monthEventNumbers) {
 		resetDailyEventNumbers();
-		for(int i=0; i<monthEventNumbers.length; i++){
-			for(int j=0; j<monthEventNumbers[i].length; j++){
+		for(int i=0; i < monthEventNumbers.length; i++){
+			for(int j=0; j < monthEventNumbers[i].length; j++){
 				dailyEventNumbers[i] += monthEventNumbers[i][j];
 			}
 		}
+		for ( int i = 0 ; i < dailyEventNumbers.length; i++) {
+			weeklyEventNumbers[i / 7] += dailyEventNumbers[i];
+			monthlyEventNumber += dailyEventNumbers[i];
+		}
+		generateHints();
 	}
 }

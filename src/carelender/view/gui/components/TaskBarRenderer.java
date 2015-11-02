@@ -98,11 +98,11 @@ public class TaskBarRenderer {
     	return this.height;
     }
     
-	public void drawTaskBar (String backgroundColour, String textColour) {
+	public void drawTaskBar (Color backgroundColour, Color textColour) {
 		if (this.gc == null) {
 			System.out.println("Error");
 		} else {
-			gc.setFill(Color.web(backgroundColour));
+			gc.setFill(backgroundColour);
 			gc.fillRect(this.xPosition, this.yPosition, this.width, this.height);
 
 			this.nameText.drawText(backgroundColour, textColour);

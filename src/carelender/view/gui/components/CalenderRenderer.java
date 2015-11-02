@@ -67,7 +67,6 @@ public class CalenderRenderer extends CanvasRenderer {
 
     public void refreshEventList() {
         monthEvents = monthListQuery.searchExecute();
-        HintGenerator.getInstance().setEventList(monthEvents);
         updateEventNumbers();
         HintGenerator.getInstance().setDailyEventNumbers(monthEventNumbers);
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
@@ -165,7 +164,7 @@ public class CalenderRenderer extends CanvasRenderer {
 
         Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight * 0.5);
 
-        gc.setFill(Color.web("#556370"));
+        gc.setFill(AppColours.calendarCell);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(font);
         gc.setTextBaseline(VPos.TOP);
@@ -206,7 +205,7 @@ public class CalenderRenderer extends CanvasRenderer {
 
             RenderHelper.calendarSquare(gc, actualX, actualY,
                     calCellWidth, calCellHeight,
-                    calCellShadowOffset, "#556370", date + "", font, dailyEventNumbers);
+                    calCellShadowOffset, AppColours.calendarCell, AppColours.primaryColour, date + "", font, dailyEventNumbers);
             c.add(Calendar.DATE, 1);
             
         }

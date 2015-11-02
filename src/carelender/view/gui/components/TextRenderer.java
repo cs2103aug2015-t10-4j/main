@@ -1,5 +1,6 @@
 package carelender.view.gui.components;
 
+import carelender.model.strings.AppColours;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -173,21 +174,27 @@ public class TextRenderer {
     	}
     }
 
-	public void drawText ( String background, String text, int boldFirst ) {
+	/**
+	 * Draws the text on screen with the parameters that have been set
+	 * @param background Color object representing the background colour
+	 * @param text Color object representing the text colour
+	 * @param boldFirst Number of lines to bold
+	 */
+	public void drawText ( Color background, Color text, int boldFirst ) {
 		if (this.gc == null) {
 			System.out.println("Error");
 		} else {
 			double xCurrent = this.xPosition + this.xPadding;
 			double yCurrent = this.yPosition + (this.yPadding + this.charHeight);
 
-			gc.setFill(Color.web(background));
+			gc.setFill(background);
 			gc.fillRect(this.xPosition, this.yPosition, this.width, this.height);
 
-			this.gc.setFill(Color.web(text));
+			this.gc.setFill(text);
 			for ( String lineToDraw : this.textLines ) {
 
-				this.gc.setStroke(Color.web(text));
-				this.gc.setFill(Color.web(text));
+				this.gc.setStroke(text);
+				this.gc.setFill(text);
 				this.gc.setTextAlign(TextAlignment.LEFT);
 				this.gc.setFont(this.font);
 				this.gc.setTextBaseline(VPos.BOTTOM);
@@ -201,27 +208,38 @@ public class TextRenderer {
 			}
 		}
 	}
-    
-    public void drawText ( String background, String text ) {
+	/**
+	 * Draws the text on screen with the parameters that have been set
+	 * @param background Color object representing the background colour
+	 * @param text Color object representing the text colour
+	 */
+    public void drawText ( Color background, Color text ) {
 		if (this.gc == null) {
 			System.out.println("Error");
 		} else {
 			drawText(background, text, 0);
 		}
     }
-    
-    public void drawText (String background) {
+	/**
+	 * Draws the text on screen with the parameters that have been set
+	 * @param background Color object representing the background colour
+	 */
+    public void drawText (Color background) {
     	if (this.gc == null) {
     		System.out.println("Error");
     	} else {
-    		drawText(background, "#000");
+    		drawText(background, AppColours.black);
     	}
     }
+
+	/**
+	 * Draws the text on screen with the parameters that have been set
+	 */
     public void drawText () {
     	if (this.gc == null) {
     		System.out.println("Error");
     	} else {
-    		drawText("#95bacd", "#000");
+    		drawText(AppColours.primaryColour);
     	}
     }
     
