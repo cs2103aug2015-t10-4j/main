@@ -1,9 +1,8 @@
 package carelender.model.data;
 
-import java.util.Date;
-
 import carelender.controller.Controller;
 import carelender.model.Model;
+import carelender.model.strings.QueryFeedback;
 
 /**
  * Used for add queries
@@ -48,14 +47,15 @@ public class QueryAdd extends QueryBase {
 	@Override
 	public void controllerExecute() {
         Controller.clearMessages();
-        if ( dateRanges == null ) {
+        /*if ( dateRanges == null ) {
             Controller.displayMessage("Adding new task: ["+name+"]");
         } else {
             Controller.displayMessage("Adding new task: ["+name+"] at ");
             for ( DateRange dateRange : dateRanges ) {
                 Controller.displayMessage( "    " + dateRange.toString() );
             }
-        }
+        }*/
+        Controller.displayMessage(QueryFeedback.addTask(name));
 
         /*QueryList checkClashesQuery = new QueryList();
         checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
