@@ -67,6 +67,16 @@ public class InputParser {
         newCommand.setDescription("Deletes a specified event/task");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("complete", QueryType.COMPLETE );
+        newCommand.setUsage("complete <id>");
+        newCommand.setDescription("Completes a specified event/task");
+        commandManager.addCommand(newCommand);
+        
+        newCommand = new Command("uncomplete", QueryType.COMPLETE );
+        newCommand.setUsage("uncomplete <id>");
+        newCommand.setDescription("Uncompletes a specified event/task");
+        commandManager.addCommand(newCommand);
+        
         newCommand = new Command("reminder", QueryType.REMINDER );
         newCommand.setUsage("reminder <id> [minutes/hours/days X]");
         newCommand.addKeywords("time", "minute,minutes,hour,hours,day,days", DataPosition.AFTER);
@@ -244,8 +254,8 @@ public class InputParser {
 
     /**
      * Parses the complete user input
-     * @param input
-     * @return
+     * @param input User's input
+     * @return QueryBase object
      */
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
@@ -273,6 +283,10 @@ public class InputParser {
             case DELETE:
                 newQuery = parseDeleteCommand(commandParts);
                 break;
+            case COMPLETE:
+                newQuery = parseCompleteCommand(commandParts, true);
+                break;    
+                
             case UPDATE:
                 newQuery = parseUpdateCommand(commandParts);
                 break;
@@ -373,12 +387,16 @@ public class InputParser {
 
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         if ( range == null ) {
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
             queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
+            System.out.println("Default listing");
+
         } else {
             switch (range) {
                 case "past": //Displays events that have passed
@@ -387,8 +405,6 @@ public class InputParser {
                 case "tomorrow": //Displays events tomorrow onwards
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 case "today": //Everything for today
-                    calendar.set(Calendar.HOUR_OF_DAY, 0);
-                    calendar.set(Calendar.MINUTE, 0);
                     queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
 
                     calendar.set(Calendar.HOUR_OF_DAY, 23);
@@ -397,8 +413,7 @@ public class InputParser {
                     break;
                 case "future": //Displays events today onwards
                 default:
-                    calendar.set(Calendar.HOUR_OF_DAY, 0);
-                    calendar.set(Calendar.MINUTE, 0);
+                    System.out.println("Future listing");
                     queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
                     break;
             }
@@ -431,6 +446,30 @@ public class InputParser {
         }
 
         return queryDelete;
+    }
+    
+    public QueryBase parseCompleteCommand ( CommandPart [] commandParts, Boolean forComplete) {
+        if ( commandParts.length < 1 ) {
+            return new QueryError("What do you want to complete?");
+        }
+        if ( displayedList == null ) {
+            return new QueryError("Nothing displayed");
+        }
+
+        Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
+
+        if ( indexList == null ) {
+            return new QueryError("Error parsing indices");
+        }
+        QueryComplete queryComplete = new QueryComplete(forComplete);
+        for ( int i : indexList ) {
+            Event event = displayedList.get(i);
+            if ( event != null ) {
+                queryComplete.addEvent(event);
+            }
+        }
+
+        return queryComplete;
     }
 
     public QueryBase parseRemindCommand ( CommandPart [] commandParts ) {
@@ -561,21 +600,6 @@ public class InputParser {
         }
 
         return queryAdd;
-    }
-
-    /**
-     * Gets the date of the next day of the week
-     * @param dow
-     * @return
-     */
-    public static Calendar nextDayOfWeek(int dow) {
-        Calendar date = Calendar.getInstance();
-        int diff = dow - date.get(Calendar.DAY_OF_WEEK);
-        if (!(diff > 0)) {
-            diff += 7;
-        }
-        date.add(Calendar.DAY_OF_MONTH, diff);
-        return date;
     }
 
     /**

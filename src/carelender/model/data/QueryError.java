@@ -3,7 +3,8 @@ package carelender.model.data;
 import carelender.controller.Controller;
 
 /**
- * Used for queries that cannot be parsed
+ * Used for queries that cannot be parsed.
+ * Simply prints the error to screen
  */
 public class QueryError extends QueryBase {
     private String message;

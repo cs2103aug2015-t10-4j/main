@@ -14,6 +14,7 @@ public enum QueryType {
     CLEAR,       //Clears the message screen
     UNDO,
     REDO,
+    COMPLETE,
     SWITCHUI,
     DATETEST,       //Used for testing date parsing
     DEV1,           //Used for whatever

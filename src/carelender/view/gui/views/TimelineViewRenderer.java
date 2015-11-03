@@ -1,5 +1,6 @@
 package carelender.view.gui.views;
 
+import carelender.controller.Controller;
 import carelender.model.data.EventList;
 import carelender.model.strings.AppColours;
 import carelender.view.gui.components.*;
@@ -117,7 +118,15 @@ public class TimelineViewRenderer extends CanvasRenderer {
         this.weekView.addEvents(this.taskView.getDisplayList());
         redraw();
     }
-    
+
+    /**
+     * Sets the display list on the parser so it knows what the indices are
+     */
+    public void setTaskDisplayList() {
+        Controller.setDisplayedList(taskView.getDisplayList());
+    }
+
+
     public void setWeekView(EventList tasks) {
         this.listResults = tasks;
         this.weekView.clear();

@@ -43,10 +43,10 @@ public class QueryDelete extends QueryBase {
 
         if ( events != null && events.size() > 0 ) {
             if ( events.size() == 1 ) {
+                deleteConfirmedCallback.onConfirmed(true);
+            } else {
                 Controller.getBlockingStateController()
                         .startConfirmation(QueryFeedback.deleteConfirmation(events.size()), deleteConfirmedCallback);
-            } else {
-                deleteConfirmedCallback.onConfirmed(true);
             }
         }
 

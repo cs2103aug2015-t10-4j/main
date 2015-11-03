@@ -9,6 +9,7 @@ public class AppColours {
     public final static Color panelBackground = Color.web("fafafa");
     public final static Color panelText = Color.web("000");
     public final static Color calendarCell = Color.web("556370");
+    public final static Color calendarTodayCell = Color.web("366F70");
     public final static Color tasklistRowBackground = Color.web("757575");
     public final static Color primaryColour = Color.web("4ecdc4");
     public final static Color autocompleteBackground = Color.web("e8e8e8");

@@ -200,7 +200,6 @@ public class TaskRenderer extends CanvasRenderer {
         for ( EventList events : this.taskDisplay.values()) {
             concatList.addAll(events);
         }
-        Controller.setDisplayedList((EventList)concatList);
     }
     
     public EventList getDisplayList () {
