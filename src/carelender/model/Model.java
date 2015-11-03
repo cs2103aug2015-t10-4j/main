@@ -49,7 +49,9 @@ public class Model {
 		folderName.mkdir();
 
 		//Get saved file/create one if none exists
-		fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
+		//fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
+		fileName = new File(FOLDER_NAME + FILE_NAME + FILE_TYPE);
+		
 		events = new EventList();	
 		if (!fileName.exists()) {
 			try {
@@ -129,7 +131,7 @@ public class Model {
 		saveToFile(fileName, events);
 	}
 
-	public void undoUpdatedEvent(EventList eventList) {
+	public void undoUpdatedEvent(EventList eventList, boolean isUndo) {
 		EventList redoEventList = new EventList();
 		
 		for (int i = 0; i < eventList.size(); i++) {
@@ -137,12 +139,15 @@ public class Model {
 				if (events.get(j).getUid() == eventList.get(i).getUid()) {
 					redoEventList.add(events.get(j));
 					events.remove(j);
+					events.add(eventList.get(i));
 				}
-				saveToFile(fileName, events);
-			}
-			events.add(eventList.get(i));
+			}			
 		}
-		UndoManager.getInstance().redoUpdate(redoEventList);
+		if (isUndo) {
+			UndoManager.getInstance().redoUpdate(redoEventList);
+		} else {
+			UndoManager.getInstance().update(redoEventList);
+		}
 		saveToFile(fileName, events);
 	}
 

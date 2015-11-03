@@ -67,7 +67,7 @@ public class UndoManager {
 				Model.getInstance().undoDeletedEvent(undoStep.getUndoData());
 				break;
 			case UPDATE:
-				Model.getInstance().undoUpdatedEvent(undoStep.getUndoData());
+				Model.getInstance().undoUpdatedEvent(undoStep.getUndoData(), true);
 				break;
 			default:
 				break;
@@ -86,7 +86,7 @@ public class UndoManager {
 				Model.getInstance().undoAddedEvent(redoStep.getUndoData());
 				break;
 			case UPDATE:
-				Model.getInstance().undoUpdatedEvent(redoStep.getUndoData());
+				Model.getInstance().undoUpdatedEvent(redoStep.getUndoData(), false);
 				break;
 			default:
 				break;

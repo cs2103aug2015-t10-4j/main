@@ -36,7 +36,8 @@ public class QueryUpdate extends QueryList {
     
     public enum UpdateParam {
 		NAME,
-		DATE_RANGE
+		DATE_RANGE,
+		CATEGORY
 	};
 
 	@Override
@@ -59,6 +60,11 @@ public class QueryUpdate extends QueryList {
 						if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
 							DateRange[] fromDateRange = (DateRange[])updateParamsList.get(QueryUpdate.UpdateParam.DATE_RANGE);
 							event.setDateRange(fromDateRange);
+						}
+						
+						if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.CATEGORY) ) {
+							String category = (String)updateParamsList.get(QueryUpdate.UpdateParam.CATEGORY);
+							event.setCategory(category);
 						}
 
 						//Call Model updateEvent function

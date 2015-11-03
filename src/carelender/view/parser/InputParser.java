@@ -574,6 +574,15 @@ public class InputParser {
             }
         }
         
+        commandPart = getCommandPart("category", commandParts);
+        if ( commandPart != null ) {
+        	data = commandPart.getKeywordData();
+            if ( data != null ) {
+            	queryUpdate.addUpdateParam(UpdateParam.CATEGORY, data);
+            	pass = true;
+            }
+        }
+        
         if ( !pass ) {
         	return new QueryError(ErrorMessages.invalidUpdate());
         }
