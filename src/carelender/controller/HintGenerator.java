@@ -21,70 +21,96 @@ public class HintGenerator {
         return singleton;
     }
 
-
-    String [] availableHints;
+    ArrayList<String> basicHints;
 	ArrayList<String> hints;
     private HintGenerator() {
-		hints = new ArrayList<>();
-        availableHints = Model.getInstance().loadStringArray("hints.dat");
-
-
+    	hints = new ArrayList<String>();
+    	basicHints = Model.getInstance().loadStringArrayList("hints.dat");
+        hints = basicHints;
         
         dailyEventNumbers = new int[6*7];
 		weeklyEventNumbers = new int [6];
 		monthlyEventNumber = 0;
     }
 
+    private int getDayOfWeek() {
+        Calendar c = Calendar.getInstance();
+        int todayIndex;
+        c.setFirstDayOfWeek(Calendar.MONDAY);
+        c.setTime(new Date());
+        todayIndex = c.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
+        if(todayIndex<0){
+            todayIndex = 6;
+        }
+        return todayIndex;
+    }
+    
+    /*
+     * Generate hints for tomorrow
+     */
+    private void generateHintsForTomorrow(int todayIndex) {
+        int tomorrowIndex = todayIndex + 1;
+        if(dailyEventNumbers[tomorrowIndex] >= 9) {
+        	String newHint = "You have may tasks tomorrow. Rest well today :)";
+            hints.add(newHint);
+        } else if (dailyEventNumbers[tomorrowIndex] > 3){
+        	String newHint = "Don't forget all the deadlines tomorrow!";
+            hints.add(newHint);
+        } else {
+        	String newHint = "It seems that you are having a slack day. Spend some time with your family :)";
+            hints.add(newHint);
+        }
+    }
+    
+    /*
+     * Generate hints for next week
+     */
+    private void generateHintsForWeek(int todayIndex) {
+        int thisWeekEventNumber = weeklyEventNumbers[0];
+        int nextWeekEventNumber = weeklyEventNumbers[1];
+
+        if (nextWeekEventNumber > 42) {
+            String newHint = "You have " + nextWeekEventNumber + " tasks next week! Be prepared.";
+            hints.add(newHint);
+        } else if (nextWeekEventNumber > 21) {
+            String newHint = "You don't have many tasks next week. Try exercise more :)";
+            hints.add(newHint);
+        } else {
+            if (thisWeekEventNumber < 30) {
+                String newHint = "Next week is so free! How nice :)";
+                hints.add(newHint);
+            } else {
+                String newHint = "Next week is so free! Hang on there :)";
+                hints.add(newHint);
+            }
+        }
+    }
+    
+    /*
+     * Generate hints for the following 28 days
+     */
+    private void generateHintsForMonth(){
+        if(monthlyEventNumber < 10) {
+            String newHint = "This month looks clear, why not plan a vacation?";
+            hints.add(newHint);
+        } else {
+            String newHint = "Have a nice day :)";
+            hints.add(newHint);
+        }
+    }
+
+    private void resetHints() {
+        hints = basicHints;
+    }
 
     public void generateHints() {
+    	int todayIndex = getDayOfWeek();
 
-    	Calendar c = Calendar.getInstance();
-    	c.setFirstDayOfWeek(Calendar.MONDAY);
-    	c.setTime(new Date());
-    	int todayIndex = c.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
-    	if(todayIndex<0){
-    		todayIndex = 6;
-    	}
+        resetHints();
 
-    	int tomorrowIndex = todayIndex++;
-    	//Is tomorrow busy
-    	if(dailyEventNumbers[tomorrowIndex] > 9) {
-    		availableHints[0] = "Don't forget all those deadlines tomorrow!";
-    	} else {
-    		availableHints[0] = "Have a nice day :)";
-    	}
-    	//Is the following three days busy
-    	int threeDaysTasks = 0;
-    	for(int i=0; i<3; i++){
-    		threeDaysTasks += dailyEventNumbers[todayIndex + i];
-    	}
-    	if(threeDaysTasks >= 27){
-    		availableHints[1] = "You've been planning lot's of tasks recently, take a break.";
-    	} else {
-    		availableHints[1] = "Have a nice day :)";
-    	}
-    	//Is this week busy
-    	int sevenDaysTasks = 0;
-    	for(int i=0; i<7; i++){
-    		sevenDaysTasks += dailyEventNumbers[todayIndex + i];
-    	}
-    	if(sevenDaysTasks >= 42){
-    		availableHints[2] = "It seems you have many tasks this week, would you like to move some tasks to next week?";
-    	} else if(sevenDaysTasks < 21) {
-    		availableHints[2] = "It seems you have free time this week, would you like to add more tasks?";
-    	} else {
-    		availableHints[2] = "Have a nice day :)";
-    	}
-    	//Is this month busy
-    	int monthTasks = 0;
-    	for(int i=0; i<28; i++){
-    		monthTasks += dailyEventNumbers[i];
-    	}
-    	if(monthTasks < 10) {
-    		availableHints[3] = "This month looks clear, why not plan a vacation?";
-    	} else {
-    		availableHints[3] = "Have a nice day :)";
-    	}
+        generateHintsForTomorrow(todayIndex);
+        generateHintsForWeek(todayIndex);
+        generateHintsForMonth();
     }
 
 	/**
@@ -92,7 +118,8 @@ public class HintGenerator {
      * @return Hint from availableHints
      */
     public String getHint() {
-        return availableHints[(int)Math.floor(Math.random()* availableHints.length)];
+    	int hintIndex = (int)Math.floor(Math.random()* hints.size());
+        return hints.get(hintIndex);
     }
 
     enum HintType {
@@ -105,7 +132,7 @@ public class HintGenerator {
         MONTH_BUSY,
     }
     
-    private void resetDailyEventNumbers(){
+    private void resetEventNumbers(){
     	for(int i=0; i < dailyEventNumbers.length; i++){
     		dailyEventNumbers[i] = 0;
     	}
@@ -116,7 +143,7 @@ public class HintGenerator {
     }
 
 	public void setDailyEventNumbers(int[][] monthEventNumbers) {
-		resetDailyEventNumbers();
+		resetEventNumbers();
 		for(int i=0; i < monthEventNumbers.length; i++){
 			for(int j=0; j < monthEventNumbers[i].length; j++){
 				dailyEventNumbers[i] += monthEventNumbers[i][j];

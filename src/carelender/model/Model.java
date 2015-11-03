@@ -253,4 +253,25 @@ public class Model {
 
 		return strings.toArray(new String[strings.size()]);
 	}
+	
+	public ArrayList<String> loadStringArrayList( String filename ) {
+		ArrayList<String> strings = new ArrayList<>();
+		try {
+			FileReader fileReader = new FileReader(filename);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+			String line;
+			while ( true ) {
+				line = bufferedReader.readLine();
+				if ( line == null ) {
+					break;
+				}
+				strings.add(line);
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+
+		return strings;
+	}
 }
