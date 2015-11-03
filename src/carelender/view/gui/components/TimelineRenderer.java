@@ -26,18 +26,18 @@ public class TimelineRenderer extends CanvasRenderer {
 
     private double xPadding;
     private double yPadding;
-    private double maxBarHeight;
+    private double maxBarWidth;
     private double labelWidth;
 
     public TimelineRenderer() {
         this.weekDisplay = new TreeMap<String, ArrayList<TimelineBarRenderer>>();
 	}
 
-    public void setParams (double xPad, double yPad, double maxBarHeight, double labelWidth) {
+    public void setParams (double xPad, double yPad, double maxBarWidth, double labelWidth) {
         this.xPadding = xPad;
         this.yPadding = yPad;
         
-        this.maxBarHeight = maxBarHeight;
+        this.maxBarWidth = maxBarWidth;
         this.labelWidth = labelWidth;
     }
 
@@ -46,49 +46,68 @@ public class TimelineRenderer extends CanvasRenderer {
     	super.draw(gc, x, y, width, height);
 
     	Font font = Font.loadFont("file:res/monaco.ttf", this.labelWidth/5);
+    	Font fontLarge = Font.loadFont("file:res/monaco.ttf", this.labelWidth/3);
     	
-        double barHeight = (height - (this.yPadding * this.weekDisplay.size() * 2) - font.getSize()) / (this.weekDisplay.size());
-        barHeight = (barHeight > this.maxBarHeight) ? this.maxBarHeight : barHeight;
+        double barWidth = (width - (this.xPadding * this.weekDisplay.size() * 2) - font.getSize()) / (this.weekDisplay.size());
+        barWidth = (barWidth > this.maxBarWidth) ? this.maxBarWidth : barWidth;
         
-        double usableWidth = width - this.labelWidth - (this.yPadding * 2);
+        double usableWidth = width - this.labelWidth - (this.xPadding * 2);
+        double usableHeight = height - 50 - (this.yPadding * 2);
 
 		gc.setFill(AppColours.panelBackground);
         gc.fillRect(x, y, width, height);
 
-        double xCurrent = x + this.xPadding + this.labelWidth;
+        double xCurrent = x + this.labelWidth - this.xPadding;
         double yCurrent = y + (this.yPadding * 2) + font.getSize();
-        double divisorWidth = (1 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
+        double divisorWidth = (1 / TimelineBarRenderer.MINUTES_IN_DAY) * usableHeight;
         for (int i = 0; i <= 24; i++) {
-        	gc.setFill(AppColours.tasklistRowBackground);
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.setFont(font);
-            gc.setTextBaseline(VPos.TOP);
-            
-            gc.fillText ( String.valueOf((i % 12) == 0 ? 12 : i % 12), xCurrent, y + this.yPadding );
-            
-        	gc.setFill(AppColours.primaryColour);
-			gc.fillRect(xCurrent, y + this.yPadding + font.getSize(), divisorWidth, height - (this.xPadding * 2) - font.getSize());
-        	xCurrent += (60 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
+            gc.setTextAlign(TextAlignment.RIGHT);
+            gc.setTextBaseline(VPos.CENTER);
+            if ( i % 6 == 0 ) {
+                gc.setFont(fontLarge);
+                gc.setGlobalAlpha(1);
+                
+                gc.setFill(AppColours.tasklistRowBackground);
+            	gc.fillText ( String.valueOf((i % 12) == 0 ? 12 : i % 12), xCurrent, yCurrent + (this.yPadding) );
+            	
+            	gc.setFill(AppColours.primaryColour);
+            	gc.fillRect(xCurrent + this.xPadding, yCurrent + (this.yPadding) - (divisorWidth * 1.5), usableWidth, divisorWidth * 3);
+            	gc.setGlobalAlpha(1);
+            } else {
+            	gc.setFont(font);
+            	gc.setGlobalAlpha(0.3);
+            	
+            	gc.setFill(AppColours.tasklistRowBackground);
+            	gc.fillText ( String.valueOf((i % 12) == 0 ? 12 : i % 12), xCurrent, yCurrent + (this.yPadding) );
+            	
+            	gc.setFill(AppColours.primaryColour);
+            	gc.fillRect(xCurrent + this.xPadding, yCurrent + (this.yPadding) - (divisorWidth * 1.5), usableWidth, divisorWidth * 3);
+            	gc.setGlobalAlpha(1);
+            }
+        	yCurrent += (60 / TimelineBarRenderer.MINUTES_IN_DAY) * usableHeight;
         }
         xCurrent = x + this.labelWidth;
-        
         for ( Map.Entry<String, ArrayList<TimelineBarRenderer>> entry : this.weekDisplay.entrySet()) {
         	String key = entry.getKey();
             ArrayList<TimelineBarRenderer> value = entry.getValue();
 
             gc.setFill(AppColours.primaryColour);
-            gc.setTextAlign(TextAlignment.RIGHT);
+            gc.setTextAlign(TextAlignment.CENTER);
             gc.setFont(font);
             gc.setTextBaseline(VPos.CENTER);
 
             String [] keyWords = key.split(" ");
-            gc.fillText ( keyWords[1] + " " + keyWords[2], xCurrent - this.xPadding, yCurrent + (barHeight * 0.5) );
             
+            yCurrent = y + (this.yPadding);
+            gc.fillText ( keyWords[1], xCurrent + (barWidth * 0.5), yCurrent );
+            gc.fillText ( keyWords[2], xCurrent + (barWidth * 0.5), yCurrent + font.getSize() );
+            
+            yCurrent = y + ( this.yPadding * 2) + font.getSize();
             for (TimelineBarRenderer bar : value) {
-                bar.draw(gc, AppColours.tasklistRowBackground, AppColours.primaryColour, xCurrent + this.xPadding, yCurrent, usableWidth, barHeight);
+                bar.draw(gc, AppColours.tasklistRowBackground, AppColours.primaryColour, xCurrent, yCurrent + this.yPadding, barWidth, usableHeight);
             }
             
-            yCurrent += ( barHeight + this.yPadding );
+            xCurrent += ( barWidth + this.xPadding );
         }
     }
 
@@ -105,7 +124,7 @@ public class TimelineRenderer extends CanvasRenderer {
 				continue;
 			}
 			for ( DateRange date : dateRange ) {
-				if ( date.getDaysBetween() == 0 ) {
+				if (dateFormat.format(date.getEnd()).equals(dateFormat.format(date.getStart()))) {
 					this.addDateRangeToDisplay(dateFormat.format(date.getStart()),
 												this.getTimeInMinutes(date.getStart()),
 												this.getTimeInMinutes(date.getEnd()), String.valueOf(index));
@@ -114,10 +133,14 @@ public class TimelineRenderer extends CanvasRenderer {
 												this.getTimeInMinutes(date.getStart()),
 												TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
 					Date currentDay = date.getStart();
+					System.out.println ( date.getDaysBetween() + "     " + index );
 					for ( int i = 0; i < date.getDaysBetween(); i++ ) {
 						currentDay = this.addDays(currentDay, 1);
-						this.addDateRangeToDisplay(dateFormat.format(currentDay),
-													0, TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
+						if (!(dateFormat.format(date.getEnd()).equals(dateFormat.format(currentDay)))) {
+							this.addDateRangeToDisplay(dateFormat.format(currentDay),
+														0, TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
+					
+						}
 					}
 					this.addDateRangeToDisplay(dateFormat.format(date.getEnd()),
 												0, this.getTimeInMinutes(date.getEnd()), String.valueOf(index));

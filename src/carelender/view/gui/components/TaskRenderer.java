@@ -70,7 +70,7 @@ public class TaskRenderer extends CanvasRenderer {
         double taskBarWidth = this.width * taskWidthRatio;
         double taskBarHeight = this.height * taskHeightRatio;
 
-        this.taskBarRender.setParams(this.xPadding, this.yPadding, 0.2, 0.4, 0.1);
+        this.taskBarRender.setParams(this.xPadding, this.yPadding, 0.2, 0.4, 1);
 
         Font font = Font.loadFont("file:res/monaco.ttf", dateBarHeight * 0.5);
 
@@ -91,13 +91,13 @@ public class TaskRenderer extends CanvasRenderer {
             if ( currentTaskToDisplay >= this.displayStart ) {
 	            gc.setFill (Color.web("757575"));
 	            gc.fillRect(xCurrent, yCurrent, this.width - (this.xPadding * 2), this.yPadding * 0.5);
-            }
             
-            yCurrent += (this.yPadding * 1.5);
+	            yCurrent += (this.yPadding * 1.5);
+            }
             
             xPositionDate = xCurrent;
             yPositionDate = yCurrent;
-            
+
             displayDate = false;
             for (Event event : value) {
                 if ( currentTaskToDisplay >= this.displayStart ) {

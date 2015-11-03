@@ -27,7 +27,7 @@ public class TimelineViewRenderer extends CanvasRenderer {
         this.weekView = new TimelineRenderer();
         this.weekView.setParams(10, 10, 50, 50);
         this.taskView = new TaskRenderer();
-        this.taskView.setParams(10, 10, 0.7, 0.1, 0.2, 0.1);
+        this.taskView.setParams(15, 5, 0.7, 0.1, 0.2, 0.1);
         
         listResults = new EventList();
         announcementBox = new TextRenderer();

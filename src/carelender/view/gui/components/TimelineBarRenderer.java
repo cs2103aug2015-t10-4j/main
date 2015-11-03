@@ -14,12 +14,8 @@ import javafx.scene.text.TextAlignment;
 public class TimelineBarRenderer {
 	public final static double MINUTES_IN_DAY = 1440;
 	private final static double NO_RANGE_RATIO = 0.01;
-	
-	private GraphicsContext gc;
 
-    private double totalWidth;
-    private double actualWidth;
-    private double height;
+    private double actualHeight;
 
 	private String text;
 
@@ -31,9 +27,6 @@ public class TimelineBarRenderer {
 	
 	public void setParams ( GraphicsContext gc, double width, double height,
 							double startTime, double endTime, String content) {
-		this.totalWidth = width;
-		this.height = height;
-		
 		this.startTime = startTime;
 		this.endTime = endTime;
 		
@@ -43,25 +36,30 @@ public class TimelineBarRenderer {
 	public void draw (GraphicsContext gc, Color backgroundColour, Color textColour,
 						double xPosition, double yPosition, double width, double height ) {
 		if (gc == null) {
-			System.out.println("Error aaaaa");
+			System.out.println("Error");
 		} else {
 			if ( this.endTime <= this.startTime ) {
-				this.actualWidth = TimelineBarRenderer.NO_RANGE_RATIO * width;
+				this.actualHeight = TimelineBarRenderer.NO_RANGE_RATIO * height;
 			} else {
-				this.actualWidth = ((this.endTime - this.startTime) / TimelineBarRenderer.MINUTES_IN_DAY) * width;
+				this.actualHeight = ((this.endTime - this.startTime) / TimelineBarRenderer.MINUTES_IN_DAY) * height;
 			}
 			
 			gc.setFill(backgroundColour);
-			gc.fillRect(xPosition + ((this.startTime / TimelineBarRenderer.MINUTES_IN_DAY) * width),
-						yPosition, this.actualWidth, height);
+			gc.setGlobalAlpha(0.5);
+			gc.fillRect(xPosition, yPosition + ((this.startTime / TimelineBarRenderer.MINUTES_IN_DAY) * height),
+						width, this.actualHeight);
+			gc.fillRect(xPosition + 2.5, yPosition + ((this.startTime / TimelineBarRenderer.MINUTES_IN_DAY) * height) + 2.5,
+					width - 5, this.actualHeight - 5);
+			gc.setGlobalAlpha(1);
 			
-			Font font = Font.loadFont("file:res/monaco.ttf", height * 0.7);
+			Font font = Font.loadFont("file:res/monaco.ttf", width * 0.7);
 			gc.setFill(textColour);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setFont(font);
-            gc.setTextBaseline(VPos.TOP);
+            gc.setTextBaseline(VPos.CENTER);
 
-            gc.fillText ( this.text, xPosition + ((this.startTime  / TimelineBarRenderer.MINUTES_IN_DAY) * width) + (this.actualWidth * 0.5), yPosition );
+            gc.fillText (this.text, xPosition + (width * 0.5),
+            			yPosition + ((this.startTime  / TimelineBarRenderer.MINUTES_IN_DAY) * height) + (this.actualHeight * 0.5));
 		}
 	}
 }

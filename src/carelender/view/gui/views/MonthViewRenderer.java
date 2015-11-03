@@ -29,7 +29,7 @@ public class MonthViewRenderer extends CanvasRenderer {
     public MonthViewRenderer() {
 
         tasks = new TaskRenderer();
-        tasks.setParams(10, 10, 0.7, 0.1, 0.2, 0.1);
+        tasks.setParams(15, 5, 0.7, 0.1, 0.2, 0.1);
         
         listResults = new EventList();
         calender = new CalenderRenderer();
