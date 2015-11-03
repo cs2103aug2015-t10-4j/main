@@ -199,7 +199,8 @@ public class UserInterfaceController implements Initializable {
     public void setTaskList ( EventList events ) {
         monthViewRenderer.setTaskview(events);
         timelineViewRenderer.setTaskview(events);
-        floatingViewRenderer.setTaskview();
+        //WZ: GET RID OF THIS FOR NOW
+        //floatingViewRenderer.setTaskview();
     }
 
     public void setWeekEventList ( EventList events ) {

@@ -2,11 +2,13 @@ package carelender.view.gui.components;
 
 import carelender.model.data.DateRange;
 import carelender.model.data.Event;
+import carelender.model.strings.AppColours;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -15,102 +17,127 @@ import java.util.concurrent.TimeUnit;
  * This class contains static methods to help to render the calendar view
  */
 public class TaskBarRenderer {
-    private GraphicsContext gc;
-    private double xPosition;
-    private double yPosition;
-
-    private double width;
-    private double height;
-    private double initialHeight;
-
     private double xPadding;
     private double yPadding;
 
+    private ArrayList<DateRangeRenderer> dateRangeRendererList;
+    
     private TextRenderer timeText;
     private TextRenderer nameText;
 
-    private double timeTextRatio;
     private double nameTextRatio;
+    private double barRatio;
 
     private Event event;
 
     public TaskBarRenderer() {
         this.timeText = new TextRenderer();
         this.nameText = new TextRenderer();
+        
+        this.dateRangeRendererList = new ArrayList<DateRangeRenderer>();
     }
 
     public void setContent (Event event) {
-        this.event = event;
-
-        Font font = Font.loadFont("file:res/monaco.ttf", this.initialHeight * nameTextRatio);
-        this.nameText.setParams (gc, this.xPosition + this.xPadding, this.yPosition + this.yPadding,
-                this.width - (this.xPadding * 2), font.getSize(), 0, 0, font, 0.6, 0);
-        this.nameText.clearText();
-        this.nameText.addTextEllipsis(this.event.getName());
-
+    	this.event = event;
+        /*
         font = Font.loadFont("file:res/monaco.ttf", this.initialHeight * timeTextRatio);
         this.timeText.setParams (gc, this.xPosition + this.xPadding, this.yPosition + this.yPadding + (this.nameText.getTextHeight()),
                 this.width - (this.xPadding * 2), font.getSize(), 0, 0, font, 0.6, 0.1);
         this.timeText.clearText();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("[dd MMM hh:mm a]");
-
+        */
+        this.dateRangeRendererList.clear();
         Date currentDate = new Date();
-        int numOfDays = 1;
         DateRange [] dateRanges = this.event.getDateRange();
         if ( dateRanges != null ) {
 			for (DateRange date : dateRanges) {
+				DateRangeRenderer dateRangeRenderer = new DateRangeRenderer();
 				if (date.getStart().after(currentDate)) {
+					/*
 					this.timeText.addTextEllipsis(timeFormat.format(date.getStart())
 							+ " to " + timeFormat.format(date.getEnd()));
+							*/
+					dateRangeRenderer.setParams(0.1, 0.1,
+												0.2, 0.4,
+												0.7, 0.7, 0.3,
+												date);
+					this.dateRangeRendererList.add(dateRangeRenderer);
 				} else {
+					/*
 					this.timeText.addTextEllipsis(timeFormat.format(date.getStart())
 							+ " to " + timeFormat.format(date.getEnd()) + "[OVER]");
-					long difference = date.getEnd().getTime() - date.getStart().getTime();
-					long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
-					numOfDays += days;
+							*/
+					dateRangeRenderer.setParams(0.1, 0.1,
+												0.2, 0.4,
+												0.7, 0.7, 0.3,
+												date);
+					dateRangeRenderer.strikeout();
+					this.dateRangeRendererList.add(dateRangeRenderer);
 				}
 			}
 		}
-        /*this.timeText.addTextEllipsis(timeFormat.format(this.event.getEarliestDateFromNow())
+        /*
+        long difference = date.getEnd().getTime() - date.getStart().getTime();
+		long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+		numOfDays += days;
+        this.timeText.addTextEllipsis(timeFormat.format(this.event.getEarliestDateFromNow())
                                         + "    [" + numOfDays + " day]");*/
-
-        this.height = this.nameText.getTextHeight() + this.timeText.getTextHeight()
-                        + ( this.yPadding * 2 );
     }
 
-    public void setPosition (double x, double y) {
-        this.xPosition = x;
-        this.yPosition = y;
-    }
-
-    public void setParams (GraphicsContext gc, double w, double h, double xPad, double yPad,
-                           double timeTextRatio, double nameTextRatio) {
-        this.gc = gc;
-
-        this.width = w;
-        this.initialHeight = this.height = h;
-
+    public void setParams (double xPad, double yPad,
+                           double timeTextRatio, double nameTextRatio, double barRatio) {
         this.xPadding = xPad;
         this.yPadding = yPad;
 
-        this.timeTextRatio = timeTextRatio;
         this.nameTextRatio = nameTextRatio;
+        this.barRatio = barRatio;
     }
 
-    public double getHeight () {
-        return this.height;
+    public double getHeight (double height) {
+    	double toReturnHeight = 0;
+    	toReturnHeight += (height * this.nameTextRatio);
+    	toReturnHeight += this.yPadding;
+    	for (DateRangeRenderer dateRangeRenderer : this.dateRangeRendererList) {
+    		toReturnHeight += (dateRangeRenderer.getTimeTextHeightRatio() * height);
+    		toReturnHeight += dateRangeRenderer.getDateTextHeightRatio() * (dateRangeRenderer.getTimeTextHeightRatio() * height);
+    		toReturnHeight += this.yPadding;
+    	}
+    	toReturnHeight += this.yPadding;
+        return toReturnHeight;
     }
     
-    public void drawTaskBar (Color backgroundColour, Color textColour) {
-        if (this.gc == null) {
+    public void draw (GraphicsContext gc, double x, double y,
+    					double width, double height,
+    					Color backgroundColour, Color textColour) {
+        if (gc == null) {
             System.out.println("Error");
         } else {
+        	double xCurrent = x;
+            double yCurrent = y;
+            
+        	Font font = Font.loadFont("file:res/monaco.ttf", height * this.nameTextRatio);
+        	
             gc.setFill(backgroundColour);
-            gc.fillRect(this.xPosition, this.yPosition, this.width, this.height);
-
+            gc.fillRect(xCurrent, yCurrent, width, this.getHeight(height));
+            
+            xCurrent += this.xPadding;
+            yCurrent += this.yPadding;
+            this.nameText.setParams (gc, xCurrent, yCurrent,
+                    				width - (this.xPadding * 2), font.getSize(),
+                    				0, 0, font, 0.6, 0);
+            this.nameText.clearText();
+            this.nameText.addTextEllipsis(this.event.getName());
+            
             this.nameText.drawText(backgroundColour, textColour);
-
-            this.timeText.drawText(backgroundColour, textColour);
+            
+            yCurrent += (this.nameText.getTextHeight() + this.yPadding);
+            for (DateRangeRenderer dateRangeRenderer : this.dateRangeRendererList) {
+            	dateRangeRenderer.draw(gc, xCurrent, yCurrent, width, height,
+            							AppColours.panelBackground, backgroundColour);
+            	
+            	yCurrent += dateRangeRenderer.getTimeTextHeightRatio() * height;
+            	yCurrent += dateRangeRenderer.getDateTextHeightRatio() * (dateRangeRenderer.getTimeTextHeightRatio() * height);
+            	yCurrent += this.yPadding;
+            }
         }
     }
 }

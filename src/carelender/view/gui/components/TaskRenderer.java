@@ -66,13 +66,11 @@ public class TaskRenderer extends CanvasRenderer {
 
         double dateBarWidth = this.width * dateWidthRatio;
         double dateBarHeight = this.height * dateHeightRatio;
-
-
+        
         double taskBarWidth = this.width * taskWidthRatio;
         double taskBarHeight = this.height * taskHeightRatio;
 
-        this.taskBarRender.setParams(gc, taskBarWidth, taskBarHeight,
-                this.xPadding, this.yPadding, 0.2, 0.4);
+        this.taskBarRender.setParams(this.xPadding, this.yPadding, 0.2, 0.4, 0.1);
 
         Font font = Font.loadFont("file:res/monaco.ttf", dateBarHeight * 0.5);
 
@@ -83,57 +81,66 @@ public class TaskRenderer extends CanvasRenderer {
         double remainingHeight = this.height - (this.yPadding * 2);
         double xPositionDate = 0;
         double yPositionDate = 0;
+        boolean displayDate = false;
         int index = 1;
         
         for ( Map.Entry<String, EventList> entry : this.taskDisplay.entrySet()) {
             String key = entry.getKey();
             EventList value = entry.getValue();
 
-            this.gc.setFill (Color.web("757575"));
-            this.gc.fillRect(xCurrent, yCurrent, this.width - (this.xPadding * 2), this.yPadding * 0.5);
+            if ( currentTaskToDisplay >= this.displayStart ) {
+	            gc.setFill (Color.web("757575"));
+	            gc.fillRect(xCurrent, yCurrent, this.width - (this.xPadding * 2), this.yPadding * 0.5);
+            }
             
             yCurrent += (this.yPadding * 1.5);
             
             xPositionDate = xCurrent;
             yPositionDate = yCurrent;
             
+            displayDate = false;
             for (Event event : value) {
                 if ( currentTaskToDisplay >= this.displayStart ) {
-                    this.taskBarRender.setPosition(xCurrent + dateBarWidth + this.xPadding, yCurrent);
                     this.taskBarRender.setContent(event);
 
-                    if ( (remainingHeight - this.taskBarRender.getHeight()) >= 0 ) {
-                        this.gc.setFill(AppColours.tasklistRowBackground);
-                        this.gc.setTextAlign(TextAlignment.RIGHT);
-                        this.gc.setFont(font);
-                        this.gc.setTextBaseline(VPos.TOP);
+                   if ( (remainingHeight - this.taskBarRender.getHeight(taskBarHeight)) >= 0 ) {
+                    	displayDate = true;
+                    	
+                        gc.setFill(AppColours.primaryColour);
+                        gc.setTextAlign(TextAlignment.RIGHT);
+                        gc.setFont(font);
+                        gc.setTextBaseline(VPos.TOP);
 
-                        this.gc.fillText(String.valueOf(index), xCurrent + dateBarWidth, yCurrent);
+                        gc.fillText(String.valueOf(index), xCurrent + dateBarWidth, yCurrent);
 
-                        this.taskBarRender.drawTaskBar(AppColours.tasklistRowBackground, Color.web("eeeff0"));
-                        yCurrent += ( this.taskBarRender.getHeight() + this.yPadding );
+                        this.taskBarRender.draw(gc, xCurrent + dateBarWidth + this.xPadding, yCurrent,
+                        						taskBarWidth, taskBarHeight, AppColours.tasklistRowBackground,
+                        						Color.web("eeeff0"));
+                        yCurrent += (this.taskBarRender.getHeight(taskBarHeight) + this.yPadding);
 
-                        remainingHeight -= (this.taskBarRender.getHeight() + this.yPadding);
-                        index++;
+                        remainingHeight -= (this.taskBarRender.getHeight(taskBarHeight) + (this.yPadding * 2));
                     } else {
                         return;
                     }
                 }
+                index++;
                 currentTaskToDisplay++;
             }
             
             /*this.gc.setFill (Color.web("999"));
             this.gc.fillRect(xPositionDate, yPositionDate, dateBarWidth, dateBarHeight);*/
 
-            this.gc.setFill(AppColours.primaryColour);
-            this.gc.setTextAlign(TextAlignment.LEFT);
-            this.gc.setFont(font);
-            this.gc.setTextBaseline(VPos.TOP);
-
-            String [] keyWords = key.split(" ");
-            if ( keyWords.length > 2 ) {
-                this.gc.fillText(keyWords[1], xPositionDate, yPositionDate);
-                this.gc.fillText(keyWords[2], xPositionDate, yPositionDate + font.getSize());
+            if ( displayDate ) {
+	            gc.setFill(AppColours.tasklistRowBackground);
+	            gc.setTextAlign(TextAlignment.LEFT);
+	           	gc.setFont(font);
+            	gc.setTextBaseline(VPos.TOP);
+	
+	            String [] keyWords = key.split(" ");
+	            if ( keyWords.length > 2 ) {
+	                gc.fillText(keyWords[1], xPositionDate, yPositionDate);
+	                gc.fillText(keyWords[2], xPositionDate, yPositionDate + font.getSize());
+	            }
             }
         }
     }
@@ -142,12 +149,14 @@ public class TaskRenderer extends CanvasRenderer {
         if ( this.displayStart > 0 ) {
             this.displayStart--;
         }
+        redraw();
     }
     
     public void scrollUp () {
-        if ( this.displayStart < this.totalTasks ) {
+        if ( this.displayStart < this.totalTasks - 1 ) {
             this.displayStart++;
         }
+        redraw();
     }
 
     public void clearEvents () {

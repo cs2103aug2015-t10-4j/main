@@ -21,4 +21,5 @@ public class AppColours {
     public final static Color tabHighlight = Color.web("FF0");
     public final static Color black = Color.web("000");
     public final static Color white = Color.web("FFF");
+    public final static Color important = Color.web("bd4d59");
 }
