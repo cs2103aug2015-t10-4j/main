@@ -284,7 +284,11 @@ public class InputParser {
                 newQuery = parseDeleteCommand(commandParts);
                 break;
             case COMPLETE:
-                newQuery = parseCompleteCommand(commandParts, true);
+            	if (commandString.equals("complete")) {
+            		newQuery = parseCompleteCommand(commandParts, true);
+            	} else {
+            		newQuery = parseCompleteCommand(commandParts, false);
+            	}
                 break;    
                 
             case UPDATE:

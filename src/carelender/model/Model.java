@@ -179,6 +179,22 @@ public class Model {
 		//filename = input;
 	}
 	
+	public void setComplete(Event eventObj, boolean forComplete) {
+		for (int i = 0; i < events.size(); i++) {
+			if (events.get(i).getUid() == eventObj.getUid()) {
+				if (forComplete) {
+					System.out.println("COMPLETE");
+					events.get(i).setCompleted(true);
+				} else {
+					System.out.println("UNCOMPLETE");
+					events.get(i).setCompleted(false);
+				}
+				updateUndoManager(events.get(i), UndoType.UPDATE);
+			}
+		}
+		saveToFile(fileName, events);
+	}
+	
 	private void saveToFile(File filename, EventList eventList) {
 		try {
 			PrintWriter printWriter = new PrintWriter(filename);

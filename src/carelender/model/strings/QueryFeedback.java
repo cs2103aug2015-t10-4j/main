@@ -13,6 +13,15 @@ public class QueryFeedback {
     public static String deleteTask (int count ) {
         return "Deleted "+count+" tasks";
     }
+    public static String completeTask (String name ) {
+        return "Completed ["+name+"]";
+    } 
+    public static String completeTask (int count ) {
+    	return "Completed "+count+" tasks";
+    } 
+    public static String uncompleteTask (int count ) {
+    	return "Uncompleted "+count+" tasks";
+    } 
     public static String deleteConfirmation (int count) {
         return "Are you sure you want to delete " + count + " events? [Y/N]";
     }
