@@ -24,7 +24,7 @@ public class ModelTest {
 		date = new Date();
 		DateRange[] dates = new DateRange[1];
 		dates[0] = new DateRange(date, true);
-		dummyEvent = new Event(1, "Test Reminder", dates);
+		dummyEvent = new Event(1, "Test Reminder", dates, null);
 		
 		currentTime = Calendar.getInstance();
 	}

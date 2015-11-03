@@ -20,7 +20,7 @@ public class ParserTest extends InputParser {
 		//This part is required for the indices to work
 		EventList events = new EventList();
 		for ( int i = 0 ; i < 15; i++ ) {
-			Event e = new Event(i, null, null);
+			Event e = new Event(i, null, null, null);
 			events.add(e);
 		}
 		setDisplayedList(events);

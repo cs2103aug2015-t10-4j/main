@@ -55,7 +55,7 @@ public class SearchTest{
 	@Test
 	public void testIsMethods() {
 		HashMap<QueryList.SearchParam, Object> params = new HashMap<QueryList.SearchParam, Object>();
-		Event event = new Event ( 0, "", null );
+		Event event = new Event ( 0, "", null, null );
 		
 		event.setName("exact matching");
 		/* 

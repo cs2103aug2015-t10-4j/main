@@ -242,7 +242,7 @@ public class Controller {
      * @return
      */
     public static Event queryAddToEventObject(QueryAdd queryAdd) {
-        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange());
+        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange(), queryAdd.getCategory());
         return eventObj;
     }
 
