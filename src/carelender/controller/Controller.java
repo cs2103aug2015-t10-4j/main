@@ -45,7 +45,7 @@ public class Controller {
         //Initialize timer for reminder
         TimerTask reminder = new ReminderCaller();
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(reminder,5000,1000);
+        timer.scheduleAtFixedRate(reminder,5000,5000);
 
         
         userName = null;
