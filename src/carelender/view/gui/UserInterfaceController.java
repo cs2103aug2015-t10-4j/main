@@ -104,6 +104,18 @@ public class UserInterfaceController implements Initializable {
                                 case TAB:
                                     Controller.processTabPress();
                                     break;
+                                case F1:
+                                    setUI(UIType.TIMELINE);
+                                    break;
+                                case F2:
+                                    setUI(UIType.CALENDAR);
+                                    break;
+                                case F3:
+                                    setUI(UIType.FLOATING);
+                                    break;
+                                case F4:
+                                    setUI(UIType.SETTING);
+                                    break;
                                 default:
                                     break;
                             }
@@ -200,6 +212,25 @@ public class UserInterfaceController implements Initializable {
         monthViewRenderer.setTaskview(events);
         timelineViewRenderer.setTaskview(events);
         floatingViewRenderer.setTaskview();
+        updateTaskList();
+    }
+
+    /**
+     * Updates the list that the parser holds so it knows what ids to use
+     */
+    public void updateTaskList() {
+        switch ( uiType ) {
+            case TIMELINE:
+                timelineViewRenderer.setTaskDisplayList();
+                break;
+            case CALENDAR:
+                monthViewRenderer.setTaskDisplayList();
+                break;
+            case FLOATING:
+                floatingViewRenderer.setTaskDisplayList();
+                break;
+        }
+
     }
 
     public void setWeekEventList ( EventList events ) {
@@ -292,7 +323,7 @@ public class UserInterfaceController implements Initializable {
                 userInterfaceRenderer.setMainRenderer(settingViewRenderer);
                 break;
         }
-
+        updateTaskList();
         refresh();
     }
 

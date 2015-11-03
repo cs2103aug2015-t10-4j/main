@@ -1,5 +1,6 @@
 package carelender.view.gui.views;
 
+import carelender.controller.Controller;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
 import carelender.model.strings.AppColours;
@@ -112,9 +113,17 @@ public class FloatingViewRenderer extends CanvasRenderer {
     }
 
     public void setTaskview() {
+        this.tasks.clearEvents();
         this.listResults = resultsList.searchExecute();
         this.tasks.addEvents(this.listResults);
         redraw();
+    }
+
+    /**
+     * Sets the display list on the parser so it knows what the indices are
+     */
+    public void setTaskDisplayList() {
+        Controller.setDisplayedList(tasks.getDisplayList());
     }
 
 

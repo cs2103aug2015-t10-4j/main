@@ -1,5 +1,6 @@
 package carelender.view.gui.views;
 
+import carelender.controller.Controller;
 import carelender.model.data.EventList;
 import carelender.model.strings.AppColours;
 import carelender.view.gui.components.*;
@@ -115,6 +116,13 @@ public class MonthViewRenderer extends CanvasRenderer {
         this.tasks.clearEvents();
         this.tasks.addEvents(this.listResults);
         redraw();
+    }
+
+    /**
+     * Sets the display list on the parser so it knows what the indices are
+     */
+    public void setTaskDisplayList() {
+        Controller.setDisplayedList(tasks.getDisplayList());
     }
 
     public TaskRenderer getTaskRenderer() {

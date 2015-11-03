@@ -156,6 +156,8 @@ public class CalenderRenderer extends CanvasRenderer {
         calulateCellProperties();
         
         Calendar c = Calendar.getInstance();
+        int todayDate = c.get(Calendar.DATE);
+        int thisMonth = c.get(Calendar.MONTH);
         c.setFirstDayOfWeek(Calendar.MONDAY);
         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
@@ -203,9 +205,15 @@ public class CalenderRenderer extends CanvasRenderer {
 
             int[] dailyEventNumbers = monthEventNumbers[i];
 
+            Color calendarCell = AppColours.calendarCell;
+            if ( c.get(Calendar.DATE) == todayDate && c.get(Calendar.MONTH) == thisMonth ) {
+                calendarCell = AppColours.calendarTodayCell;
+            }
             RenderHelper.calendarSquare(gc, actualX, actualY,
                     calCellWidth, calCellHeight,
-                    calCellShadowOffset, AppColours.calendarCell, AppColours.primaryColour, date + "", font, dailyEventNumbers);
+                    calCellShadowOffset,
+                    calendarCell, AppColours.primaryColour,
+                    date + "", font, dailyEventNumbers);
             c.add(Calendar.DATE, 1);
             
         }

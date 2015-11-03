@@ -36,7 +36,7 @@ public class Search {
 		if (hasDateRange(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
-			if ( startDate == null || endDate == null ) {
+			if ( startDate == null && endDate == null ) {
 				match = isEventFloating(eventToCheck);
 			} else if (startDate instanceof Date && endDate instanceof Date) {
 				match = isEventInDateRange(eventToCheck, 

@@ -254,8 +254,8 @@ public class InputParser {
 
     /**
      * Parses the complete user input
-     * @param input
-     * @return
+     * @param input User's input
+     * @return QueryBase object
      */
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
@@ -387,12 +387,16 @@ public class InputParser {
 
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         if ( range == null ) {
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
             queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
+            System.out.println("Default listing");
+
         } else {
             switch (range) {
                 case "past": //Displays events that have passed
@@ -401,8 +405,6 @@ public class InputParser {
                 case "tomorrow": //Displays events tomorrow onwards
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 case "today": //Everything for today
-                    calendar.set(Calendar.HOUR_OF_DAY, 0);
-                    calendar.set(Calendar.MINUTE, 0);
                     queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
 
                     calendar.set(Calendar.HOUR_OF_DAY, 23);
@@ -411,8 +413,7 @@ public class InputParser {
                     break;
                 case "future": //Displays events today onwards
                 default:
-                    calendar.set(Calendar.HOUR_OF_DAY, 0);
-                    calendar.set(Calendar.MINUTE, 0);
+                    System.out.println("Future listing");
                     queryList.addSearchParam(QueryList.SearchParam.DATE_START, calendar.getTime());
                     break;
             }
@@ -599,21 +600,6 @@ public class InputParser {
         }
 
         return queryAdd;
-    }
-
-    /**
-     * Gets the date of the next day of the week
-     * @param dow
-     * @return
-     */
-    public static Calendar nextDayOfWeek(int dow) {
-        Calendar date = Calendar.getInstance();
-        int diff = dow - date.get(Calendar.DAY_OF_WEEK);
-        if (!(diff > 0)) {
-            diff += 7;
-        }
-        date.add(Calendar.DAY_OF_MONTH, diff);
-        return date;
     }
 
     /**
