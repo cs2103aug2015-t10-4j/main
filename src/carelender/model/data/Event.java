@@ -26,6 +26,7 @@ public class Event implements Serializable{
     public Event ( Event eventObject ) {
         uid = eventObject.uid;
         name = eventObject.name;
+        category = eventObject.category;
         DateRange [] eventObjectDateRange = eventObject.dateRange;
         dateRange = new DateRange[eventObjectDateRange.length];
         for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
@@ -45,11 +46,12 @@ public class Event implements Serializable{
             dateRecurrence = eventObject.dateRecurrence.copy();
         }
     }
-    public Event (int uidToSet, String nameToSet, DateRange[] dateRangetoSet) {
+    public Event (int uidToSet, String nameToSet, DateRange[] dateRangetoSet, String category) {
         //TODO: Initialize internal fields.
         this.uid = uidToSet;
         this.name = nameToSet;
         this.dateRange = dateRangetoSet;
+        this.category = category;
     }
 
     public void setUid(int uid){

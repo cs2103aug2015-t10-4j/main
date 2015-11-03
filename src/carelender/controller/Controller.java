@@ -45,7 +45,12 @@ public class Controller {
         //Initialize timer for reminder
         TimerTask reminder = new ReminderCaller();
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(reminder,5000,1000);
+        if (userName == null) {
+            timer.scheduleAtFixedRate(reminder,100000,5000);  
+        } else {
+            timer.scheduleAtFixedRate(reminder,5000,5000);   
+        }
+
 
         
         userName = null;
@@ -190,12 +195,14 @@ public class Controller {
                     displayMessage(FirstStartMessages.confirmed(userName));
                     stateManager.changeState(AppState.DEFAULT);
                     AppSettings.getInstance().setStringSetting(SettingName.USERNAME, userInput);
+                    refreshAnnoucementBox();
                     refreshDisplay();
                 } else {
                     displayMessage(FirstStartMessages.askForNameAgain());
                     userName = null;
                 }
             }
+
         };
         userName = userInput;
         blockingStateController.startConfirmation(FirstStartMessages.confirmation(userName), confirmNameCallback);
@@ -242,7 +249,7 @@ public class Controller {
      * @return
      */
     public static Event queryAddToEventObject(QueryAdd queryAdd) {
-        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange());
+        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange(), queryAdd.getCategory());
         return eventObj;
     }
 
@@ -262,7 +269,7 @@ public class Controller {
             stateManager.changeState(AppState.DEFAULT);
         }
     }
-
+    
     /**
      * Refreshes the list of events.
      * It is called after every query the user inputs
@@ -277,6 +284,14 @@ public class Controller {
         userInterfaceController.refreshOutputField();
     }
 
+    /**
+     * Refreshes the announcement box
+     */
+	private static void refreshAnnoucementBox() {
+		String firstHint = "I'll be giving you some helpful information here!";
+		Controller.displayAnnouncement(firstHint);
+	}
+    
     /**
      * Prints a message to screen
      * @param message message to be displayed

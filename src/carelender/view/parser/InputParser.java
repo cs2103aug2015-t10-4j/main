@@ -284,7 +284,11 @@ public class InputParser {
                 newQuery = parseDeleteCommand(commandParts);
                 break;
             case COMPLETE:
-                newQuery = parseCompleteCommand(commandParts, true);
+            	if (commandString.equals("complete")) {
+            		newQuery = parseCompleteCommand(commandParts, true);
+            	} else {
+            		newQuery = parseCompleteCommand(commandParts, false);
+            	}
                 break;    
                 
             case UPDATE:
@@ -567,6 +571,15 @@ public class InputParser {
             		queryUpdate.addUpdateParam(UpdateParam.DATE_RANGE, dateRanges);
             		pass = true;
             	}
+            }
+        }
+        
+        commandPart = getCommandPart("category", commandParts);
+        if ( commandPart != null ) {
+        	data = commandPart.getKeywordData();
+            if ( data != null ) {
+            	queryUpdate.addUpdateParam(UpdateParam.CATEGORY, data);
+            	pass = true;
             }
         }
         

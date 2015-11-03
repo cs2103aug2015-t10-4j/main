@@ -3,6 +3,7 @@ package carelender.model.data;
 import carelender.controller.Controller;
 import carelender.controller.callbacks.OnConfirmedCallback;
 import carelender.model.Model;
+import carelender.model.strings.QueryFeedback;
 
 public class QueryComplete extends QueryBase{
 	private EventList events;
@@ -26,10 +27,13 @@ public class QueryComplete extends QueryBase{
     
     @Override
 	public void controllerExecute() {
+    	for (int i = 0; i < events.size(); i++) {
+			Model.getInstance().setComplete(events.get(i), forComplete);
+		}
     	if (forComplete) {
-    		System.out.println("COMPLETE");
+    		Controller.displayMessage(QueryFeedback.completeTask(events.size()));
     	} else {
-    		System.out.println("UNCOMPLETE");
+    		Controller.displayMessage(QueryFeedback.uncompleteTask(events.size()));
     	}
     	
 		/*Controller.clearMessages();

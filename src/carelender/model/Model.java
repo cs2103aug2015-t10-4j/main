@@ -49,7 +49,9 @@ public class Model {
 		folderName.mkdir();
 
 		//Get saved file/create one if none exists
-		fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
+		//fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
+		fileName = new File(FOLDER_NAME + FILE_NAME + FILE_TYPE);
+		
 		events = new EventList();	
 		if (!fileName.exists()) {
 			try {
@@ -129,7 +131,7 @@ public class Model {
 		saveToFile(fileName, events);
 	}
 
-	public void undoUpdatedEvent(EventList eventList) {
+	public void undoUpdatedEvent(EventList eventList, boolean isUndo) {
 		EventList redoEventList = new EventList();
 		
 		for (int i = 0; i < eventList.size(); i++) {
@@ -137,12 +139,15 @@ public class Model {
 				if (events.get(j).getUid() == eventList.get(i).getUid()) {
 					redoEventList.add(events.get(j));
 					events.remove(j);
+					events.add(eventList.get(i));
 				}
-				saveToFile(fileName, events);
-			}
-			events.add(eventList.get(i));
+			}			
 		}
-		UndoManager.getInstance().redoUpdate(redoEventList);
+		if (isUndo) {
+			UndoManager.getInstance().redoUpdate(redoEventList);
+		} else {
+			UndoManager.getInstance().update(redoEventList);
+		}
 		saveToFile(fileName, events);
 	}
 
@@ -177,6 +182,22 @@ public class Model {
 
 	public void setSaveFileName(String input) {
 		//filename = input;
+	}
+	
+	public void setComplete(Event eventObj, boolean forComplete) {
+		for (int i = 0; i < events.size(); i++) {
+			if (events.get(i).getUid() == eventObj.getUid()) {
+				if (forComplete) {
+					System.out.println("COMPLETE");
+					events.get(i).setCompleted(true);
+				} else {
+					System.out.println("UNCOMPLETE");
+					events.get(i).setCompleted(false);
+				}
+				updateUndoManager(events.get(i), UndoType.UPDATE);
+			}
+		}
+		saveToFile(fileName, events);
 	}
 	
 	private void saveToFile(File filename, EventList eventList) {
@@ -231,5 +252,26 @@ public class Model {
 		}
 
 		return strings.toArray(new String[strings.size()]);
+	}
+	
+	public ArrayList<String> loadStringArrayList( String filename ) {
+		ArrayList<String> strings = new ArrayList<>();
+		try {
+			FileReader fileReader = new FileReader(filename);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+			String line;
+			while ( true ) {
+				line = bufferedReader.readLine();
+				if ( line == null ) {
+					break;
+				}
+				strings.add(line);
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+
+		return strings;
 	}
 }
