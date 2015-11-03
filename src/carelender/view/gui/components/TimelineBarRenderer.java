@@ -43,7 +43,7 @@ public class TimelineBarRenderer {
 	public void draw (GraphicsContext gc, Color backgroundColour, Color textColour,
 						double xPosition, double yPosition, double width, double height ) {
 		if (gc == null) {
-			System.out.println("Error");
+			System.out.println("Error aaaaa");
 		} else {
 			if ( this.endTime <= this.startTime ) {
 				this.actualWidth = TimelineBarRenderer.NO_RANGE_RATIO * width;
@@ -56,7 +56,7 @@ public class TimelineBarRenderer {
 						yPosition, this.actualWidth, height);
 			
 			Font font = Font.loadFont("file:res/monaco.ttf", height * 0.7);
-			gc.setFill(AppColours.primaryColour);
+			gc.setFill(textColour);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setFont(font);
             gc.setTextBaseline(VPos.TOP);

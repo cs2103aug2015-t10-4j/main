@@ -55,9 +55,8 @@ public class TimelineRenderer extends CanvasRenderer {
 		gc.setFill(AppColours.panelBackground);
         gc.fillRect(x, y, width, height);
 
-        double xCurrent = x + this.xPadding + labelWidth;
+        double xCurrent = x + this.xPadding + this.labelWidth;
         double yCurrent = y + (this.yPadding * 2) + font.getSize();
-        
         double divisorWidth = (1 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
         for (int i = 0; i <= 24; i++) {
         	gc.setFill(AppColours.tasklistRowBackground);
@@ -71,12 +70,12 @@ public class TimelineRenderer extends CanvasRenderer {
 			gc.fillRect(xCurrent, y + this.yPadding + font.getSize(), divisorWidth, height - (this.xPadding * 2) - font.getSize());
         	xCurrent += (60 / TimelineBarRenderer.MINUTES_IN_DAY) * usableWidth;
         }
-        xCurrent = x + labelWidth;
+        xCurrent = x + this.labelWidth;
         
         for ( Map.Entry<String, ArrayList<TimelineBarRenderer>> entry : this.weekDisplay.entrySet()) {
-            String key = entry.getKey();
+        	String key = entry.getKey();
             ArrayList<TimelineBarRenderer> value = entry.getValue();
-            
+
             gc.setFill(AppColours.primaryColour);
             gc.setTextAlign(TextAlignment.RIGHT);
             gc.setFont(font);
@@ -88,6 +87,7 @@ public class TimelineRenderer extends CanvasRenderer {
             for (TimelineBarRenderer bar : value) {
                 bar.draw(gc, AppColours.tasklistRowBackground, AppColours.primaryColour, xCurrent + this.xPadding, yCurrent, usableWidth, barHeight);
             }
+            
             yCurrent += ( barHeight + this.yPadding );
         }
     }

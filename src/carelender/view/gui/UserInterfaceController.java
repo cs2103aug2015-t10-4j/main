@@ -230,7 +230,6 @@ public class UserInterfaceController implements Initializable {
                 floatingViewRenderer.setTaskDisplayList();
                 break;
         }
-
     }
 
     public void setWeekEventList ( EventList events ) {

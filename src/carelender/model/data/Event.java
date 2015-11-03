@@ -27,15 +27,19 @@ public class Event implements Serializable{
         uid = eventObject.uid;
         name = eventObject.name;
         DateRange [] eventObjectDateRange = eventObject.dateRange;
-        if ( eventObjectDateRange != null ) {
+        dateRange = new DateRange[eventObjectDateRange.length];
+        for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
+            dateRange[i] = eventObjectDateRange[i].copy();
+        }
+        
+        /*if ( eventObjectDateRange != null ) {
             dateRange = new DateRange[eventObjectDateRange.length];
             for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
                 dateRange[i] = eventObjectDateRange[i].copy();
-
             }
         } else {
             dateRange = null;
-        }
+        }*/
 
         if(dateRecurrence != null) {
             dateRecurrence = eventObject.dateRecurrence.copy();
