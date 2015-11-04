@@ -9,12 +9,13 @@ import carelender.controller.Search;
 import carelender.controller.callbacks.OnConfirmedCallback;
 import carelender.model.Model;
 import carelender.model.data.QueryList.SearchParam;
+import carelender.model.strings.QueryFeedback;
 
 /**
  * Used for add queries
  */
 public class QueryUpdate extends QueryList {
-    HashMap<UpdateParam, Object> updateParamsList = new HashMap<UpdateParam, Object>();;
+    HashMap<UpdateParam, Object> updateParamsList = new HashMap<>();;
     EventList updateList;
     
     public QueryUpdate() {
@@ -70,10 +71,11 @@ public class QueryUpdate extends QueryList {
 						//Call Model updateEvent function
 						//this.model.updateEvent ( event );
 						Model.getInstance().updateEvent(event);
-						System.out.println ( event.getName() );
+						System.out.println(event.getName());
 					}
+					Controller.refreshDisplay();
 				} else {
-					
+					Controller.displayMessage(QueryFeedback.updateCancelled());
 				}
 			}
 		};

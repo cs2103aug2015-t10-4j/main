@@ -273,7 +273,7 @@ public class Controller {
 
     public static void printWelcomeMessage() {
         if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
-            userInterfaceController.setAnnouncementMessage("CareLender: Maybe the best task manager in the world.\n" + FirstStartMessages.askForName());
+            userInterfaceController.setAnnouncementMessage("Welcome to careLender. " + FirstStartMessages.askForName());
         } else {
             userInterfaceController.setAnnouncementMessage("Welcome back, " + userName);
             stateManager.changeState(AppState.DEFAULT);

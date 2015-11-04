@@ -28,6 +28,9 @@ public class QueryFeedback {
     public static String deleteCancelled () {
         return "Cancelled, nothing deleted :)";
     }
+    public static String updateCancelled () {
+        return "Cancelled, nothing updated :)";
+    }
 
     public static String reminderAdded(int size) {
         return size + " reminders added";
