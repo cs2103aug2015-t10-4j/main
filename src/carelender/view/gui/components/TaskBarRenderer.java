@@ -3,9 +3,11 @@ package carelender.view.gui.components;
 import carelender.model.data.DateRange;
 import carelender.model.data.Event;
 import carelender.model.strings.AppColours;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ public class TaskBarRenderer {
 
     private ArrayList<DateRangeRenderer> dateRangeRendererList;
     
-    private TextRenderer timeText;
     private TextRenderer nameText;
 
     private double nameTextRatio;
@@ -35,7 +36,6 @@ public class TaskBarRenderer {
     private Event event;
 
     public TaskBarRenderer() {
-        this.timeText = new TextRenderer();
         this.nameText = new TextRenderer();
         
         this.dateRangeRendererList = new ArrayList<DateRangeRenderer>();
@@ -148,6 +148,21 @@ public class TaskBarRenderer {
             }
             
             this.nameText.drawText(backgroundColour, textColour);
+            
+            if ( this.event.getCategory() != null ) {
+            	int colourCode = this.event.getCategory().hashCode();
+            	colourCode %= 5;
+            	
+	            gc.setFill(AppColours.category[colourCode]);
+	            gc.fillRect(xCurrent + width * 0.7, yCurrent, width * 0.2, font.getSize());
+            
+	            gc.setFill(AppColours.panelBackground);
+	            gc.setTextAlign(TextAlignment.CENTER);
+	           	gc.setFont(font);
+            	gc.setTextBaseline(VPos.CENTER);
+            	
+            	gc.fillText(this.event.getCategory(), xCurrent + width * 0.8, yCurrent + font.getSize() * 0.5);
+            }
 
             yCurrent += (this.nameText.getTextHeight() + this.yPadding);
             for (DateRangeRenderer dateRangeRenderer : this.dateRangeRendererList) {

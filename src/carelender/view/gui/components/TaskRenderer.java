@@ -168,6 +168,9 @@ public class TaskRenderer extends CanvasRenderer {
         SimpleDateFormat dateFormat = new SimpleDateFormat("D d EEE");
         for ( Event event : toDisplay ) {
             Date currentDay = event.getEarliestDateFromNow();
+            if ( currentDay == null ) {
+            	currentDay = event.getEarliestDate();
+            }
             if ( currentDay == null ) { //Floating task
                 if (this.taskDisplay.containsKey("F")) {
                     if (!this.taskDisplay.get("F").contains(event)) {
