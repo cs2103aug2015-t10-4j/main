@@ -27,20 +27,21 @@ public class Event implements Serializable{
         uid = eventObject.uid;
         name = eventObject.name;
         category = eventObject.category;
+        completed = eventObject.completed;
         DateRange [] eventObjectDateRange = eventObject.dateRange;
-        dateRange = new DateRange[eventObjectDateRange.length];
-        for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
-            dateRange[i] = eventObjectDateRange[i].copy();
-        }
+//        dateRange = new DateRange[eventObjectDateRange.length];
+//        for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
+//            dateRange[i] = eventObjectDateRange[i].copy();
+//        }
         
-        /*if ( eventObjectDateRange != null ) {
+        if ( eventObjectDateRange != null ) {
             dateRange = new DateRange[eventObjectDateRange.length];
             for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
                 dateRange[i] = eventObjectDateRange[i].copy();
             }
         } else {
             dateRange = null;
-        }*/
+        }
 
         if(dateRecurrence != null) {
             dateRecurrence = eventObject.dateRecurrence.copy();
@@ -52,6 +53,7 @@ public class Event implements Serializable{
         this.name = nameToSet;
         this.dateRange = dateRangetoSet;
         this.category = category;
+        this.completed = completed;
     }
 
     public void setUid(int uid){
