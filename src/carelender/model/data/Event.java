@@ -53,7 +53,7 @@ public class Event implements Serializable{
         this.name = nameToSet;
         this.dateRange = dateRangetoSet;
         this.category = category;
-        this.completed = completed;
+        //this.completed = completed;
     }
 
     public void setUid(int uid){
@@ -134,7 +134,7 @@ public class Event implements Serializable{
         Date firstDate = null;
         if ( this.dateRange == null ) return null;
         for (DateRange dateR : this.dateRange) {
-            if (dateR.getStart().after(currentDate)) {
+            if (dateR.getStart().after(currentDate) || dateR.getEnd().after(currentDate)) {
                 if (firstDate == null) {
                     firstDate = dateR.getStart();
                 } else {

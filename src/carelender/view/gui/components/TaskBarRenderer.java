@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
  * This class contains static methods to help to render the calendar view
  */
 public class TaskBarRenderer {
+	private final static double STRIKEOUT_WIDTH = 5;
+	
     private double xPadding;
     private double yPadding;
 
@@ -27,6 +29,8 @@ public class TaskBarRenderer {
 
     private double nameTextRatio;
     private double barRatio;
+    
+    private boolean strikeout = false;
 
     private Event event;
 
@@ -35,6 +39,7 @@ public class TaskBarRenderer {
         this.nameText = new TextRenderer();
         
         this.dateRangeRendererList = new ArrayList<DateRangeRenderer>();
+        this.strikeout = false;
     }
 
     public void setContent (Event event) {
@@ -45,13 +50,15 @@ public class TaskBarRenderer {
                 this.width - (this.xPadding * 2), font.getSize(), 0, 0, font, 0.6, 0.1);
         this.timeText.clearText();
         */
+    	this.strikeout = event.getCompleted();
+    	
         this.dateRangeRendererList.clear();
         Date currentDate = new Date();
         DateRange [] dateRanges = this.event.getDateRange();
         if ( dateRanges != null ) {
 			for (DateRange date : dateRanges) {
 				DateRangeRenderer dateRangeRenderer = new DateRangeRenderer();
-				if (date.getStart().after(currentDate)) {
+				if (date.getStart().after(currentDate) || date.getEnd().after(currentDate)) {
 					/*
 					this.timeText.addTextEllipsis(timeFormat.format(date.getStart())
 							+ " to " + timeFormat.format(date.getEnd()));
@@ -91,6 +98,10 @@ public class TaskBarRenderer {
         this.nameTextRatio = nameTextRatio;
         this.barRatio = barRatio;
     }
+    
+    public void strikeout () {
+    	this.strikeout = !this.strikeout;
+    }
 
     public double getHeight (double height) {
     	double toReturnHeight = 0;
@@ -116,6 +127,12 @@ public class TaskBarRenderer {
             
         	Font font = Font.loadFont("file:res/monaco.ttf", height * this.nameTextRatio);
         	
+        	if ( this.strikeout ) {
+        		gc.setGlobalAlpha(0.3);
+            } else {
+            	gc.setGlobalAlpha(1);
+            }
+        	
             gc.setFill(backgroundColour);
             gc.fillRect(xCurrent, yCurrent, width, this.getHeight(height));
             
@@ -128,7 +145,7 @@ public class TaskBarRenderer {
             this.nameText.addTextEllipsis(this.event.getName());
             
             this.nameText.drawText(backgroundColour, textColour);
-            
+
             yCurrent += (this.nameText.getTextHeight() + this.yPadding);
             for (DateRangeRenderer dateRangeRenderer : this.dateRangeRendererList) {
             	dateRangeRenderer.draw(gc, xCurrent, yCurrent, width, height,
@@ -138,6 +155,7 @@ public class TaskBarRenderer {
             	yCurrent += dateRangeRenderer.getDateTextHeightRatio() * (dateRangeRenderer.getTimeTextHeightRatio() * height);
             	yCurrent += this.yPadding;
             }
+            gc.setGlobalAlpha(1);
         }
     }
 }
