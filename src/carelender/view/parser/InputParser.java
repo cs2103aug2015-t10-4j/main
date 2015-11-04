@@ -350,11 +350,11 @@ public class InputParser {
     }
 
     private QueryBase parseSetCommand(CommandPart [] commandParts) {
-        if ( commandParts.length < 2 ) {
+    	if ( commandParts.length < 3 ) {
             return new QueryError(ErrorMessages.setNoParameters());
         }
         
-        QuerySet querySet = new QuerySet(commandParts[0].getQueryPart(), commandParts[1].getQueryPart());
+        QuerySet querySet = new QuerySet(commandParts[1].getQueryPart(), commandParts[2].getQueryPart());
         
         return querySet;
 	}
