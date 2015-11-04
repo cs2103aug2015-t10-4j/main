@@ -1,5 +1,9 @@
 package carelender.model.data;
 
+import carelender.controller.Controller;
+import carelender.model.AppSettings;
+import carelender.model.AppSettings.SettingName;
+
 public class QuerySet extends QueryBase {
 	
 	String keyword;
@@ -7,13 +11,25 @@ public class QuerySet extends QueryBase {
 	
     public QuerySet(String keyword, String value) {
         super(QueryType.SET);
-        keyword = keyword;
-        value = value;
+        this.keyword = keyword;
+        this.value = value;
     }
     
     @Override
 	public void controllerExecute() {
-		System.out.println("HAHAHAHAHAHAHAHAHAHAHAHAHA");
+		switch(keyword){
+			case "username":
+				AppSettings.getInstance().setStringSetting(SettingName.USERNAME, value);
+				String newNameHint = "Welcome back " + value;
+				Controller.displayAnnouncement(newNameHint);
+				break;
+			case "remindertime":
+				break;
+			case "startview":
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override

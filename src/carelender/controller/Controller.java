@@ -45,18 +45,14 @@ public class Controller {
         //Initialize timer for reminder
         TimerTask reminder = new ReminderCaller();
         Timer timer = new Timer();
-        if (userName == null) {
-            timer.scheduleAtFixedRate(reminder,100000,5000);  
-        } else {
-            timer.scheduleAtFixedRate(reminder,5000,5000);   
-        }
-
-
         
         userName = null;
         if(AppSettings.getInstance().getStringSetting(SettingName.USERNAME) != null){
         	userName = AppSettings.getInstance().getStringSetting(SettingName.USERNAME);
+        	timer.scheduleAtFixedRate(reminder,5000,5000);   
         	System.out.println("Username: " + userName);
+        } else {
+        	timer.scheduleAtFixedRate(reminder,100000,5000);  
         }
         currentCommand = 0;
 
