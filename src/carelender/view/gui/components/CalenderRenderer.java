@@ -42,12 +42,12 @@ public class CalenderRenderer extends CanvasRenderer {
         monthListQuery = new QueryList();
         
         Calendar cal = Calendar.getInstance();
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.HOUR, 0);
-        cal.setFirstDayOfWeek(Calendar.MONDAY);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         monthStartTime = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, squaresToDraw);
         monthEndTime = cal.getTime();
