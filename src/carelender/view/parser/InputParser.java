@@ -67,6 +67,11 @@ public class InputParser {
         newCommand.setDescription("Deletes a specified event/task");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("show", QueryType.SHOW );
+        newCommand.setUsage("show <id>");
+        newCommand.setDescription("Displays more information about a specific event/ task");
+        commandManager.addCommand(newCommand);
+
         newCommand = new Command("complete", QueryType.COMPLETE );
         newCommand.setUsage("complete <id>");
         newCommand.setDescription("Completes a specified event/task");
@@ -307,6 +312,9 @@ public class InputParser {
             case HELP:
                 newQuery = new QueryHelp();
                 break;
+            case SHOW:
+                newQuery = parseShowCommand(commandParts);
+                break;
             case SWITCHUI:
                 if ( matchedCommand.getCommand().startsWith("time") ) {
                     newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.TIMELINE);
@@ -427,7 +435,27 @@ public class InputParser {
         return queryList;
 
     }
-    
+
+    public QueryBase parseShowCommand ( CommandPart [] commandParts ) {
+        if ( commandParts.length < 1 ) {
+            return new QueryError(ErrorMessages.deleteNoParameters());
+        }
+        if ( displayedList == null ) {
+            return new QueryError(ErrorMessages.nothingListed());
+        }
+
+        Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
+
+        if ( indexList == null || indexList.length == 0) {
+            return new QueryError(ErrorMessages.invalidIndices());
+        }
+        if ( indexList.length > 1 ) {
+            return new QueryError("Please input only one index");
+        }
+        Event event = displayedList.get(indexList[0]);
+        return new QueryShow(event);
+    }
+
     public QueryBase parseDeleteCommand ( CommandPart [] commandParts ) {
         if ( commandParts.length < 1 ) {
             return new QueryError(ErrorMessages.deleteNoParameters());
@@ -739,7 +767,7 @@ public class InputParser {
      */
     protected Integer[] extractIndices ( String indexString ) {
     	indexString = indexString.replace(" ", "");
-        //String errorMessage = "";
+        String errorMessage = "";
         boolean pass = true;
         ArrayList<Integer> indexList = new ArrayList<>();
         final String numberRegex = "^[0-9]+$";
@@ -749,19 +777,19 @@ public class InputParser {
             if ( indexPart.contains("-") ) { //Range
                 String [] rangeArray = indexPart.split("-");
                 if ( rangeArray.length != 2 ) {
-                    //errorMessage += "Did not understand: [" + indexPart + "]\n";
+                    errorMessage += "Did not understand: [" + indexPart + "]\n";
                     pass = false;
                 } else {
                     int start = -1;
                     int end = -1;
                     if ( !rangeArray[0].matches(numberRegex) ) {
-                        //errorMessage += "Not an integer: [" + rangeArray[0] + "]\n";
+                        errorMessage += "Not an integer: [" + rangeArray[0] + "]\n";
                         pass = false;
                     } else {
                         start = Integer.parseInt(rangeArray[0]);
                     }
                     if ( !rangeArray[1].matches(numberRegex) ) {
-                        //errorMessage += "Not an integer: [" + rangeArray[1] + "]\n";
+                        errorMessage += "Not an integer: [" + rangeArray[1] + "]\n";
                         pass = false;
                     } else {
                         end = Integer.parseInt(rangeArray[1]);
@@ -782,7 +810,7 @@ public class InputParser {
             } else { //Single index
                 int index = -1;
                 if ( !indexPart.matches(numberRegex) ) {
-                    //errorMessage += "Not an integer: [" + indexPart + "]\n";
+                    errorMessage += "Not an integer: [" + indexPart + "]\n";
                     pass = false;
                 } else {
                     index = Integer.parseInt(indexPart);
@@ -811,6 +839,9 @@ public class InputParser {
             pass = false;
         }
 
+        if ( errorMessage.length() > 0 ) {
+            System.out.println(errorMessage);
+        }
         if ( pass ) {
         	return indexList.toArray(new Integer[indexList.size()]);
         }

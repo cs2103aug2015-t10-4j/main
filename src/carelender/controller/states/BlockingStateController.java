@@ -116,6 +116,11 @@ public class BlockingStateController {
         Controller.getGUI().displayPopup(message);
         blockingState = BlockingState.POPUP;
     }
+    public void startEventPopup ( Event event ) {
+        Controller.getGUI().displayEventPopup(event);
+        blockingState = BlockingState.POPUP;
+    }
+
 
 
     /**

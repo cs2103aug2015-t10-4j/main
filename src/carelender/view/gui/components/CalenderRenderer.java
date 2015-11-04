@@ -45,7 +45,7 @@ public class CalenderRenderer extends CanvasRenderer {
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         monthStartTime = cal.getTime();

@@ -2,8 +2,10 @@ package carelender.view.gui;
 
 import carelender.controller.Controller;
 import carelender.model.CommandAutomation;
+import carelender.model.data.Event;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
+import carelender.view.gui.components.EventInfoRenderer;
 import carelender.view.gui.components.PopupRenderer;
 import carelender.view.gui.views.FloatingViewRenderer;
 import carelender.view.gui.views.MonthViewRenderer;
@@ -41,6 +43,7 @@ public class UserInterfaceController implements Initializable {
 
 
     private PopupRenderer popupRenderer;
+    private EventInfoRenderer eventInfoRenderer;
     private UserInterfaceRenderer userInterfaceRenderer;
     private String firstOption;
 
@@ -74,6 +77,8 @@ public class UserInterfaceController implements Initializable {
         timelineViewRenderer = new TimelineViewRenderer();
         settingViewRenderer = new SettingViewRenderer();
         floatingViewRenderer = new FloatingViewRenderer();
+
+        eventInfoRenderer = new EventInfoRenderer();
 
 
         uiType = UIType.CALENDAR;
@@ -201,6 +206,9 @@ public class UserInterfaceController implements Initializable {
         }
     }
 
+    /**
+     * Processes the tab press, fills in the highlighted autocomplete item.
+     */
     public void processTabPress() {
         if ( firstOption != null && firstOption.length() > 0 ) {
             setUserInput(firstOption + " ");
@@ -345,6 +353,12 @@ public class UserInterfaceController implements Initializable {
     public void displayPopup( String message ) {
         popupRenderer.setMessage(message);
         userInterfaceRenderer.setPopupRenderer(popupRenderer);
+        refresh();
+    }
+
+    public void displayEventPopup( Event event ) {
+        eventInfoRenderer.setEvent(event);
+        userInterfaceRenderer.setPopupRenderer(eventInfoRenderer);
         refresh();
     }
 

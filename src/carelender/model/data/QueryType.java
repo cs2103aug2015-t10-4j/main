@@ -15,6 +15,7 @@ public enum QueryType {
     UNDO,
     REDO,
     COMPLETE,
+    SHOW,
     SWITCHUI,
     DATETEST,       //Used for testing date parsing
     DEV1,           //Used for whatever

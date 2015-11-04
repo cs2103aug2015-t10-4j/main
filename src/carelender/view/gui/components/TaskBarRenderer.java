@@ -26,7 +26,7 @@ public class TaskBarRenderer {
     private TextRenderer nameText;
 
     private double nameTextRatio;
-    private double barRatio;
+    //private double barRatio;
 
     private Event event;
 
@@ -83,13 +83,12 @@ public class TaskBarRenderer {
                                         + "    [" + numOfDays + " day]");*/
     }
 
-    public void setParams (double xPad, double yPad,
-                           double timeTextRatio, double nameTextRatio, double barRatio) {
+    public void setParams (double xPad, double yPad, double nameTextRatio) {
         this.xPadding = xPad;
         this.yPadding = yPad;
 
         this.nameTextRatio = nameTextRatio;
-        this.barRatio = barRatio;
+        //this.barRatio = barRatio;
     }
 
     public double getHeight (double height) {
@@ -107,7 +106,7 @@ public class TaskBarRenderer {
     
     public void draw (GraphicsContext gc, double x, double y,
     					double width, double height,
-    					Color backgroundColour, Color textColour) {
+    					Color backgroundColour, Color textColour, boolean ellipsize) {
         if (gc == null) {
             System.out.println("Error");
         } else {
@@ -121,11 +120,15 @@ public class TaskBarRenderer {
             
             xCurrent += this.xPadding;
             yCurrent += this.yPadding;
-            this.nameText.setParams (gc, xCurrent, yCurrent,
-                    				width - (this.xPadding * 2), font.getSize(),
-                    				0, 0, font, 0.6, 0);
+            this.nameText.setParams(gc, xCurrent, yCurrent,
+                    width - (this.xPadding * 2), font.getSize(),
+                    0, 0, font, 0.6, 0);
             this.nameText.clearText();
-            this.nameText.addTextEllipsis(this.event.getName());
+            if ( ellipsize ) {
+                this.nameText.addTextEllipsis(this.event.getName());
+            } else {
+                this.nameText.addText(this.event.getName());
+            }
             
             this.nameText.drawText(backgroundColour, textColour);
             

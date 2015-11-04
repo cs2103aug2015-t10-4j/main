@@ -70,7 +70,7 @@ public class TaskRenderer extends CanvasRenderer {
         double taskBarWidth = this.width * taskWidthRatio;
         double taskBarHeight = this.height * taskHeightRatio;
 
-        this.taskBarRender.setParams(this.xPadding, this.yPadding, 0.2, 0.4, 1);
+        this.taskBarRender.setParams(this.xPadding, this.yPadding, 0.4);
 
         Font font = Font.loadFont("file:res/monaco.ttf", dateBarHeight * 0.5);
 
@@ -115,7 +115,7 @@ public class TaskRenderer extends CanvasRenderer {
 
                         this.taskBarRender.draw(gc, xCurrent + dateBarWidth + this.xPadding, yCurrent,
                         						taskBarWidth, taskBarHeight, AppColours.tasklistRowBackground,
-                        						Color.web("eeeff0"));
+                        						Color.web("eeeff0"), true);
                         yCurrent += (this.taskBarRender.getHeight(taskBarHeight) + this.yPadding);
 
                         remainingHeight -= (this.taskBarRender.getHeight(taskBarHeight) + (this.yPadding * 2));
