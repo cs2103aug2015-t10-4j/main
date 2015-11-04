@@ -150,6 +150,12 @@ public class InputParser {
         newCommand.setDescription("Redoes the last undo");
         commandManager.addCommand(newCommand);
 
+        newCommand = new Command("set", QueryType.SET);
+        newCommand.setDescription("Customize setting");
+        newCommand.setUsage("set \"keyword\" \"newValue\" ");
+        newCommand.addKeywords("setting_type", "username,remindertime,startview", CommandKeyword.DataPosition.AFTER);
+        commandManager.addCommand(newCommand);
+
         newCommand = new Command("exit", QueryType.EXIT);
         newCommand.setDescription("Closes the program");
         commandManager.addCommand(newCommand);
@@ -288,6 +294,9 @@ public class InputParser {
             case DELETE:
                 newQuery = parseDeleteCommand(commandParts);
                 break;
+            case SET:
+                newQuery = parseSetCommand(commandParts);
+                break;
             case COMPLETE:
             	if (commandString.equals("complete")) {
             		newQuery = parseCompleteCommand(commandParts, true);
@@ -295,7 +304,6 @@ public class InputParser {
             		newQuery = parseCompleteCommand(commandParts, false);
             	}
                 break;    
-                
             case UPDATE:
                 newQuery = parseUpdateCommand(commandParts);
                 break;
@@ -341,7 +349,17 @@ public class InputParser {
         return newQuery;
     }
 
-    public QueryBase parseSearchCommand ( DateRange[] dateRanges, CommandPart [] commandParts ) {
+    private QueryBase parseSetCommand(CommandPart [] commandParts) {
+        if ( commandParts.length < 2 ) {
+            return new QueryError(ErrorMessages.setNoParameters());
+        }
+        
+        QuerySet querySet = new QuerySet(commandParts[0].getQueryPart(), commandParts[1].getQueryPart());
+        
+        return querySet;
+	}
+
+	public QueryBase parseSearchCommand ( DateRange[] dateRanges, CommandPart [] commandParts ) {
         QueryList queryList = new QueryList();
 
         boolean pass = false;

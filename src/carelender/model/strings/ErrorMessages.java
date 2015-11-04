@@ -21,7 +21,9 @@ public class ErrorMessages {
     public static String deleteNoParameters() {
         return "What would you like to delete?";
     }
-
+    public static String setNoParameters() {
+        return "What would you like to set?";
+    }
     public static String updateNoParameters() {
         return "What would you like to update?";
     }
