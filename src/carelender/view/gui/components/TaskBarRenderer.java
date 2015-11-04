@@ -138,7 +138,7 @@ public class TaskBarRenderer {
             xCurrent += this.xPadding;
             yCurrent += this.yPadding;
             this.nameText.setParams(gc, xCurrent, yCurrent,
-                    width - (this.xPadding * 2), font.getSize(),
+                    width * 0.8, font.getSize(),
                     0, 0, font, 0.6, 0);
             this.nameText.clearText();
             if ( ellipsize ) {
