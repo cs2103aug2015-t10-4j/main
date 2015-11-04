@@ -24,4 +24,10 @@ public class CommandAutomation {
         }
         return commands[i++];
     }
+    public String getPrev() {
+        if ( i <= 0 ) {
+            return null;
+        }
+        return commands[i--];
+    }
 }

@@ -82,7 +82,7 @@ public class UserInterfaceController implements Initializable {
         eventInfoRenderer = new EventInfoRenderer();
 
 
-        uiType = UIType.CALENDAR;
+        uiType = UIType.TIMELINE;
         this.setUI(uiType);
 
         Controller.printWelcomeMessage();
@@ -136,7 +136,10 @@ public class UserInterfaceController implements Initializable {
                                 case DOWN:
                                     break;
                                 case ALT:
-                                    getAutomatedCommand();
+                                    getAutomatedCommand(false);
+                                    break;
+                                case CONTROL:
+                                    getAutomatedCommand(true);
                                     break;
                                 case PAGE_UP:
                                     Controller.processPageUpPress();
@@ -164,8 +167,13 @@ public class UserInterfaceController implements Initializable {
         list.controllerExecute();
     }
 
-    public void getAutomatedCommand() {
-        String next = CommandAutomation.getInstance().getNext();
+    public void getAutomatedCommand(boolean prev) {
+        String next;
+        if ( prev ) {
+            next = CommandAutomation.getInstance().getPrev();
+        } else {
+            next = CommandAutomation.getInstance().getNext();
+        }
         if ( next == null ) {
             return;
         }
