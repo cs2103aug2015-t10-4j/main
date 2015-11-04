@@ -160,6 +160,7 @@ public class Model {
 
 	private void updateUndoManager(Event eventObj, UndoStep.UndoType type) {
 		EventList eventList = new EventList();
+		UndoManager.getInstance().clearRedoStack();
 		eventList.add(eventObj);
 		switch (type) {
 		case ADD:
@@ -177,6 +178,7 @@ public class Model {
 	}
 
 	private void updateUndoManager(EventList eventList) {
+		UndoManager.getInstance().clearRedoStack();
 		UndoManager.getInstance().delete(eventList);
 	}
 
@@ -188,10 +190,8 @@ public class Model {
 		for (int i = 0; i < events.size(); i++) {
 			if (events.get(i).getUid() == eventObj.getUid()) {
 				if (forComplete) {
-					System.out.println("COMPLETE");
 					events.get(i).setCompleted(true);
 				} else {
-					System.out.println("UNCOMPLETE");
 					events.get(i).setCompleted(false);
 				}
 				updateUndoManager(events.get(i), UndoType.UPDATE);
