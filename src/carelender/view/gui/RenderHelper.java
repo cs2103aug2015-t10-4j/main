@@ -43,7 +43,7 @@ public class RenderHelper {
         double x_offset;
         double y_offset;
         
-        for (int i=0; i<dailyEventNumbers.length; i++) {
+        for (int i = 0; i < dailyEventNumbers.length; i++) {
         	int numArc = dailyEventNumbers[i];
         	
         	if (numArc > 3) {

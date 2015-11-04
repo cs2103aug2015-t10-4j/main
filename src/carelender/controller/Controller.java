@@ -212,6 +212,7 @@ public class Controller {
         if ( userInput.length() == 0 ) {
             return;
         }
+        Controller.clearMessages();
         QueryBase query = InputParser.getInstance().parseCompleteInput(userInput);
         query.userInput = userInput;
         
@@ -225,15 +226,11 @@ public class Controller {
                     displayMessage("   " + range.toString());
                 }
                 break;
-            case DEV1:
-                //canvasRenderer.increment();
-                break;
-            case DEV2:
-                break;
             case LIST:
                 currentListQuery = (QueryList)query;
                 break;
             case EXIT:
+                Controller.stopTimer();
                 System.exit(0);
                 break;
             default:

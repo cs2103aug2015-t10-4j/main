@@ -10,7 +10,7 @@ public enum QueryType {
     REMINDER,   //Setting reminder for an event
     UPDATE,     //Updating an event
     HELP,       //Showing the help list
-    LIST,       //Listing tasks //TODO: Split into different types
+    LIST,       //Listing tasks
     CLEAR,       //Clears the message screen
     UNDO,
     REDO,
@@ -19,7 +19,5 @@ public enum QueryType {
     SWITCHUI,
     DATETEST,       //Used for testing date parsing
     SET,            //Used for customize setting
-    DEV1,           //Used for whatever
-    DEV2,            //Used for whatever
-    EXIT
+    EXIT,
 }

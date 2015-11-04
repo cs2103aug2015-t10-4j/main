@@ -27,7 +27,6 @@ public class QueryDelete extends QueryBase {
     
     @Override
     public void controllerExecute() {
-        Controller.clearMessages();
         final OnConfirmedCallback deleteConfirmedCallback = new OnConfirmedCallback() {
             @Override
             public void onConfirmed(boolean confirmed) {

@@ -1,5 +1,6 @@
 package carelender.view.gui.views;
 
+import carelender.model.strings.AppColours;
 import carelender.view.gui.components.CanvasRenderer;
 import carelender.view.gui.components.TabRenderer;
 import javafx.geometry.VPos;
@@ -42,19 +43,28 @@ public class SettingViewRenderer extends CanvasRenderer {
 
         gc.setTextAlign(TextAlignment.LEFT);
 
-        gc.setFill(Color.web("BLUE"));
-        gc.fillRect(0, settingFieldY, width, height-settingFieldY);
+        //gc.setFill(Color.web("BLUE"));
+        //gc.fillRect(0, settingFieldY, width, height-settingFieldY);
 
         double fontSize = width / 40.0; //Temporary
         Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
         gc.setFont(font);
-        gc.setFill(Color.web("YELLOW"));
+        gc.setFill(AppColours.autocompleteText);
 		gc.setTextBaseline(VPos.TOP);
+        gc.setTextAlign(TextAlignment.CENTER);
 
-		gc.fillText("Settings", wordPaddingH, settingFieldY + wordPaddingH);
+        gc.fillText("SETTINGS", width / 2, height / 2 - fontSize * 1.5);
+
+        font = Font.loadFont("file:res/monaco.ttf", fontSize * 0.8);
+        gc.setFont(font);
+
+        gc.fillText("To access this page, please purchase the settings DLC", width / 2,  height / 2 );
+        gc.fillText("Only $9.99 for a limited time!", width / 2,  height / 2 + fontSize);
+
+		/*gc.fillText("Settings", wordPaddingH, settingFieldY + wordPaddingH);
         for ( int i = 0 ; i < options.size(); i++ ) {
 			gc.fillText(options.get(i), wordPaddingH, settingFieldY + wordPaddingH + settingHeight * (i+1));
-		}
+		}*/
 
 
     }

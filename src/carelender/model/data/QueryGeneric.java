@@ -1,5 +1,7 @@
 package carelender.model.data;
 
+import carelender.controller.Controller;
+
 /**
  * Used for queries that do not require any additional data
  */

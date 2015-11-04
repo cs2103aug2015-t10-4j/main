@@ -16,6 +16,7 @@ public class UserInterfaceRenderer extends CanvasRenderer {
     public UserInterfaceRenderer() {
         autocompleteRenderer = new AutocompleteRenderer();
     }
+
     @Override
     public void draw(GraphicsContext gc, double x, double y, double width, double height) {
         super.draw(gc, x, y, width, height);
@@ -29,10 +30,7 @@ public class UserInterfaceRenderer extends CanvasRenderer {
             gc.setGlobalAlpha(1);
             popupRenderer.draw(gc, width * 0.1, height * 0.1, width * 0.8, height * 0.8);
         }
-
         autocompleteRenderer.draw(gc, 0, height, width, 0);
-
-
     }
 
     public void setMainRenderer(CanvasRenderer mainRenderer) {
@@ -44,7 +42,6 @@ public class UserInterfaceRenderer extends CanvasRenderer {
     }
 
     public void setAutocompleteOptions ( String [] options, boolean renderFirstLineBold ) {
-
         autocompleteRenderer.setAutocompleteOptions(options, renderFirstLineBold);
     }
 }

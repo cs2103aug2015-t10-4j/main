@@ -167,14 +167,6 @@ public class InputParser {
         newCommand = new Command("close", QueryType.EXIT);
         newCommand.setDescription("Closes the program");
         commandManager.addCommand(newCommand);
-
-        newCommand = new Command("dev1", QueryType.DEV1);
-        newCommand.setDescription("Developer thing");
-        commandManager.addCommand(newCommand);
-
-        newCommand = new Command("dev2", QueryType.DEV2);
-        newCommand.setDescription("Developer command");
-        commandManager.addCommand(newCommand);
     }
 
     /**
@@ -270,6 +262,17 @@ public class InputParser {
      */
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
+
+        if ( input.equalsIgnoreCase("apocalypse now") ) {
+            QueryAdd add = new QueryAdd();
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.YEAR, 173);
+            Date now = new Date();
+            DateRange dateRange = new DateRange(now, calendar.getTime(), true);
+            add.setDateRange(dateRange);
+            add.setName("End of the world");
+            return add;
+        }
 
         String [] queryParts = splitQuery(input);
         String commandString = queryParts[0];
