@@ -74,6 +74,11 @@ public class UndoManager {
 			}
 		}
 	}
+	
+	public void clearRedoStack() {
+		redoStack.empty();
+	}
+	
 	public void redo() {
 		if (!redoStack.isEmpty()) {
 			UndoStep redoStep = redoStack.pop();
