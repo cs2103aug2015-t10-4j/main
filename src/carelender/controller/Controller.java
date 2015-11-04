@@ -49,7 +49,7 @@ public class Controller {
         userName = null;
         if(AppSettings.getInstance().getStringSetting(SettingName.USERNAME) != null){
         	userName = AppSettings.getInstance().getStringSetting(SettingName.USERNAME);
-        	timer.scheduleAtFixedRate(reminder,5000,5000);   
+        	startTimer();
         	System.out.println("Username: " + userName);
         } else {
         	timer.scheduleAtFixedRate(reminder,100000,5000);  
@@ -61,6 +61,10 @@ public class Controller {
 
     public static void stopTimer() {
         timer.cancel();
+    }
+    public static void startTimer() {
+        stopTimer();
+        timer.scheduleAtFixedRate(reminder,5000,5000);
     }
 
 

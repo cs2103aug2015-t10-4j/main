@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 
+import javax.naming.ldap.Control;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -120,6 +121,10 @@ public class UserInterfaceController implements Initializable {
                                     break;
                                 case F4:
                                     setUI(UIType.SETTING);
+                                    break;
+
+                                case F12:
+                                    Controller.startTimer();
                                     break;
                                 default:
                                     break;
