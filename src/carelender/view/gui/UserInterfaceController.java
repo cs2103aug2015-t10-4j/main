@@ -82,7 +82,7 @@ public class UserInterfaceController implements Initializable {
         eventInfoRenderer = new EventInfoRenderer();
 
 
-        uiType = UIType.TIMELINE;
+        uiType = Controller.getDefaultUIType();
         this.setUI(uiType);
 
         Controller.printWelcomeMessage();
@@ -315,9 +315,7 @@ public class UserInterfaceController implements Initializable {
                 floatingViewRenderer.setMessageBoxText(stringBuilder.toString());
                 floatingViewRenderer.refreshData();
                 break;
-
             case SETTING:
-
                 break;
         }
         refresh();
