@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import carelender.view.gui.UserInterfaceController.UIType;
 
 public class AppSettings {
 	
@@ -33,6 +34,7 @@ public class AppSettings {
 		
 		typeHash = new HashMap<>();
 		typeHash.put(SettingName.USERNAME, DataType.STRING);
+		typeHash.put(SettingName.DEFAULT_UITYPE, DataType.UITYPE);
 		typeHash.put(SettingName.ISFREE, DataType.BOOLEAN);
 		typeHash.put(SettingName.CURRENT_INDEX, DataType.INTEGER);
 		
@@ -42,9 +44,10 @@ public class AppSettings {
 				file.createNewFile();
 			}
 			BufferedReader br = new BufferedReader(new FileReader("settings.dat"));     
-			if (br.readLine() == null) {	
+			if (br.readLine() == null) {
 				System.out.println("Blank");				
 				appSettingsHash.put(DataType.INTEGER, new HashMap<>());
+				appSettingsHash.put(DataType.UITYPE, new HashMap<>());
 				appSettingsHash.put(DataType.BOOLEAN, new HashMap<>());
 				appSettingsHash.put(DataType.STRING, new HashMap<>());
 			} else {
@@ -83,6 +86,10 @@ public class AppSettings {
 	public String getStringSetting(SettingName name) {
 		return (String) appSettingsHash.get(DataType.STRING).get(name);
 	}
+
+	public UIType getUITypeSetting(SettingName name) {
+		return (UIType) appSettingsHash.get(DataType.UITYPE).get(name);
+	}
 	
 	public void setIntSetting(SettingName name, int value) {
 		System.out.println("Setting Int Setting");
@@ -107,6 +114,14 @@ public class AppSettings {
 			saveSetting();
 		}
 	}
+
+	public void setUITypeSetting(SettingName name, UIType value) {
+		System.out.println("Setting UIType Setting");
+		if (isDataTypeType(name, DataType.UITYPE)) {
+			appSettingsHash.get(DataType.UITYPE).put(name, value);
+			saveSetting();
+		}
+	}
 	
 	public void saveSetting() {
 		try {
@@ -122,10 +137,10 @@ public class AppSettings {
 	}
 
 	public enum DataType {
-		INTEGER, BOOLEAN, STRING
+		INTEGER, BOOLEAN, STRING, UITYPE
 	}
 	
 	public enum SettingName {
-		USERNAME, CURRENT_INDEX, ISFREE
+		USERNAME, DEFAULT_UITYPE, CURRENT_INDEX, ISFREE
 	}	
 }
