@@ -9,6 +9,7 @@ import carelender.model.AppSettings.SettingName;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
 import carelender.view.gui.UserInterfaceController;
+import carelender.view.gui.UserInterfaceController.UIType;
 import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
 
@@ -31,6 +32,7 @@ public class Controller {
 
     //Application state
     private static String userName;
+    private static UIType defaultUIType;
 
     private static QueryList currentListQuery;
     private static TimerTask reminder;
@@ -59,9 +61,14 @@ public class Controller {
                 timer.scheduleAtFixedRate(reminder, 100000, 5000);
             }
         }
+        
+        defaultUIType = AppSettings.getInstance().getUITypeSetting(SettingName.DEFAULT_UITYPE);
+        System.out.println("Default UIType: " + defaultUIType);
+        if (defaultUIType == null) {
+            defaultUIType = UIType.TIMELINE;
+        }
+        
         currentCommand = 0;
-
-
     }
 
     public static void stopTimer() {
@@ -339,4 +346,8 @@ public class Controller {
     public static void processTabPress() {
         userInterfaceController.processTabPress();
     }
+
+	public static UIType getDefaultUIType() {
+		return defaultUIType;
+	}
 }
