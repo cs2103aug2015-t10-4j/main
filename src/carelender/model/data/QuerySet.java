@@ -24,8 +24,6 @@ public class QuerySet extends QueryBase {
 				String newNameHint = "Welcome back " + value;
 				Controller.displayAnnouncement(newNameHint);
 				break;
-			case "remindertime":
-				break;
 			case "startview":
 				UIType newDefaultUIType = getUIType(value.toUpperCase());
 				AppSettings.getInstance().setUITypeSetting(SettingName.DEFAULT_UITYPE, newDefaultUIType);
