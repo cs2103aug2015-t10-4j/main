@@ -154,7 +154,7 @@ public class InputParser {
         newCommand = new Command("set", QueryType.SET);
         newCommand.setDescription("Customize setting");
         newCommand.setUsage("set \"keyword\" \"newValue\" ");
-        newCommand.addKeywords("setting_type", "username,remindertime,startview", CommandKeyword.DataPosition.AFTER);
+        newCommand.addKeywords("setting_type", "username,startview", CommandKeyword.DataPosition.AFTER);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("exit", QueryType.EXIT);
