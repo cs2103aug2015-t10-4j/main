@@ -150,7 +150,7 @@ public class TaskBarRenderer {
             this.nameText.drawText(backgroundColour, textColour);
             
             if ( this.event.getCategory() != null ) {
-            	int colourCode = this.event.getCategory().hashCode();
+            	int colourCode = Math.abs ( this.event.getCategory().hashCode() );
             	colourCode %= 5;
             	
 	            gc.setFill(AppColours.category[colourCode]);

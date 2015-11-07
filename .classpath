@@ -8,6 +8,5 @@
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-api-1.7.12.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gson-2.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="libs/slf4j-simple-1.7.12.jar"/>
 	<classpathentry kind="output" path="out/production/CareLender"/>
 </classpath>

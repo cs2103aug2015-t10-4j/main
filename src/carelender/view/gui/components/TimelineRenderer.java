@@ -133,7 +133,6 @@ public class TimelineRenderer extends CanvasRenderer {
 												this.getTimeInMinutes(date.getStart()),
 												TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
 					Date currentDay = date.getStart();
-					System.out.println ( date.getDaysBetween() + "     " + index );
 					for ( int i = 0; i < date.getDaysBetween(); i++ ) {
 						currentDay = this.addDays(currentDay, 1);
 						if (!(dateFormat.format(date.getEnd()).equals(dateFormat.format(currentDay)))) {

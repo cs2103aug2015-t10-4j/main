@@ -23,6 +23,10 @@ public class Search {
 			if (name instanceof String) {
 				match = isEventNameExact(eventToCheck, (String)name);
 			}
+			
+			if ( !match ) {
+				return match;
+			}
 		}
 		
 		if (hasNameContains(paramsList)) {
@@ -30,6 +34,22 @@ public class Search {
 			assert ( name != null ) : "NAME_CONTAINS paired with null object in HashMap.";
 			if (name instanceof String) {
 				match = isEventNameMatch(eventToCheck, (String)name);
+			}
+
+			if ( !match ) {
+				return match;
+			}
+		}
+		
+		if (hasCategory(paramsList)) {
+			Object category = paramsList.get(QueryList.SearchParam.CATEGORY);
+			assert ( category != null ) : "CATEGORY paired with null object in HashMap.";
+			if (category instanceof String) {
+				match = isEventInCategory(eventToCheck, (String)category);
+			}
+			
+			if ( !match ) {
+				return match;
 			}
 		}
 		
@@ -42,15 +62,27 @@ public class Search {
 				match = isEventInDateRange(eventToCheck, 
 												(Date)startDate, (Date)endDate);
 			}
+			
+			if ( !match ) {
+				return match;
+			}
 		} else if (hasStartDate(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			if (startDate instanceof Date) {
 				match = isEventAfterDate(eventToCheck, (Date)startDate);
 			}
+			
+			if ( !match ) {
+				return match;
+			}
 		} else if (hasEndDate(paramsList)) {
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
 			if (endDate instanceof Date) {
 				match = isEventBeforeDate(eventToCheck, (Date)endDate);
+			}
+			
+			if ( !match ) {
+				return match;
 			}
 		}
 		return match;
@@ -62,6 +94,10 @@ public class Search {
 	
 	public static boolean hasNameContains (HashMap<QueryList.SearchParam, Object> paramsList) {
 		return paramsList.containsKey(QueryList.SearchParam.NAME_CONTAINS);
+	}
+	
+	public static boolean hasCategory (HashMap<QueryList.SearchParam, Object> paramsList) {
+		return paramsList.containsKey(QueryList.SearchParam.CATEGORY);
 	}
 	
 	public static boolean hasStartDate (HashMap<QueryList.SearchParam, Object> paramsList) {
@@ -92,6 +128,21 @@ public class Search {
 		String eventName = eventToCheck.getName();
 		if (eventName != null) {
 			if (eventName.equals(stringToCheck)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean isEventInCategory (Event eventToCheck,
+												String stringToCheck) {
+		String categoryName = eventToCheck.getCategory();
+		if (categoryName != null) {
+			if (categoryName.equals(stringToCheck)) {
+				return true;
+			}
+		} else {
+			if (categoryName == stringToCheck) {
 				return true;
 			}
 		}
