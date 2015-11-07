@@ -13,6 +13,7 @@ import java.util.Date;
 
 /**
  * Parses the user input
+ * BasicConfigurator.configure(), put in main. //TODO
  */
 public class InputParser {
     private static InputParser singleton = null;
