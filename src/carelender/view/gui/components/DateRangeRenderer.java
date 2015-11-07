@@ -62,17 +62,17 @@ public class DateRangeRenderer {
         
         this.connectorWidthRatio = connectorWidthRatio;
 
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM");
+        SimpleDateFormat dateFormatYear = new SimpleDateFormat("MMM YYYY");
         if ( dateRange != null ) {
             if ( dateRange.hasTime() ) {
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM");
-                SimpleDateFormat dateFormatYear = new SimpleDateFormat("MMM YYYY");
                 Calendar start = Calendar.getInstance();
                 start.setTime(dateRange.getStart());
                 Calendar end = Calendar.getInstance();
                 end.setTime(dateRange.getEnd());
                 boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
-                dateRange.getEnd();
+
                 if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
                     this.timeStart = timeFormat.format(dateRange.getStart());
 
@@ -89,16 +89,37 @@ public class DateRangeRenderer {
                         this.dateEnd = dateFormatYear.format(dateRange.getEnd());
                     }
                 }
+            } else {
+            	if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
+                    this.timeStart = dateFormat.format(dateRange.getStart());
+                    this.dateStart = "Starts";
+                } else {
+                	this.dateStart = "Starts";
+                	this.dateEnd = "Ends";
+                    Calendar start = Calendar.getInstance();
+                    start.setTime(dateRange.getStart());
+                    Calendar end = Calendar.getInstance();
+                    end.setTime(dateRange.getEnd());
+                    boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
+                    
+                    if ( sameYear ) {
+                        this.timeStart = dateFormat.format(dateRange.getStart());
+                        this.timeEnd = dateFormat.format(dateRange.getEnd());
+                    } else {
+                        this.timeStart = dateFormatYear.format(dateRange.getStart());
+                        this.timeEnd = dateFormatYear.format(dateRange.getEnd());
+                    }
+                }
             }
         }
     }
     
     public double getTimeTextHeightRatio () {
-        return (!this.timeStart.equals("")) ? this.timeTextHeightRatio : 0;
+        return this.timeTextHeightRatio;
     }
     
     public double getDateTextHeightRatio() {
-        return (!this.dateStart.equals("")) ? this.dateTextHeightRatio : 0;
+        return this.dateTextHeightRatio;
     }
     
     public void strikeout () {

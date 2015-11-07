@@ -53,6 +53,18 @@ public class Search {
 			}
 		}
 		
+		if (hasComplete(paramsList)) {
+			Object complete = paramsList.get(QueryList.SearchParam.COMPLETE);
+			assert ( complete != null ) : "CATEGORY paired with null object in HashMap.";
+			if (complete instanceof Boolean) {
+				match = IsEventComplete(eventToCheck, (boolean)complete);
+			}
+			
+			if ( !match ) {
+				return match;
+			}
+		}
+		
 		if (hasDateRange(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
@@ -98,6 +110,10 @@ public class Search {
 	
 	public static boolean hasCategory (HashMap<QueryList.SearchParam, Object> paramsList) {
 		return paramsList.containsKey(QueryList.SearchParam.CATEGORY);
+	}
+	
+	public static boolean hasComplete (HashMap<QueryList.SearchParam, Object> paramsList) {
+		return paramsList.containsKey(QueryList.SearchParam.COMPLETE);
 	}
 	
 	public static boolean hasStartDate (HashMap<QueryList.SearchParam, Object> paramsList) {
@@ -147,6 +163,12 @@ public class Search {
 			}
 		}
 		return false;
+	}
+	
+	public static boolean IsEventComplete (Event eventToCheck,
+											boolean complete) {
+		boolean eventComplete = eventToCheck.getCompleted();
+		return eventComplete;
 	}
 	
 	public static boolean isEventBeforeDate (Event eventToCheck,

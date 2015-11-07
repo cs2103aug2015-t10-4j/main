@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 import carelender.model.data.Event;
 import carelender.model.data.EventList;
@@ -24,6 +26,7 @@ import carelender.controller.Controller;
  */
 public class TaskRenderer extends CanvasRenderer {
     private Map<String, EventList> taskDisplay;
+    private Comparator<Event> eventComparator;
     private TaskBarRenderer taskBarRender;
     private int totalTasks;
     private int displayStart;
@@ -41,6 +44,22 @@ public class TaskRenderer extends CanvasRenderer {
         
         this.totalTasks = 0;
         this.displayStart = 0;
+        this.eventComparator = new Comparator<Event>() {
+									@Override
+									public int compare(Event eventAgainst, Event eventTo) {
+										// TODO Auto-generated method stub
+										if ( eventAgainst.getEarliestDate() == null || eventTo.getEarliestDate() == null ) {
+											return 0;
+										}
+										
+										if (eventAgainst.getEarliestDate().before(eventTo.getEarliestDate())) {
+											return -1;
+										} else if (eventAgainst.getEarliestDate().after(eventTo.getEarliestDate())) {
+											return 1;
+										}
+										return 0;
+									}
+        						};
     }
 
     public void setParams (double xPad, double yPad,
@@ -73,6 +92,8 @@ public class TaskRenderer extends CanvasRenderer {
         this.taskBarRender.setParams(this.xPadding, this.yPadding, 0.4);
 
         Font font = Font.loadFont("file:res/monaco.ttf", dateBarHeight * 0.5);
+        Font dateFont = Font.loadFont("file:res/monaco.ttf", dateBarHeight * 0.5);
+        Font scrollPointerFont = Font.loadFont("file:res/monaco.ttf", this.width * 0.02);
 
         gc.setFill(AppColours.panelBackground);
         gc.fillRect(x, y, width, height);
@@ -82,8 +103,10 @@ public class TaskRenderer extends CanvasRenderer {
         double xPositionDate = 0;
         double yPositionDate = 0;
         boolean displayDate = false;
+        boolean showBottomArrow = false;
         int index = 1;
         
+        hashLoop:
         for ( Map.Entry<String, EventList> entry : this.taskDisplay.entrySet()) {
             String key = entry.getKey();
             EventList value = entry.getValue();
@@ -120,7 +143,8 @@ public class TaskRenderer extends CanvasRenderer {
 
                         remainingHeight -= (this.taskBarRender.getHeight(taskBarHeight) + (this.yPadding * 2));
                     } else {
-                        return;
+                    	showBottomArrow = true;
+                        break hashLoop;
                     }
                 }
                 index++;
@@ -133,15 +157,47 @@ public class TaskRenderer extends CanvasRenderer {
             if ( displayDate ) {
 	            gc.setFill(AppColours.tasklistRowBackground);
 	            gc.setTextAlign(TextAlignment.LEFT);
-	           	gc.setFont(font);
+	           	gc.setFont(dateFont);
             	gc.setTextBaseline(VPos.TOP);
 	
 	            String [] keyWords = key.split(" ");
 	            if ( keyWords.length > 2 ) {
 	                gc.fillText(keyWords[1], xPositionDate, yPositionDate);
-	                gc.fillText(keyWords[2], xPositionDate, yPositionDate + font.getSize());
+	                gc.fillText(keyWords[2], xPositionDate, yPositionDate + dateFont.getSize());
 	            }
             }
+        }
+        
+        if ( this.displayStart > 0 ) {
+        	xCurrent = x + this.width - (this.width * 0.04) - this.xPadding;
+            yCurrent = y + this.yPadding;
+            
+        	gc.setFill (AppColours.important);
+        	gc.fillPolygon(new double[] {xCurrent, xCurrent + (this.width * 0.02), xCurrent - (this.width * 0.02)},
+        					new double[] {yCurrent, yCurrent + (this.width * 0.04), yCurrent + (this.width * 0.04)}, 3);
+        	
+        	yCurrent += (this.width * 0.04);
+        	
+        	gc.setFill(AppColours.important);
+            gc.setTextAlign(TextAlignment.CENTER);
+           	gc.setFont(scrollPointerFont);
+        	gc.setTextBaseline(VPos.TOP);
+        	gc.fillText("Pg Up", xCurrent, yCurrent);
+        }
+        
+        if ( showBottomArrow ) {
+        	xCurrent = x + this.width - (this.width * 0.04) - this.xPadding;
+            yCurrent = y + this.height - (this.width * 0.04) - this.yPadding;
+            
+        	gc.setFill (AppColours.important);
+        	gc.fillPolygon(new double[] {xCurrent, xCurrent + (this.width * 0.02), xCurrent - (this.width * 0.02)},
+        					new double[] {yCurrent + (this.width * 0.04), yCurrent, yCurrent}, 3);
+        	
+        	gc.setFill(AppColours.important);
+            gc.setTextAlign(TextAlignment.CENTER);
+           	gc.setFont(scrollPointerFont);
+        	gc.setTextBaseline(VPos.BOTTOM);
+        	gc.fillText("Pg Dn", xCurrent, yCurrent);
         }
     }
     
@@ -195,6 +251,11 @@ public class TaskRenderer extends CanvasRenderer {
             }
             this.totalTasks++;
         }
+        
+        for ( EventList events : this.taskDisplay.values()) {
+        	Collections.sort(events, this.eventComparator);
+        }
+        
         this.setDisplayList();
     }
     

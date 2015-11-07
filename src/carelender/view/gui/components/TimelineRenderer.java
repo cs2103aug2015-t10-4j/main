@@ -48,7 +48,21 @@ public class TimelineRenderer extends CanvasRenderer {
     	Font font = Font.loadFont("file:res/monaco.ttf", this.labelWidth/5);
     	Font fontLarge = Font.loadFont("file:res/monaco.ttf", this.labelWidth/3);
     	
-        double barWidth = (width - (this.xPadding * this.weekDisplay.size() * 2) - font.getSize()) / (this.weekDisplay.size());
+    	int numberOfBars = this.weekDisplay.size();
+    	int lastDay = -1;
+    	for ( Map.Entry<String, ArrayList<TimelineBarRenderer>> entry : this.weekDisplay.entrySet()) {
+        	String key = entry.getKey();
+            String [] keyWords = key.split(" ");
+            if ( lastDay != -1 ) {
+            	int freeDays = Integer.parseInt(keyWords[0]) - lastDay - 1;
+            	
+            	if ( freeDays > 0 ) {
+            		numberOfBars += freeDays;
+            	}
+            }
+            lastDay = Integer.parseInt(keyWords[0]);
+    	}
+        double barWidth = (width - (this.xPadding * (numberOfBars - 1)) - font.getSize()) / (numberOfBars);
         barWidth = (barWidth > this.maxBarWidth) ? this.maxBarWidth : barWidth;
         
         double usableWidth = width - this.labelWidth - (this.xPadding * 2);
@@ -86,19 +100,40 @@ public class TimelineRenderer extends CanvasRenderer {
             }
         	yCurrent += (60 / TimelineBarRenderer.MINUTES_IN_DAY) * usableHeight;
         }
+        lastDay = -1;
         xCurrent = x + this.labelWidth;
         for ( Map.Entry<String, ArrayList<TimelineBarRenderer>> entry : this.weekDisplay.entrySet()) {
         	String key = entry.getKey();
             ArrayList<TimelineBarRenderer> value = entry.getValue();
 
-            gc.setFill(AppColours.primaryColour);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setFont(font);
             gc.setTextBaseline(VPos.CENTER);
 
             String [] keyWords = key.split(" ");
+            if ( lastDay != -1 ) {
+            	int freeDays = Integer.parseInt(keyWords[0]) - lastDay - 1;
+            	
+            	if ( freeDays > 0 ) {
+            		yCurrent = y + ( this.yPadding * 2) + font.getSize();
+            		gc.setGlobalAlpha(0.3);
+            		gc.setFill(AppColours.information);
+                	gc.fillRect(xCurrent, yCurrent + (this.yPadding), barWidth, usableHeight);
+                	gc.setGlobalAlpha(1);
+                	
+                	gc.setFill(AppColours.tasklistRowBackground);
+            		yCurrent = y + (this.yPadding) + (usableHeight * 0.5);
+                    gc.fillText ( String.valueOf(freeDays), xCurrent + (barWidth * 0.5), yCurrent );
+                    gc.fillText ( "Days", xCurrent + (barWidth * 0.5), yCurrent + font.getSize() );
+                    gc.fillText ( "Free", xCurrent + (barWidth * 0.5), yCurrent + (font.getSize() * 2) );
+                    
+                    xCurrent += ( barWidth + this.xPadding );
+            	}
+            }
+            lastDay = Integer.parseInt(keyWords[0]);
             
             yCurrent = y + (this.yPadding);
+            gc.setFill(AppColours.primaryColour);
             gc.fillText ( keyWords[1], xCurrent + (barWidth * 0.5), yCurrent );
             gc.fillText ( keyWords[2], xCurrent + (barWidth * 0.5), yCurrent + font.getSize() );
             
