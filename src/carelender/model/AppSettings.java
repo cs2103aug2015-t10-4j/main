@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import carelender.view.gui.UIController.UIType;
 
 public class AppSettings {
-	
+	private static final String settingsFile = "settings.dat";
 	private static AppSettings singleton = null;
 
 	public static AppSettings getInstance() {
@@ -29,7 +29,7 @@ public class AppSettings {
 	private static Logger log;
 
 	private AppSettings() {
-		File file = new File("settings.dat");
+		File file = new File(settingsFile);
 		log = Logger.getLogger(Model.class.getName());
 		
 		typeHash = new HashMap<>();
@@ -43,7 +43,7 @@ public class AppSettings {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			BufferedReader br = new BufferedReader(new FileReader("settings.dat"));     
+			BufferedReader br = new BufferedReader(new FileReader(settingsFile));
 			if (br.readLine() == null) {
 				System.out.println("Blank");				
 				appSettingsHash.put(DataType.INTEGER, new HashMap<>());
@@ -52,7 +52,7 @@ public class AppSettings {
 				appSettingsHash.put(DataType.STRING, new HashMap<>());
 			} else {
 				System.out.println("Stuffed");
-				FileInputStream fis = new FileInputStream("settings.dat");
+				FileInputStream fis = new FileInputStream(settingsFile);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				appSettingsHash = (HashMap<DataType, HashMap<SettingName, Object>>) ois.readObject();
 				ois.close();
@@ -125,7 +125,7 @@ public class AppSettings {
 	
 	public void saveSetting() {
 		try {
-			FileOutputStream fos = new FileOutputStream("settings.dat");
+			FileOutputStream fos = new FileOutputStream(settingsFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			
 			oos.writeObject(appSettingsHash);

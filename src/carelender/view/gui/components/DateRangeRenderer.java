@@ -3,6 +3,7 @@ package carelender.view.gui.components;
 import carelender.model.data.DateRange;
 import carelender.model.data.Event;
 import carelender.model.strings.AppColours;
+import carelender.model.strings.DateFormats;
 import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,7 +17,6 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Written by : Weizheng Lee 19/10/2015
  * This class contains static methods to help to render the calendar view
  */
 public class DateRangeRenderer {
@@ -63,9 +63,6 @@ public class DateRangeRenderer {
         
         this.connectorWidthRatio = connectorWidthRatio;
 
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM");
-        SimpleDateFormat dateFormatYear = new SimpleDateFormat("MMM YYYY");
         if ( dateRange != null ) {
             if ( dateRange.hasTime() ) {
                 Calendar start = Calendar.getInstance();
@@ -75,24 +72,24 @@ public class DateRangeRenderer {
                 boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
 
                 if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
-                    this.timeStart = timeFormat.format(dateRange.getStart());
+                    this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
 
-                    this.dateStart = dateFormat.format(dateRange.getStart());
+                    this.dateStart = DateFormats.dateFormat.format(dateRange.getStart());
                 } else {
-                    this.timeStart = timeFormat.format(dateRange.getStart());
-                    this.timeEnd = timeFormat.format(dateRange.getEnd());
+                    this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
+                    this.timeEnd = DateFormats.timeFormat.format(dateRange.getEnd());
 
                     if ( sameYear ) {
-                        this.dateStart = dateFormat.format(dateRange.getStart());
-                        this.dateEnd = dateFormat.format(dateRange.getEnd());
+                        this.dateStart = DateFormats.dateFormat.format(dateRange.getStart());
+                        this.dateEnd = DateFormats.dateFormat.format(dateRange.getEnd());
                     } else {
-                        this.dateStart = dateFormatYear.format(dateRange.getStart());
-                        this.dateEnd = dateFormatYear.format(dateRange.getEnd());
+                        this.dateStart = DateFormats.dateFormatYear.format(dateRange.getStart());
+                        this.dateEnd = DateFormats.dateFormatYear.format(dateRange.getEnd());
                     }
                 }
             } else {
             	if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
-                    this.timeStart = dateFormat.format(dateRange.getStart());
+                    this.timeStart = DateFormats.dateFormat.format(dateRange.getStart());
                     this.dateStart = "Starts";
                 } else {
                 	this.dateStart = "Starts";
@@ -104,11 +101,11 @@ public class DateRangeRenderer {
                     boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
                     
                     if ( sameYear ) {
-                        this.timeStart = dateFormat.format(dateRange.getStart());
-                        this.timeEnd = dateFormat.format(dateRange.getEnd());
+                        this.timeStart = DateFormats.dateFormat.format(dateRange.getStart());
+                        this.timeEnd = DateFormats.dateFormat.format(dateRange.getEnd());
                     } else {
-                        this.timeStart = dateFormatYear.format(dateRange.getStart());
-                        this.timeEnd = dateFormatYear.format(dateRange.getEnd());
+                        this.timeStart = DateFormats.dateFormatYear.format(dateRange.getStart());
+                        this.timeEnd = DateFormats.dateFormatYear.format(dateRange.getEnd());
                     }
                 }
             }
@@ -138,7 +135,6 @@ public class DateRangeRenderer {
             double timeWidth = this.timeTextWidthRatio * width;
             double timeHeight = this.timeTextHeightRatio * height;
 
-            double dateWidth = this.dateTextWidthRatio * timeWidth;
             double dateHeight = this.dateTextHeightRatio * timeHeight;
 
             double connectorWidth = this.connectorWidthRatio * timeWidth;

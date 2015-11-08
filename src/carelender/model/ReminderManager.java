@@ -1,12 +1,8 @@
 package carelender.model;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import carelender.model.AppSettings.DataType;
-import carelender.model.AppSettings.SettingName;
 import carelender.model.data.Event;
 
 public class ReminderManager {

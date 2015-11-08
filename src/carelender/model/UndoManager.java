@@ -1,9 +1,7 @@
 package carelender.model;
 
 import carelender.model.data.EventList;
-import carelender.model.data.Event;
 
-import java.security.PublicKey;
 import java.util.Stack;
 
 /**

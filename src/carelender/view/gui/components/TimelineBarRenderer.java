@@ -1,6 +1,5 @@
 package carelender.view.gui.components;
 
-import carelender.model.strings.AppColours;
 import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,7 +8,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 /**
- * Written by : Weizheng Lee 27/10/2015
  * This class contains static methods to help to render the timeline view
  */
 public class TimelineBarRenderer {

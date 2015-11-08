@@ -12,6 +12,7 @@ import javafx.scene.text.TextAlignment;
  * Renders the information of an event using the taskbar renderer class
  */
 public class EventInfoRenderer extends CanvasRenderer {
+    public final String title = "Event Details";
     Event event;
     TaskBarRenderer taskBarRenderer;
     public final float headerRatio = 0.06f;
@@ -39,7 +40,7 @@ public class EventInfoRenderer extends CanvasRenderer {
         gc.setFont(font);
         gc.setTextBaseline(VPos.TOP);
         gc.setTextAlign(TextAlignment.LEFT);
-        gc.fillText("Event Details", x, y);
+        gc.fillText(title, x, y);
 
         taskBarRenderer.draw(gc, x, y + height * headerRatio, width, width / 10, AppColours.tasklistRowBackground, AppColours.primaryColour, false);
     }

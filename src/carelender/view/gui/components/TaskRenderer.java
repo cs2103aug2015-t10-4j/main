@@ -41,26 +41,24 @@ public class TaskRenderer extends CanvasRenderer {
 
     public TaskRenderer () {
         this.taskBarRender = new TaskBarRenderer();
-        this.taskDisplay = new TreeMap<String, EventList>();
+        this.taskDisplay = new TreeMap<>();
         
         this.totalTasks = 0;
         this.displayStart = 0;
-        this.eventComparator = new Comparator<Event>() {
-									@Override
-									public int compare(Event eventAgainst, Event eventTo) {
-										// TODO Auto-generated method stub
-										if ( eventAgainst.getEarliestDate() == null || eventTo.getEarliestDate() == null ) {
-											return 0;
-										}
-										
-										if (eventAgainst.getEarliestDate().before(eventTo.getEarliestDate())) {
-											return -1;
-										} else if (eventAgainst.getEarliestDate().after(eventTo.getEarliestDate())) {
-											return 1;
-										}
-										return 0;
-									}
-        						};
+
+        this.eventComparator = (Event eventAgainst, Event eventTo) -> {
+            if ( eventAgainst.getEarliestDate() == null || eventTo.getEarliestDate() == null ) {
+                return 0;
+            }
+
+            if (eventAgainst.getEarliestDate().before(eventTo.getEarliestDate())) {
+                return -1;
+            } else if (eventAgainst.getEarliestDate().after(eventTo.getEarliestDate())) {
+                return 1;
+            }
+            return 0;
+        };
+
     }
 
     public void setParams (double xPad, double yPad,
@@ -101,9 +99,9 @@ public class TaskRenderer extends CanvasRenderer {
 
         int currentTaskToDisplay = 0;
         double remainingHeight = this.height - (this.yPadding * 2);
-        double xPositionDate = 0;
-        double yPositionDate = 0;
-        boolean displayDate = false;
+        double xPositionDate;
+        double yPositionDate;
+        boolean displayDate;
         boolean showBottomArrow = false;
         int index = 1;
 

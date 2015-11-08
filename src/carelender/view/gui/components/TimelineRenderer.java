@@ -19,7 +19,6 @@ import carelender.model.data.Event;
 import carelender.model.data.EventList;
 
 /**
- * Written by : Weizheng Lee 27/10/2015
  * This class contains static methods to help to render the calendar view
  */
 public class TimelineRenderer extends CanvasRenderer {
@@ -34,7 +33,7 @@ public class TimelineRenderer extends CanvasRenderer {
     private int displayStart;
 
     public TimelineRenderer() {
-        this.weekDisplay = new TreeMap<String, ArrayList<TimelineBarRenderer>>();
+        this.weekDisplay = new TreeMap<>();
         this.displayStart = 0;
 	}
 

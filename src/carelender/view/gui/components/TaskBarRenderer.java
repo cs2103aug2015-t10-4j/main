@@ -10,13 +10,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Written by : Weizheng Lee 19/10/2015
  * This class contains static methods to help to render the calendar view
  */
 public class TaskBarRenderer {
@@ -39,7 +36,7 @@ public class TaskBarRenderer {
     public TaskBarRenderer() {
         this.nameText = new TextRenderer();
         
-        this.dateRangeRendererList = new ArrayList<DateRangeRenderer>();
+        this.dateRangeRendererList = new ArrayList<>();
         this.strikeout = false;
     }
 
