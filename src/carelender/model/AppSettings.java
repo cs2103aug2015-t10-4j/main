@@ -18,7 +18,7 @@ import carelender.view.gui.UIController.UIType;
  */
 public class AppSettings {
 	
-	private static AppSettings singleton = null;
+    private static AppSettings singleton = null;
 
 	public static AppSettings getInstance() {
 		if (singleton == null) {
@@ -49,10 +49,10 @@ public class AppSettings {
 			}
 			BufferedReader br = new BufferedReader(new FileReader("settings.dat"));     
 			if (br.readLine() == null) {			
-				appSettingsHash.put(DataType.INTEGER, new HashMap<>());
-				appSettingsHash.put(DataType.UITYPE, new HashMap<>());
-				appSettingsHash.put(DataType.BOOLEAN, new HashMap<>());
-				appSettingsHash.put(DataType.STRING, new HashMap<>());
+				appSettingsHash.put(DataType.INTEGER, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.UITYPE, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.BOOLEAN, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.STRING, new HashMap<SettingName, Object>());
 			} else {
 				FileInputStream fis = new FileInputStream("settings.dat");
 				ObjectInputStream ois = new ObjectInputStream(fis);
@@ -81,15 +81,12 @@ public class AppSettings {
 	}
 	
 	public String getStringSetting(SettingName name) {
+
 		return (String) appSettingsHash.get(DataType.STRING).get(name);
 	}
 
-	/**
-	 * Gets a UI setting
-	 * @param name
-	 * @return UIType setting
-	 */
 	public UIType getUITypeSetting(SettingName name) {
+
 		return (UIType) appSettingsHash.get(DataType.UITYPE).get(name);
 	}
 	
