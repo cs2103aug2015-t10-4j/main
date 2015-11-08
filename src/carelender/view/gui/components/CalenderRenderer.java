@@ -41,6 +41,9 @@ public class CalenderRenderer extends CanvasRenderer {
     
     private static final double FIRST_FONTSIZE_RATIO = 0.5;
     private static final double SECOND_FONTSIZE_RATIO = 0.25;
+    
+    private static final double SCALED_OFFSETX_RATIO = 0.5;
+    private static final double ASPECT = 9.0/9.5;
 
     private static final double CAL_CELL_SIDE_PADDING_RATIO = 0.025;
     private static final double CAL_CELL_USABLE_WIDTH_RATIO = 2.0;
@@ -221,18 +224,18 @@ public class CalenderRenderer extends CanvasRenderer {
     }
 
     private void calculateScaledDimensions(double width, double height) {
-        double aspect = 9.0/9.5;
-        double squareHeight = height * aspect;
+       
+        double squareHeight = height * ASPECT;
 
         if ( width > squareHeight ) { //Height is the constraint
-            scaledWidth = height * aspect;
+            scaledWidth = height * ASPECT;
             scaledHeight = height;
         } else { //Width is the constraint
             scaledWidth = width;
-            scaledHeight = width / aspect;
+            scaledHeight = width / ASPECT;
         }
 
-        offsetX = (width - scaledWidth) * 0.5;
+        offsetX = (width - scaledWidth) * SCALED_OFFSETX_RATIO;
         offsetY = 0;//(height - scaledHeight) * 0.5;
     }
 
