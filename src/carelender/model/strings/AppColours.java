@@ -11,6 +11,7 @@ public class AppColours {
     public final static Color calendarCell = Color.web("556370");
     public final static Color calendarTodayCell = Color.web("366F70");
     public final static Color tasklistRowBackground = Color.web("757575");
+    public final static Color tasklistText = Color.web("eeeff0");
     public final static Color primaryColour = Color.web("4ecdc4");
     public final static Color autocompleteBackground = Color.web("e8e8e8");
     public final static Color autocompleteText = Color.web("000");
@@ -22,6 +23,7 @@ public class AppColours {
     public final static Color tabHighlight = Color.web("FF0");
     public final static Color black = Color.web("000");
     public final static Color white = Color.web("FFF");
+    public final static Color grey = Color.web("555");
     public final static Color important = Color.web("bd4d59");
     public final static Color information = Color.web("c7f464");
     public final static Color [] category = {Color.web("d1686e"),

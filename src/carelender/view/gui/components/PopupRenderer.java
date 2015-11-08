@@ -1,8 +1,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
-import carelender.view.gui.components.CanvasRenderer;
-import carelender.view.gui.components.TextRenderer;
+import carelender.model.strings.FontLoader;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 
@@ -16,7 +15,7 @@ public class PopupRenderer extends CanvasRenderer {
 	private final static double textPad = 3.0;
 	private final static double wordWidthRatio = 0.6;
 	private final static double lineSpaceRatio = 0.05;
-	
+
 	public PopupRenderer(String message) {
 		this.message = message;
 	}
@@ -36,7 +35,7 @@ public class PopupRenderer extends CanvasRenderer {
 		gc.fillRoundRect(x, y, width, height * tabHeightRatio, arc, arc);
 		
 		double fontSize = width * fontSizeRatio;
-		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+		Font font = FontLoader.load( fontSize);
 		TextRenderer message = new TextRenderer();
 		message.setParams(gc, x, y + height * textHeightOffsetRatio, width, height * textHeightRatio, textPad, textPad, font, wordWidthRatio, lineSpaceRatio);
 		message.addText(this.message);

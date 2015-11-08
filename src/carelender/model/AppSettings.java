@@ -13,12 +13,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import carelender.view.gui.UIController.UIType;
 
-/*
+/**
  * Applications settings are handled by this class, it saves files into a settings.dat file for persistence
  */
 public class AppSettings {
-	
-    private static AppSettings singleton = null;
+
+	private static final String settingsFile = "settings.dat";
+	private static AppSettings singleton = null;
 
 	public static AppSettings getInstance() {
 		if (singleton == null) {
@@ -33,7 +34,7 @@ public class AppSettings {
 
 	@SuppressWarnings("unchecked")
 	private AppSettings() {
-		File file = new File("settings.dat");
+		File file = new File(settingsFile);
 		log = Logger.getLogger(Model.class.getName());
 		
 		typeHash = new HashMap<>();
@@ -54,7 +55,8 @@ public class AppSettings {
 				appSettingsHash.put(DataType.BOOLEAN, new HashMap<SettingName, Object>());
 				appSettingsHash.put(DataType.STRING, new HashMap<SettingName, Object>());
 			} else {
-				FileInputStream fis = new FileInputStream("settings.dat");
+				System.out.println("Stuffed");
+				FileInputStream fis = new FileInputStream(settingsFile);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				appSettingsHash = (HashMap<DataType, HashMap<SettingName, Object>>) ois.readObject();
 				ois.close();
@@ -123,7 +125,7 @@ public class AppSettings {
 	 */
 	public void saveSetting() {
 		try {
-			FileOutputStream fos = new FileOutputStream("settings.dat");
+			FileOutputStream fos = new FileOutputStream(settingsFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			
 			oos.writeObject(appSettingsHash);
@@ -143,7 +145,7 @@ public class AppSettings {
 	private Boolean isDataTypeType (SettingName name , DataType type ) {
 		return typeHash.get(name) == type;
 	}
-	
+
 	public enum DataType {
 		INTEGER, BOOLEAN, STRING, UITYPE
 	}

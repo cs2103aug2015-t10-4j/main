@@ -4,6 +4,7 @@ import carelender.controller.Controller;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
@@ -44,7 +45,7 @@ public class FloatingViewRenderer extends CanvasRenderer {
 
         //Todo: 20 -> meaningful expression
         double fontSize = width / 60.0; //Temporary
-        Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+        Font font = FontLoader.load( fontSize);
 
         double windowPadding = 8;
         double textboxInnerPadding = 8;

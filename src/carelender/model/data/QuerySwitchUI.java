@@ -25,12 +25,12 @@ public class QuerySwitchUI extends QueryBase {
     @Override
     public void controllerExecute() {
         if ( isSettingSwitch ) {
-            Controller.getGUI().setUI(UIController.UIType.SETTING);
+            Controller.getUI().setUI(UIController.UIType.SETTING);
         } else {
             if ( uiType != null ) {
-                Controller.getGUI().setUI(uiType);
+                Controller.getUI().setUI(uiType);
             } else {
-                Controller.getGUI().toggleUI();
+                Controller.getUI().toggleUI();
             }
         }
     }

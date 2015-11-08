@@ -2,10 +2,11 @@ package carelender.model;
 
 import java.util.Calendar;
 import java.util.PriorityQueue;
+
 import carelender.model.data.Event;
 
-/*
- * Handles reminders for events 
+/**
+ * Handles reminders for events
  */
 public class ReminderManager {
 	private static ReminderManager singleton = null;
