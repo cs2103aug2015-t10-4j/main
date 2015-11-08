@@ -9,10 +9,10 @@ import javafx.scene.text.Font;
  * they follow mostly the same layout
  */
 public class LayoutHelper {
-    private static final double windowPadding = 8;
-    private static final double textboxInnerPadding = 8;
-    private static final double fontRatio = 1/60.0;
-    private static final double topBarRatio = 0.13;
+    private static final double WINDOW_PADDING = 8;
+    private static final double TEXTBOX_INNER_PADDING = 8;
+    private static final double FONT_RATIO = 1/60.0;
+    private static final double TOP_BAR_RATIO = 0.13;
     private static Font font;
     private static double topBarHeight;
     private static double leftColumnX;
@@ -28,24 +28,24 @@ public class LayoutHelper {
 
 
     public static void setParams(double x, double y, double width, double height) {
-        double fontSize = width * fontRatio;
+        double fontSize = width * FONT_RATIO;
         font = FontLoader.load( fontSize );
 
-        topBarHeight = height * topBarRatio;
+        topBarHeight = height * TOP_BAR_RATIO;
         double remainderHeight = height - topBarHeight;
 
-        announcementBoxY = topBarHeight + windowPadding;
+        announcementBoxY = topBarHeight + WINDOW_PADDING;
 
-        leftColumnWidth = 0.5 * width - windowPadding;
+        leftColumnWidth = 0.5 * width - WINDOW_PADDING;
         rightColumnWidth = 0.5 * width;
         leftColumnX = x;
-        rightColumnX = leftColumnX + leftColumnWidth + windowPadding;
+        rightColumnX = leftColumnX + leftColumnWidth + WINDOW_PADDING;
 
-        announcementHeight = fontSize + textboxInnerPadding * 2;
-        messageBoxHeight = fontSize + textboxInnerPadding * 2;
-        mainContentHeight = remainderHeight - announcementHeight - messageBoxHeight - windowPadding * 3;
-        mainContentY = announcementBoxY + announcementHeight + windowPadding;
-        messageBoxY = mainContentY + mainContentHeight + windowPadding;
+        announcementHeight = fontSize + TEXTBOX_INNER_PADDING * 2;
+        messageBoxHeight = fontSize + TEXTBOX_INNER_PADDING * 2;
+        mainContentHeight = remainderHeight - announcementHeight - messageBoxHeight - WINDOW_PADDING * 3;
+        mainContentY = announcementBoxY + announcementHeight + WINDOW_PADDING;
+        messageBoxY = mainContentY + mainContentHeight + WINDOW_PADDING;
 
     }
 
@@ -81,10 +81,6 @@ public class LayoutHelper {
         return topBarHeight;
     }
 
-    public static double getWindowPadding() {
-        return windowPadding;
-    }
-
     public static double getLeftColumnWidth() {
         return leftColumnWidth;
     }
@@ -94,7 +90,7 @@ public class LayoutHelper {
     }
 
     public static double getTextboxInnerPadding() {
-        return textboxInnerPadding;
+        return TEXTBOX_INNER_PADDING;
     }
 
     public static double getMainContentY() {
