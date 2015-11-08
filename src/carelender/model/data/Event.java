@@ -30,10 +30,6 @@ public class Event implements Serializable{
         category = eventObject.category;
         completed = eventObject.completed;
         DateRange [] eventObjectDateRange = eventObject.dateRange;
-//        dateRange = new DateRange[eventObjectDateRange.length];
-//        for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
-//            dateRange[i] = eventObjectDateRange[i].copy();
-//        }
         
         if ( eventObjectDateRange != null ) {
             dateRange = new DateRange[eventObjectDateRange.length];
@@ -49,12 +45,10 @@ public class Event implements Serializable{
         }
     }
     public Event (int uidToSet, String nameToSet, DateRange[] dateRangetoSet, String category) {
-        //TODO: Initialize internal fields.
         this.uid = uidToSet;
         this.name = nameToSet;
         this.dateRange = dateRangetoSet;
         this.category = category;
-        //this.completed = completed;
     }
 
     public void setUid(int uid){
@@ -162,7 +156,6 @@ public class Event implements Serializable{
                 return EventType.REC_FLOATING_TASK;
             }
         }
-        //TODO: Do more type checks.
         return EventType.DEADLINE_TASK;
     }
 

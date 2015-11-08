@@ -26,7 +26,8 @@ public class QueryComplete extends QueryBase{
     @Override
 	public void controllerExecute() {
     	for (int i = 0; i < events.size(); i++) {
-			Model.getInstance().setComplete(events.get(i), forComplete);
+    		events.get(i).setCompleted(true);
+			Model.getInstance().updateEvent(events.get(i));
 		}
     	if (forComplete) {
     		Controller.displayMessage(QueryFeedback.completeTask(events.size()));
