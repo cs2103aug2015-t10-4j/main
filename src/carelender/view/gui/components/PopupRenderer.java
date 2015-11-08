@@ -7,11 +7,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 
 public class PopupRenderer extends CanvasRenderer {
-	String message;
+	private String message;
 	private final static double arc = 10.0;
 	private final static double tabHeightRatio = 1.0 / 10.0;
-	private final static double fontSizeRatio = 1.0 / 40.0;
-	private final static double textHeightOffsetRatio = 1.0 / 10.0;
+	private final static double fontSizeWidthRatio = 1.0 / 40.0;
+	private final static double textYOffsetRatio = 1.0 / 10.0;
 	private final static double textHeightRatio = 9.0 / 10.0;
 	private final static double textPad = 3.0;
 	private final static double wordWidthRatio = 0.6;
@@ -35,11 +35,11 @@ public class PopupRenderer extends CanvasRenderer {
 		gc.setFill(AppColours.popupHeaderBackground);
 		gc.fillRoundRect(x, y, width, height * tabHeightRatio, arc, arc);
 		
-		double fontSize = width * fontSizeRatio;
+		double fontSize = width * fontSizeWidthRatio;
 		Font font = FontLoader.load( fontSize);
-		TextRenderer message = new TextRenderer();
-		message.setParams(gc, x, y + height * textHeightOffsetRatio, width, height * textHeightRatio, textPad, textPad, font, wordWidthRatio, lineSpaceRatio);
-		message.addText(this.message);
-		message.drawText(AppColours.popupBackground, AppColours.popupText);
+		TextRenderer textRenderer = new TextRenderer();
+		textRenderer.setParams(gc, x, y + height * textYOffsetRatio, width, height * textHeightRatio, textPad, textPad, font, wordWidthRatio, lineSpaceRatio);
+		textRenderer.addText(this.message);
+		textRenderer.drawText(AppColours.popupBackground, AppColours.popupText);
 	}
 }
