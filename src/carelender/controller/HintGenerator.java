@@ -24,6 +24,16 @@ public class HintGenerator {
 	private static final int WEEKLY_BUSY_THRESHOLD = 30;
 	private static final int DAILY_FREE_THRESHOLD = 3;
 	private static final int DAILY_BUSY_THRESHOLD = 6;
+
+    private static final String BUSY_TOMORROW_HINT = "You have may tasks tomorrow. Rest well today :)";
+    private static final String REMINDER_HINT = "Don't forget your tasks tomorrow!";
+    private static final String SLACK_DAY_HINT = "It seems that you are having a slack day. Spend some time with your family :)";
+    private static final String BUSY_NEXT_WEEK_HINT = "You have %1$s tasks next week! Be prepared.";
+    private static final String SLACK_NEXT_WEEK_HINT = "You don't have many tasks next week. Try exercise more :)";
+    private static final String FREE_THEN_FREE_HINT = "Next week is so free! How nice :)";
+    private static final String BUSY_THEN_FREE_HINT = "Next week is so free! Hang on there :)";
+    private static final String VACATION_PLAN_HINT = "This month looks clear, why not plan a vacation?";
+    private static final String NICE_DAY_HINT = "Have a nice day :)";
 	
     private static final ArrayList<String> basicHints = Model.getInstance().loadStringArrayList("hints.dat");
 	private ArrayList<String> hints;
@@ -53,8 +63,8 @@ public class HintGenerator {
 		resetEventNumbers();
 
 		//Update dailyEventNumbers
-		for(int i=0; i < monthEventNumbers.length; i++){
-			for(int j=0; j < monthEventNumbers[i].length; j++){
+		for(int i = 0; i < monthEventNumbers.length; i++){
+			for(int j = 0; j < monthEventNumbers[i].length; j++){
 				dailyEventNumbers[i] += monthEventNumbers[i][j];
 			}
 		}
@@ -121,13 +131,13 @@ public class HintGenerator {
     private void generateHintsForTomorrow(int todayIndex) {
         int tomorrowIndex = todayIndex + 1;
         if(dailyEventNumbers[tomorrowIndex] > DAILY_BUSY_THRESHOLD) {
-        	String newHint = "You have may tasks tomorrow. Rest well today :)";
+        	String newHint = BUSY_TOMORROW_HINT;
             hints.add(newHint);
         } else if (dailyEventNumbers[tomorrowIndex] > DAILY_FREE_THRESHOLD){
-        	String newHint = "Don't forget your " + dailyEventNumbers[tomorrowIndex] + " deadlines tomorrow!";
+        	String newHint = REMINDER_HINT;
             hints.add(newHint);
         } else {
-        	String newHint = "It seems that you are having a slack day. Spend some time with your family :)";
+        	String newHint = SLACK_DAY_HINT;
             hints.add(newHint);
         }
     }
@@ -140,17 +150,17 @@ public class HintGenerator {
         int nextWeekEventNumber = weeklyEventNumbers[1];
 
         if (nextWeekEventNumber > WEEKLY_BUSY_THRESHOLD) {
-            String newHint = "You have " + nextWeekEventNumber + " tasks next week! Be prepared.";
+            String newHint =  String.format(BUSY_NEXT_WEEK_HINT, nextWeekEventNumber);
             hints.add(newHint);
         } else if (nextWeekEventNumber > WEEKLY_FREE_THRESHOLD) {
-            String newHint = "You don't have many tasks next week. Try exercise more :)";
+            String newHint = SLACK_NEXT_WEEK_HINT;
             hints.add(newHint);
         } else {
             if (thisWeekEventNumber < WEEKLY_FREE_THRESHOLD) {
-                String newHint = "Next week is so free! How nice :)";
+                String newHint = FREE_THEN_FREE_HINT;
                 hints.add(newHint);
             } else {
-                String newHint = "Next week is so free! Hang on there :)";
+                String newHint = BUSY_THEN_FREE_HINT;
                 hints.add(newHint);
             }
         }
@@ -161,10 +171,10 @@ public class HintGenerator {
      */
     private void generateHintsForMonth(){
         if(monthlyEventNumber < MONTHLY_VACATION_THRESHOLD) {
-            String newHint = "This month looks clear, why not plan a vacation?";
+            String newHint = VACATION_PLAN_HINT;
             hints.add(newHint);
         } else {
-            String newHint = "Have a nice day :)";
+            String newHint = NICE_DAY_HINT;
             hints.add(newHint);
         }
     }

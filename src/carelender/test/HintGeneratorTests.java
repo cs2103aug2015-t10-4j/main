@@ -21,15 +21,15 @@ public class HintGeneratorTests {
 		expectedOutput = Model.getInstance().loadStringArrayList("hints.dat");	
 	}
 	
-	String BUSY_TOMORROW_HINT = "You have may tasks tomorrow. Rest well today :)";
-	String REMIND_DEADLINE_HINT = "Don't forget your %1$s deadlines tomorrow!";
-	String SLACK_DAY_HINT = "It seems that you are having a slack day. Spend some time with your family :)";
-	String BUSY_NEXT_WEEK_HINT = "You have %1$s tasks next week! Be prepared.";
-	String EXERCISE_HINT = "You don't have many tasks next week. Try exercise more :)";
-	String FREE_THEN_FREE_HINT = "Next week is so free! How nice :)";
-	String BUSY_THEN_FREE_HINT = "Next week is so free! Hang on there :)";
-	String VACATION_PLAN_HINT = "This month looks clear, why not plan a vacation?";
-	String NICE_DAY_HINT = "Have a nice day :)";
+    private static final String BUSY_TOMORROW_HINT = "You have may tasks tomorrow. Rest well today :)";
+    private static final String REMINDER_HINT = "Don't forget your tasks tomorrow!";
+    private static final String SLACK_DAY_HINT = "It seems that you are having a slack day. Spend some time with your family :)";
+    private static final String BUSY_NEXT_WEEK_HINT = "You have %1$s tasks next week! Be prepared.";
+    private static final String SLACK_NEXT_WEEK_HINT = "You don't have many tasks next week. Try exercise more :)";
+    private static final String FREE_THEN_FREE_HINT = "Next week is so free! How nice :)";
+    private static final String BUSY_THEN_FREE_HINT = "Next week is so free! Hang on there :)";
+    private static final String VACATION_PLAN_HINT = "This month looks clear, why not plan a vacation?";
+    private static final String NICE_DAY_HINT = "Have a nice day :)";
 	
 	@Test
 	public void isBasicHintsLoaded() {
