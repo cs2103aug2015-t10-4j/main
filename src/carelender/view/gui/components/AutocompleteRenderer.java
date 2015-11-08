@@ -12,8 +12,12 @@ import javafx.scene.text.TextAlignment;
  * Renders the autocomplete box and automatically resizes the height according to the number of lines.
  */
 public class AutocompleteRenderer extends CanvasRenderer {
+    public static final double FONT_RATIO = 0.166;
+    public static final double HINT_FONT_RATIO = 0.15;
+    public static final double INNER_PADDING = 5;
+
     public static final String TAB_TO_AUTOCOMPLETE = "TAB to autocomplete";
-    String [] autocompleteOptions = null; // = {"test", "test2", "bubu", "lala", "test some very loing line of text lorem ipsum blah blahb labhbl ablhbl abhla hblahbl hba more text so much text text text text text"};
+    String [] autocompleteOptions = null;
     TextRenderer autoComplete = new TextRenderer();
     boolean renderFirstLineBold;
 
@@ -22,25 +26,24 @@ public class AutocompleteRenderer extends CanvasRenderer {
         super.draw(gc, x, y, width,height);
 
         if ( autocompleteOptions != null ) {
-            double fontSize = width / 60.0; //Temporary
+            double fontSize = width * FONT_RATIO;
 
-            double lineHeight = 0.05;
-            double innerPadding = 5;
-            double fieldHeight = autocompleteOptions.length * ( 1 + lineHeight ) * fontSize + innerPadding * 2;
+
+            double fieldHeight = autocompleteOptions.length * ( 1 + FontLoader.DEFAULT_LINE_HEIGHT_RATIO) * fontSize + INNER_PADDING * 2;
 
             if ( renderFirstLineBold ) {
-                gc.setFont(FontLoader.load( fontSize*0.9));
+                gc.setFont(FontLoader.load(width * HINT_FONT_RATIO));
                 gc.setTextBaseline(VPos.BOTTOM);
                 gc.setFill(AppColours.grey);
                 gc.setStroke(AppColours.grey);
                 gc.setTextAlign(TextAlignment.LEFT);
-                gc.fillText(TAB_TO_AUTOCOMPLETE, x + 10, y - fieldHeight - 5);
-                gc.strokeText(TAB_TO_AUTOCOMPLETE, x + 10, y - fieldHeight - 5);
+                gc.fillText(TAB_TO_AUTOCOMPLETE, x + INNER_PADDING * 2, y - fieldHeight - INNER_PADDING);
+                gc.strokeText(TAB_TO_AUTOCOMPLETE, x + INNER_PADDING * 2, y - fieldHeight - INNER_PADDING);
             }
 
             Font font = FontLoader.load( fontSize);
             autoComplete.setParams(gc, x, y - fieldHeight, width, fieldHeight,
-                    innerPadding, innerPadding, font, 0.6, lineHeight);
+                    INNER_PADDING, INNER_PADDING, font, FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
 
             for ( String autocompleteOption : autocompleteOptions ) {
                 autoComplete.addTextEllipsis(autocompleteOption);

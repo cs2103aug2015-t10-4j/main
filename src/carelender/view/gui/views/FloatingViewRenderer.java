@@ -73,7 +73,7 @@ public class FloatingViewRenderer extends CanvasRenderer {
         announcementBox.setParams(gc, leftColumnX, announcementBoxY,
                 width, announcementHeight,
                 textboxInnerPadding, textboxInnerPadding,
-                font, 0.6, 0.05);
+                font, FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
         announcementBox.addText(announcementText);
         announcementBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
@@ -83,7 +83,7 @@ public class FloatingViewRenderer extends CanvasRenderer {
         messageBox.setParams(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding * 2 + mainContentHeight,
                 width, messageBoxHeight,
                 textboxInnerPadding, textboxInnerPadding,
-                font, 0.6, 0.05);
+                font, FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
         messageBox.addText(messageText);
         messageBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
