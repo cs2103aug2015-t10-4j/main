@@ -58,8 +58,8 @@ public class TaskBarRenderer {
 				DateRangeRenderer dateRangeRenderer = new DateRangeRenderer();
 				if (date.getStart().after(currentDate) || date.getEnd().after(currentDate)) {
 					/*
-					this.timeText.addTextEllipsis(timeFormat.format(date.getStart())
-							+ " to " + timeFormat.format(date.getEnd()));
+					this.timeText.addTextEllipsis(TIME_FORMAT.format(date.getStart())
+							+ " to " + TIME_FORMAT.format(date.getEnd()));
 							*/
 					dateRangeRenderer.setParams(0.1, 0.1,
 												0.2, 0.4,
@@ -68,8 +68,8 @@ public class TaskBarRenderer {
 					this.dateRangeRendererList.add(dateRangeRenderer);
 				} else {
 					/*
-					this.timeText.addTextEllipsis(timeFormat.format(date.getStart())
-							+ " to " + timeFormat.format(date.getEnd()) + "[OVER]");
+					this.timeText.addTextEllipsis(TIME_FORMAT.format(date.getStart())
+							+ " to " + TIME_FORMAT.format(date.getEnd()) + "[OVER]");
 							*/
 					dateRangeRenderer.setParams(0.1, 0.1,
 												0.2, 0.4,
@@ -84,7 +84,7 @@ public class TaskBarRenderer {
         long difference = date.getEnd().getTime() - date.getStart().getTime();
 		long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
 		numOfDays += days;
-        this.timeText.addTextEllipsis(timeFormat.format(this.event.getEarliestDateFromNow())
+        this.timeText.addTextEllipsis(TIME_FORMAT.format(this.event.getEarliestDateFromNow())
                                         + "    [" + numOfDays + " day]");*/
     }
 

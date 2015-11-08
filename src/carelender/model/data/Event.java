@@ -3,7 +3,6 @@ package carelender.model.data;
 import carelender.model.strings.DateFormats;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -168,7 +167,7 @@ public class Event implements Serializable{
     }
 
     public String getInfo() {
-        String dateString = DateFormats.debugFormat.format(getEarliestDate());
+        String dateString = DateFormats.DEBUG_FORMAT.format(getEarliestDate());
         return this.name + " | " + dateString;
     }
 

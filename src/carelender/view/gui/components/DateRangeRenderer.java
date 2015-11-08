@@ -1,7 +1,6 @@
 package carelender.view.gui.components;
 
 import carelender.model.data.DateRange;
-import carelender.model.data.Event;
 import carelender.model.strings.AppColours;
 import carelender.model.strings.DateFormats;
 import carelender.model.strings.FontLoader;
@@ -11,10 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class contains static methods to help to render the calendar view
@@ -72,24 +68,24 @@ public class DateRangeRenderer {
                 boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
 
                 if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
-                    this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
+                    this.timeStart = DateFormats.TIME_FORMAT.format(dateRange.getStart());
 
-                    this.dateStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
+                    this.dateStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
                 } else {
-                    this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
-                    this.timeEnd = DateFormats.timeFormat.format(dateRange.getEnd());
+                    this.timeStart = DateFormats.TIME_FORMAT.format(dateRange.getStart());
+                    this.timeEnd = DateFormats.TIME_FORMAT.format(dateRange.getEnd());
 
                     if ( sameYear ) {
-                        this.dateStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
-                        this.dateEnd = DateFormats.dateFormatMonth.format(dateRange.getEnd());
+                        this.dateStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
+                        this.dateEnd = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getEnd());
                     } else {
-                        this.dateStart = DateFormats.dateFormatYear.format(dateRange.getStart());
-                        this.dateEnd = DateFormats.dateFormatYear.format(dateRange.getEnd());
+                        this.dateStart = DateFormats.DATE_FORMAT_YEAR.format(dateRange.getStart());
+                        this.dateEnd = DateFormats.DATE_FORMAT_YEAR.format(dateRange.getEnd());
                     }
                 }
             } else {
             	if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
-                    this.timeStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
+                    this.timeStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
                     this.dateStart = "Starts";
                 } else {
                 	this.dateStart = "Starts";
@@ -101,11 +97,11 @@ public class DateRangeRenderer {
                     boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
                     
                     if ( sameYear ) {
-                        this.timeStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
-                        this.timeEnd = DateFormats.dateFormatMonth.format(dateRange.getEnd());
+                        this.timeStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
+                        this.timeEnd = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getEnd());
                     } else {
-                        this.timeStart = DateFormats.dateFormatYear.format(dateRange.getStart());
-                        this.timeEnd = DateFormats.dateFormatYear.format(dateRange.getEnd());
+                        this.timeStart = DateFormats.DATE_FORMAT_YEAR.format(dateRange.getStart());
+                        this.timeEnd = DateFormats.DATE_FORMAT_YEAR.format(dateRange.getEnd());
                     }
                 }
             }

@@ -12,7 +12,7 @@ import javafx.scene.text.TextAlignment;
  * Renders the autocomplete box and automatically resizes the height according to the number of lines.
  */
 public class AutocompleteRenderer extends CanvasRenderer {
-    public static final String autocompleteMessage = "TAB to autocomplete";
+    public static final String TAB_TO_AUTOCOMPLETE = "TAB to autocomplete";
     String [] autocompleteOptions = null; // = {"test", "test2", "bubu", "lala", "test some very loing line of text lorem ipsum blah blahb labhbl ablhbl abhla hblahbl hba more text so much text text text text text"};
     TextRenderer autoComplete = new TextRenderer();
     boolean renderFirstLineBold;
@@ -34,8 +34,8 @@ public class AutocompleteRenderer extends CanvasRenderer {
                 gc.setFill(AppColours.grey);
                 gc.setStroke(AppColours.grey);
                 gc.setTextAlign(TextAlignment.LEFT);
-                gc.fillText(autocompleteMessage, x + 10, y - fieldHeight - 5);
-                gc.strokeText(autocompleteMessage, x + 10, y - fieldHeight - 5);
+                gc.fillText(TAB_TO_AUTOCOMPLETE, x + 10, y - fieldHeight - 5);
+                gc.strokeText(TAB_TO_AUTOCOMPLETE, x + 10, y - fieldHeight - 5);
             }
 
             Font font = FontLoader.load( fontSize);
