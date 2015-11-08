@@ -101,6 +101,7 @@ public class Event implements Serializable{
     	return category;
     }
     
+    //@@author A0125566B
     public Date getLatestDate () {
         Date lastDate = null;
         if ( this.dateRange == null ) return null;
@@ -116,6 +117,7 @@ public class Event implements Serializable{
         return lastDate;
     }
 
+    //@@author A0125566B
     public Date getEarliestDate () {
         Date firstDate = null;
         if ( this.dateRange == null ) return null;
@@ -131,6 +133,7 @@ public class Event implements Serializable{
         return firstDate;
     }
     
+    //@@author A0125566B
     public Date getEarliestDateFromNow () {
         Date currentDate = new Date();
         Date firstDate = null;
@@ -148,9 +151,7 @@ public class Event implements Serializable{
         }
         return firstDate;
     }
-
-
-
+    
     public EventType getEventType () {
         if (this.dateRecurrence == null) {
             if (this.dateRange == null) {

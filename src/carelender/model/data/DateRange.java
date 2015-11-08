@@ -1,3 +1,4 @@
+//@@author A0125566B
 package carelender.model.data;
 
 import java.io.Serializable;
@@ -20,6 +21,7 @@ public class DateRange implements Serializable{
 		end = (Date)dateRange.getEnd().clone();
 		hasTime = dateRange.hasTime;
 	}
+	
 	public DateRange (Date date, boolean hasTime) {
 		start = end = date;
 		this.hasTime = hasTime;
@@ -65,6 +67,12 @@ public class DateRange implements Serializable{
 		this.start = start;
 	}
 	
+	/**
+	 * Return number of days between the start and end date.
+	 * 
+	 * @return
+	 * 		Number of days between two dates.
+	 */
 	public long getDaysBetween () {
 		if ( isRange() ) {
 			long difference = this.end.getTime() - this.start.getTime();

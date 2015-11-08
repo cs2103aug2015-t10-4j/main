@@ -1,7 +1,7 @@
+//@@author A0125566B
 package carelender.view.gui.components;
 
 import carelender.model.data.DateRange;
-import carelender.model.data.Event;
 import carelender.model.strings.AppColours;
 import carelender.model.strings.DateFormats;
 import carelender.model.strings.FontLoader;
@@ -11,33 +11,31 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
- * This class contains static methods to help to render the calendar view
+ * This class contains methods to render a date range.
  */
 public class DateRangeRenderer {
-    private static final double STRIKEOUT_WIDTH = 2;
+    private static final double STRIKEOUT_HEIGHT = 2;
+    
+    private static final String DATETEXT_NOTIME_START = "Starts";
+    private static final String DATETEXT_NOTIME_END = "Ends";
 
     private double xPaddingRatio;
     private double yPaddingRatio;
 
     private double timeTextWidthRatio;
     private double timeTextHeightRatio;
-    private double dateTextWidthRatio;
     private double dateTextHeightRatio;
-    
     private double connectorWidthRatio;
 
-    private String timeStart = "";
-    private String timeEnd = "";
-    private String dateStart = "";
-    private String dateEnd = "";
+    private String timeStart;
+    private String timeEnd;
+    private String dateStart;
+    private String dateEnd;
     
-    private boolean strikeout = false;
+    private boolean strikeout;
 
     public DateRangeRenderer() {
         this.timeStart = "";
@@ -48,9 +46,27 @@ public class DateRangeRenderer {
         this.strikeout = false;
     }
     
+    /**
+     * Set the dimensions for the date range render.
+     * Padding ratios are with respect to the dimensions of the elements they pad.
+     * 		e.g. Padding for dateText is yPadRatio * dateTextHeight
+     * Ratio for dateTextHeight and connecterWidth is with respect to height of timeText.
+     * Ratio for timeText are with respect to width and height of window.
+     * 
+     * @param xPadRatio
+     * 		With respect to the dimensions of individual elements.
+     * @param yPadRatio
+     * 		With respect to the dimensions of individual elements.
+     * @param timeTextWidthRatio
+     * @param timeTextHeightRatio
+     * @param dateTextHeightRatio
+     * 		With respect to height of timeText.
+     * @param connectorWidthRatio
+     * 		With respect to height of timeText.
+     * @param dateRange
+     */
     public void setParams (double xPadRatio, double yPadRatio,
-                           double timeTextWidthRatio, double timeTextHeightRatio, 
-                           double dateTextWidthRatio, double dateTextHeightRatio,
+                           double timeTextWidthRatio, double timeTextHeightRatio, double dateTextHeightRatio,
                            double connectorWidthRatio, DateRange dateRange) {
         this.xPaddingRatio = xPadRatio;
         this.yPaddingRatio = yPadRatio;
@@ -58,19 +74,21 @@ public class DateRangeRenderer {
         this.timeTextWidthRatio = timeTextWidthRatio;
         this.timeTextHeightRatio = timeTextHeightRatio;
         
-        this.dateTextWidthRatio = dateTextWidthRatio;
         this.dateTextHeightRatio = dateTextHeightRatio;
         
         this.connectorWidthRatio = connectorWidthRatio;
 
+        //Set the content for the date ranges.
         if ( dateRange != null ) {
             if ( dateRange.hasTime() ) {
+            	//Check if the start and date are in the same year.
                 Calendar start = Calendar.getInstance();
                 start.setTime(dateRange.getStart());
                 Calendar end = Calendar.getInstance();
                 end.setTime(dateRange.getEnd());
                 boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
 
+                //Show only a single date when start and end are exactly the same date.
                 if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
                     this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
 
@@ -79,6 +97,7 @@ public class DateRangeRenderer {
                     this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
                     this.timeEnd = DateFormats.timeFormat.format(dateRange.getEnd());
 
+                    //Show the year if the years are different between the dates.
                     if ( sameYear ) {
                         this.dateStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
                         this.dateEnd = DateFormats.dateFormatMonth.format(dateRange.getEnd());
@@ -90,16 +109,17 @@ public class DateRangeRenderer {
             } else {
             	if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
                     this.timeStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
-                    this.dateStart = "Starts";
+                    this.dateStart = DATETEXT_NOTIME_START;
                 } else {
-                	this.dateStart = "Starts";
-                	this.dateEnd = "Ends";
+                	this.dateStart = DATETEXT_NOTIME_START;
+                	this.dateEnd = DATETEXT_NOTIME_END;
                     Calendar start = Calendar.getInstance();
                     start.setTime(dateRange.getStart());
                     Calendar end = Calendar.getInstance();
                     end.setTime(dateRange.getEnd());
                     boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
                     
+                    //For events without time show the date in place of the time.
                     if ( sameYear ) {
                         this.timeStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
                         this.timeEnd = DateFormats.dateFormatMonth.format(dateRange.getEnd());
@@ -132,80 +152,132 @@ public class DateRangeRenderer {
             double xCurrent = x;
             double yCurrent = y;
 
-            double timeWidth = this.timeTextWidthRatio * width;
-            double timeHeight = this.timeTextHeightRatio * height;
+            double timeWidth = timeTextWidthRatio * width;
+            double timeHeight = timeTextHeightRatio * height;
 
-            double dateHeight = this.dateTextHeightRatio * timeHeight;
+            double dateHeight = dateTextHeightRatio * timeHeight;
 
-            double connectorWidth = this.connectorWidthRatio * timeWidth;
+            double connectorWidth = connectorWidthRatio * timeWidth;
             double strikeoutWidth = timeWidth;
 
-            Font dateFont = FontLoader.load( dateHeight - (this.yPaddingRatio * dateHeight * 2));
-            Font timeFont = FontLoader.load( timeHeight - (this.yPaddingRatio * timeHeight * 2));
+            Font dateFont = FontLoader.load( dateHeight - (yPaddingRatio * dateHeight * 2));
+            Font timeFont = FontLoader.load( timeHeight - (yPaddingRatio * timeHeight * 2));
 
             if ( !this.dateStart.equals("") ) {
-
-                gc.setFill(backgroundColour);
-                gc.setTextAlign(TextAlignment.LEFT);
-                gc.setFont(dateFont);
-                gc.setTextBaseline(VPos.TOP);
-
-                gc.fillText ( this.dateStart, xCurrent, yCurrent );
+            	renderDate(gc, xCurrent, yCurrent, backgroundColour, dateFont, dateStart);
             }
 
             xCurrent += (timeWidth + connectorWidth);
             if ( !this.dateEnd.equals("") ) {
-
-                gc.setFill(backgroundColour);
-                gc.setTextAlign(TextAlignment.LEFT);
-                gc.setFont(dateFont);
-                gc.setTextBaseline(VPos.TOP);
-
-                gc.fillText ( this.dateEnd, xCurrent, yCurrent );
+            	renderDate(gc, xCurrent, yCurrent, backgroundColour, dateFont, dateEnd);
             }
 
             xCurrent = x;
             yCurrent += dateHeight;
             if ( !this.timeStart.equals("") ) {
-                gc.setFill(backgroundColour);
-                gc.fillRect(xCurrent, yCurrent, timeWidth, timeHeight);
-
-                gc.setFill(textColour);
-                gc.setTextAlign(TextAlignment.LEFT);
-                gc.setFont(timeFont);
-                gc.setTextBaseline(VPos.TOP);
-
-                gc.fillText ( this.timeStart, xCurrent + this.xPaddingRatio * timeWidth,
-                            yCurrent );
+            	renderTime(gc, xCurrent, yCurrent, timeWidth, timeHeight,
+            				backgroundColour, textColour, timeFont, timeStart);
             }
 
             xCurrent += timeWidth;
             if ( !this.timeEnd.equals("") ) {
-                gc.setFill(backgroundColour);
-                gc.fillPolygon(new double[]{xCurrent - 1, xCurrent + connectorWidth + 1, xCurrent - 1},
-                                new double[]{yCurrent, yCurrent + (timeHeight * 0.5), yCurrent + timeHeight}, 3);
+                renderConnector(gc, xCurrent, yCurrent, connectorWidth, timeHeight, backgroundColour);
 
                 xCurrent += connectorWidth;
 
-                gc.fillRect(xCurrent, yCurrent, timeWidth, timeHeight);
-
-                gc.setFill(textColour);
-                gc.setTextAlign(TextAlignment.LEFT);
-                gc.setFont(timeFont);
-                gc.setTextBaseline(VPos.TOP);
-
-                gc.fillText ( this.timeEnd, xCurrent + this.xPaddingRatio * timeWidth,
-                            yCurrent );
+                renderTime(gc, xCurrent, yCurrent, timeWidth, timeHeight,
+        				backgroundColour, textColour, timeFont, timeEnd);
                 
                 strikeoutWidth += (timeWidth + connectorWidth);
             }
 
             xCurrent = x;
-            yCurrent += (timeHeight * 0.5) - (DateRangeRenderer.STRIKEOUT_WIDTH * 0.5);
+            yCurrent += (timeHeight * 0.5) - (DateRangeRenderer.STRIKEOUT_HEIGHT * 0.5);
             if ( this.strikeout ) {
-                gc.setFill(AppColours.important);
-                gc.fillRect(xCurrent, yCurrent, strikeoutWidth, DateRangeRenderer.STRIKEOUT_WIDTH);
+            	renderStrikeout(gc, xCurrent, yCurrent, strikeoutWidth,
+            					DateRangeRenderer.STRIKEOUT_HEIGHT, AppColours.important);
             }
         }
+    }
+    
+    /**
+     * Render the date for a given date range.
+     * 
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param colour
+     * @param dateFont
+     * @param text
+     * 		Date to be displayed.
+     */
+    private void renderDate (GraphicsContext gc, double xCurrent, double yCurrent,
+    							Color colour, Font dateFont, String text) {
+    	gc.setFill(colour);
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.setFont(dateFont);
+        gc.setTextBaseline(VPos.TOP);
+
+        gc.fillText ( text, xCurrent, yCurrent );
+    }
+    
+    /**
+     * Render the time for a given date range.
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param width
+     * @param height
+     * @param backgroundColour
+     * @param textColour
+     * @param timeFont
+     * @param text
+     */
+    private void renderTime (GraphicsContext gc, double xCurrent, double yCurrent,
+    							double width, double height,
+    							Color backgroundColour, Color textColour, Font timeFont, String text) {
+    	gc.setFill(backgroundColour);
+        gc.fillRect(xCurrent, yCurrent, width, height);
+
+        gc.setFill(textColour);
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.setFont(timeFont);
+        gc.setTextBaseline(VPos.TOP);
+
+        gc.fillText ( text, xCurrent + (xPaddingRatio * width), yCurrent );
+    }
+    
+    /**
+     * Render the connector between the start and end date of a dateRange.
+     * 
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param width
+     * @param height
+     * 		Height of the timeText.
+     * @param backgroundColour
+     */
+    private void renderConnector (GraphicsContext gc, double xCurrent, double yCurrent,
+									double width, double height, Color backgroundColour) {
+    	gc.setFill(backgroundColour);
+        gc.fillPolygon(new double[]{xCurrent - 1, xCurrent + width + 1, xCurrent - 1},
+                        new double[]{yCurrent, yCurrent + (height * 0.5), yCurrent + height}, 3);
+    }
+    
+    /**
+     * Render the strikeout to be displayed when dateRanges have passed.
+     * 
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param width
+     * @param height
+     * @param backgroundColour
+     */
+    private void renderStrikeout (GraphicsContext gc, double xCurrent, double yCurrent,
+									double width, double height, Color backgroundColour) {
+    	gc.setFill(backgroundColour);
+        gc.fillRect(xCurrent, yCurrent, width, height);
     }
 }

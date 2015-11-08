@@ -1,3 +1,4 @@
+//@@author A0125566B
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
@@ -5,26 +6,21 @@ import carelender.model.strings.DateFormats;
 import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
 import carelender.model.data.Event;
 import carelender.model.data.EventList;
-import carelender.controller.Controller;
 
 /**
- * Render the Task View.
- * @author Weizheng Lee
+ * This class contains methods to render the task view.
  */
 public class TaskRenderer extends CanvasRenderer {
 	//Ratios used to ensure sizes scale with the window height and width.
@@ -177,24 +173,8 @@ public class TaskRenderer extends CanvasRenderer {
             if ( currentDay == null ) { //Event is a floating task.
                 addEventToMap(FLOATING_TASK_KEY, event);
             } else {
-            	//Format key as YYYY D d EEE
-            	//YYYY and D are used to sort the keys by date.
-            	
-            	//YYYY is the year of the event.
-            	//D is the day in the year.
-            	//d is the day in the month.
-            	//EEE is the day of the week.
-                String day = DateFormats.dateFormatDay.format(currentDay);
-                String dayInYear = DateFormats.dayInYear.format(currentDay);
-                //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
-                //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
-                for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
-                	dayInYear = "0" + dayInYear;
-                }
-                String year = DateFormats.year.format(currentDay);
-                
                 //Concatenate all the parts of the key together.
-                addEventToMap(year + " " + dayInYear + " " + day, event);
+                addEventToMap(formatKey(currentDay), event);
             }
             totalTasks++;
         }
@@ -204,6 +184,45 @@ public class TaskRenderer extends CanvasRenderer {
         }
     }
     
+    /**
+     * Format key as YYYY D d EEE given date.
+     * YYYY and D are used to sort the keys by date.
+     * 
+     * YYYY is the year of the event.
+     * D is the day in the year.
+     * d is the day in the month.
+     * EEE is the day of the week.
+     * 
+     * @param date
+     * 		Date to format as key.
+     * @return
+     * 		Key to use in taskDisplay
+     */
+    private String formatKey (Date date) {
+		
+        String day = DateFormats.dateFormatDay.format(date);
+        String dayInYear = DateFormats.dayInYear.format(date);
+        //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
+        //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
+        for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
+        	dayInYear = "0" + dayInYear;
+        }
+        String year = DateFormats.year.format(date);
+        
+        //Concatenate all the parts of the key together.
+        return (year + " " + dayInYear + " " + day);
+	}
+    
+    /**
+     * Add an event to taskDisplay with key.
+     * If the key already exists in taskDisplay add it to the EventList associated.
+     * Otherwise, create a new EventList containing the event to add associated with the key.
+     * 
+     * @param key
+     * 		The day of the event is used as the key as YYYY D d EEE
+     * @param event
+     * 		The event to add.
+     */
     private void addEventToMap (String key, Event event) {
     	if (taskDisplay.containsKey(key)) {
             if (!taskDisplay.get(key).contains(event)) {
@@ -216,6 +235,15 @@ public class TaskRenderer extends CanvasRenderer {
         }
     }
     
+    /**
+     * Render the task bars.
+     * 
+     * @param gc
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     private void renderTasks (GraphicsContext gc, double x, double y, double width, double height) {
     	double xCurrent = x + xPadding;
         double yCurrent = y + yPadding;
@@ -230,12 +258,18 @@ public class TaskRenderer extends CanvasRenderer {
         Font indexFont = FontLoader.load(dateBarHeight * INDEX_FONTSIZE_RATIO);
         Font scrollPointerFont = FontLoader.load(width * SCROLLPOINTER_FONTSIZE_RATIO);
     	
+        //Variables to keep track of scroll window.
         int currentTaskToDisplay = 0;
+        //Available space in the task view window to draw task bars.
         double remainingHeight = this.height - (this.yPadding * 2);
+        boolean showBottomArrow = false;
+        //Variables for date display.
         double xPositionDate;
         double yPositionDate;
         boolean displayDate;
-        boolean showBottomArrow = false;
+        
+        //Indexing for events.
+        //Used for update/delete/show commands.
         int index = 1;
 
         for ( Map.Entry<String, EventList> entry : this.taskDisplay.entrySet()) {
@@ -256,20 +290,21 @@ public class TaskRenderer extends CanvasRenderer {
                 	taskBarRender.setContent(event);
 
 				    if ( (remainingHeight - taskBarRender.getHeight(taskBarHeight)) >= 0 ) {
-				     	displayDate = true;
-				     	
-				     	renderIndex(gc, xCurrent + dateBarWidth, yCurrent, indexFont, String.valueOf(index));
-				        
-				        taskBarRender.draw(gc, xCurrent + dateBarWidth + xPadding, yCurrent,
-				        						taskBarWidth, taskBarHeight, AppColours.tasklistRowBackground,
-				        						AppColours.tasklistText, true);
-				        yCurrent += (taskBarRender.getHeight(taskBarHeight) + yPadding);
-				
-				        remainingHeight -= (taskBarRender.getHeight(taskBarHeight) + (yPadding * 2));
+						displayDate = true;
+						
+						renderIndex(gc, xCurrent + dateBarWidth, yCurrent, indexFont, String.valueOf(index));
+						
+						taskBarRender.draw(gc, xCurrent + dateBarWidth + xPadding, yCurrent,
+												taskBarWidth, taskBarHeight, AppColours.tasklistRowBackground,
+												AppColours.tasklistText, true);
+						
+						yCurrent += (taskBarRender.getHeight(taskBarHeight) + yPadding);
+						remainingHeight -= (taskBarRender.getHeight(taskBarHeight) + (yPadding * 2));
 				     } else {
-				    	showBottomArrow = true;
-				        break;
-				     }
+				    	//Task to add exceeds the remaining space in the window.
+						showBottomArrow = true;
+						break;
+				    }
             	}
                 index++;
                 currentTaskToDisplay++;
@@ -280,6 +315,7 @@ public class TaskRenderer extends CanvasRenderer {
             }
             
             if ( showBottomArrow ) {
+            	//Prevent subsequent tasks from being printed within scroll window.
             	break;
             }
         }
@@ -299,11 +335,29 @@ public class TaskRenderer extends CanvasRenderer {
         }
     }
     
+    /**
+     * Render the divisors between each day in task view.
+     * 
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param width
+     * @param height
+     */
     private void renderDivisor (GraphicsContext gc, double xCurrent, double yCurrent, double width, double height) {
     	gc.setFill (AppColours.tasklistRowBackground);
         gc.fillRect(xCurrent, yCurrent, width - (xPadding * 2), height * DIVISOR_HEIGHT_RATIO);
     }
     
+    /**
+     * Render the index for each task.
+     * 
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param indexFont
+     * @param index
+     */
     private void renderIndex (GraphicsContext gc, double xCurrent, double yCurrent,
     							Font indexFont, String index) {
     	gc.setFill(AppColours.primaryColour);
@@ -314,6 +368,15 @@ public class TaskRenderer extends CanvasRenderer {
         gc.fillText(index, xCurrent, yCurrent);
     }
     
+    /**
+     * Render the date for each day in task view.
+     * 
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param dateFont
+     * @param key
+     */
     private void renderDate (GraphicsContext gc, double xCurrent, double yCurrent,
     							Font dateFont, String key) {
     	gc.setFill(AppColours.tasklistRowBackground);
@@ -322,12 +385,22 @@ public class TaskRenderer extends CanvasRenderer {
     	gc.setTextBaseline(VPos.TOP);
 
         String [] keyWords = key.split(" ");
+        //Only display the day of month and day of week of the key.
         if ( keyWords.length > 2 ) {
             gc.fillText(keyWords[2], xCurrent, yCurrent);
             gc.fillText(keyWords[3], xCurrent, yCurrent + dateFont.getSize());
         }
     }
     
+    /**
+     * Render the scroll pointer for page up.
+     * 
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param width
+     * @param scrollPointerFont
+     */
     private void renderScrollPointerUp (GraphicsContext gc, double xCurrent, double yCurrent,
     									double width, Font scrollPointerFont) {
     	gc.setFill (AppColours.important);
@@ -343,6 +416,15 @@ public class TaskRenderer extends CanvasRenderer {
     	gc.fillText(SCROLLPOINTER_PAGEUP, xCurrent, yCurrent);
     }
     
+    /**
+     * Render the scroll pointer for page down.
+     * 
+     * @param gc
+     * @param xCurrent
+     * @param yCurrent
+     * @param width
+     * @param scrollPointerFont
+     */
     private void renderScrollPointerDown (GraphicsContext gc, double xCurrent, double yCurrent,
     										double width, Font scrollPointerFont) {
     	gc.setFill (AppColours.important);
