@@ -49,7 +49,7 @@ public class HintGenerator {
      * Update dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber accordingly
      * @param monthEventNumbers
      */
-	public void setDailyEventNumbers(int[][] monthEventNumbers) {
+	public void setEventNumbers(int[][] monthEventNumbers) {
 		resetEventNumbers();
 
 		//Update dailyEventNumbers
@@ -67,6 +67,36 @@ public class HintGenerator {
 
 		generateHints();
 	}
+
+
+    /**
+     * Generate hints according to the number of tasks in different time ranges
+     */
+    public void generateHints() {
+        int todayIndex = getDayOfWeek();
+
+        resetHints();
+
+        generateHintsForTomorrow(todayIndex);
+        generateHintsForWeek(todayIndex);
+        generateHintsForMonth();
+    }
+
+    /**
+     * Called by the UI to display a random hint every minute or so
+     * @return Hint from availableHints
+     */
+    public String getHints() {
+        int hintIndex = (int)Math.floor(Math.random()* hints.size());
+        return hints.get(hintIndex);
+    }
+
+    /**
+     * Reset hints to the default set (basicHints)
+     */
+    private void resetHints() {
+        hints = basicHints;
+    }
     
     /**
      * Calculate the day of week (e.g. Monday, Friday) for today
@@ -83,26 +113,6 @@ public class HintGenerator {
             todayIndex = SUNDAY_INDEX;
         }
         return todayIndex;
-    }
-    
-    /**
-     * Reset hints to the default set (basicHints)
-     */
-    private void resetHints() {
-        hints = basicHints;
-    }
-    
-    /**
-     * Generate hints according to the number of tasks in different time ranges
-     */
-    public void generateHints() {
-    	int todayIndex = getDayOfWeek();
-
-        resetHints();
-
-        generateHintsForTomorrow(todayIndex);
-        generateHintsForWeek(todayIndex);
-        generateHintsForMonth();
     }
 
     /**
@@ -157,15 +167,6 @@ public class HintGenerator {
             String newHint = "Have a nice day :)";
             hints.add(newHint);
         }
-    }
-    
-	/**
-     * Called by the UI to display a random hint every minute or so
-     * @return Hint from availableHints
-     */
-    public String getHint() {
-    	int hintIndex = (int)Math.floor(Math.random()* hints.size());
-        return hints.get(hintIndex);
     }
     
     /**
