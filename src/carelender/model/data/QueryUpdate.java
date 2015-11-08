@@ -1,18 +1,15 @@
+//@@author A0125566B
 package carelender.model.data;
 
-import java.awt.*;
-import java.util.Date;
 import java.util.HashMap;
 
 import carelender.controller.Controller;
-import carelender.controller.Search;
 import carelender.controller.callbacks.OnConfirmedCallback;
 import carelender.model.Model;
-import carelender.model.data.QueryList.SearchParam;
 import carelender.model.strings.QueryFeedback;
 
 /**
- * Used for add queries
+ * Used for update queries
  */
 public class QueryUpdate extends QueryList {
     HashMap<UpdateParam, Object> updateParamsList = new HashMap<>();;
@@ -44,7 +41,6 @@ public class QueryUpdate extends QueryList {
 	@Override
 	public void controllerExecute() {
 		Controller.clearMessages();
-		//EventList searchResults = searchExecute();
 		
 		final OnConfirmedCallback updateConfirmedCallback = new OnConfirmedCallback() {
 			@Override
@@ -66,8 +62,6 @@ public class QueryUpdate extends QueryList {
 							String category = (String)updateParamsList.get(QueryUpdate.UpdateParam.CATEGORY);
 							event.setCategory(category);
 						}
-
-						//Call Model updateEvent function
 						Model.getInstance().updateEvent(event);
 						System.out.println(event.getName());
 					}
@@ -82,8 +76,8 @@ public class QueryUpdate extends QueryList {
 			if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
 				Controller.displayMessage("Cannot bulk update dates! Will cause conflicts");
 			} else {
-			Controller.getBlockingStateController()
-	        .startConfirmation("Are you sure you want to update " + updateList.size() + " events? [Y/N]", updateConfirmedCallback);
+				Controller.getBlockingStateController()
+		        .startConfirmation("Are you sure you want to update " + updateList.size() + " events? [Y/N]", updateConfirmedCallback);
 			}
 		} else if ( updateList.size() == 1 ) {
 			updateConfirmedCallback.onConfirmed(true);

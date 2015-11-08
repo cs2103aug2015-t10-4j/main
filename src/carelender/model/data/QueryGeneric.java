@@ -1,6 +1,5 @@
 package carelender.model.data;
 
-
 /**
  * Used for queries that do not require any additional data
  */

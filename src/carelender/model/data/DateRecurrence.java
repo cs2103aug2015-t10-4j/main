@@ -1,3 +1,4 @@
+//@@author A0125566B-unused
 package carelender.model.data;
 
 import java.io.Serializable;
@@ -6,6 +7,8 @@ import java.io.Serializable;
  * Data object to help with managing recurring tasks.
  * Used by:
  *			EventObject
+ *
+ * Currently not implemented as task manager scope was narrowed to not include recurring dates.
  */
 
 public class DateRecurrence implements Serializable{
