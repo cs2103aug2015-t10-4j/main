@@ -5,22 +5,18 @@ import carelender.model.strings.DateFormats;
 import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
 import carelender.model.data.Event;
 import carelender.model.data.EventList;
-import carelender.controller.Controller;
 
 /**
  * Render the Task View.
@@ -183,14 +179,14 @@ public class TaskRenderer extends CanvasRenderer {
             	//D is the day in the year.
             	//d is the day in the month.
             	//EEE is the day of the week.
-                String day = DateFormats.dateFormatDay.format(currentDay);
-                String dayInYear = DateFormats.dayInYear.format(currentDay);
+                String day = DateFormats.DATE_FORMAT_DAY.format(currentDay);
+                String dayInYear = DateFormats.DAY_IN_YEAR.format(currentDay);
                 //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
                 //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
                 for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
                 	dayInYear = "0" + dayInYear;
                 }
-                String year = DateFormats.year.format(currentDay);
+                String year = DateFormats.YEAR.format(currentDay);
                 
                 //Concatenate all the parts of the key together.
                 addEventToMap(year + " " + dayInYear + " " + day, event);

@@ -11,10 +11,6 @@ import javafx.scene.text.Font;
 import java.nio.file.FileSystemNotFoundException;
 
 public class MonthViewRenderer extends CanvasRenderer {
-    //CalenderRenderer
-    //MessageboxRenderer
-    //SelectionPopupRenderer
-
     TextRenderer messageBox;
     TextRenderer announcementBox;
     //AutocompleteRenderer autocompleteRenderer;
@@ -28,7 +24,6 @@ public class MonthViewRenderer extends CanvasRenderer {
     private TabRenderer tab;
 
     public MonthViewRenderer() {
-
         tasks = new TaskRenderer();
         tasks.setParams(15, 5, 0.7, 0.1, 0.2, 0.1);
         
@@ -42,50 +37,26 @@ public class MonthViewRenderer extends CanvasRenderer {
     @Override
     public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
         super.draw(gc, 0, 0, width, height);
+        LayoutHelper.setParams(x,y,width,height);
 
-        //Todo: 20 -> meaningful expression
-        double fontSize = width / 60.0; //Temporary
-        Font font = FontLoader.load( fontSize);
+        tab.draw(gc, 0, 0, width, LayoutHelper.getTopBarHeight(), TabRenderer.CALENDER_INDEX);
 
-        double windowPadding = 8;
-        double textboxInnerPadding = 8;
-        double topBarHeight = height * 0.13;
-        double remainderHeight = height - topBarHeight;
-
-        double announcementBoxY = topBarHeight + windowPadding;
-
-        double leftColumnWidth = 0.5 * width - windowPadding;
-        double rightColumnWidth = 0.5 * width;
-        double leftColumnX = 0;
-        double rightColumnX = leftColumnX + leftColumnWidth + windowPadding;
-
-        double announcementHeight = fontSize + textboxInnerPadding * 2;
-        double messageBoxHeight = fontSize + textboxInnerPadding * 2;
-        double mainContentHeight = remainderHeight - announcementHeight - messageBoxHeight - windowPadding * 3;
-
-        tab.draw(gc, 0, 0, width, topBarHeight, 1);
-
-        /* Todo
-         * replace magic numbers;
-         * create specific class for these renderers;
-         */
-
-        announcementBox.setParams(gc, leftColumnX, announcementBoxY,
-                width, announcementHeight,
-                textboxInnerPadding, textboxInnerPadding,
-                font, 0.6, 0.05);
+        announcementBox.setParams(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getAnnouncementBoxY(),
+                width, LayoutHelper.getAnnouncementHeight(),
+                LayoutHelper.getTextboxInnerPadding(), LayoutHelper.getTextboxInnerPadding(),
+                LayoutHelper.getFont(), FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
         announcementBox.addText(announcementText);
         announcementBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
-        calender.draw(gc, rightColumnX, announcementBoxY + announcementHeight + windowPadding,
-                rightColumnWidth, mainContentHeight);
-        tasks.draw(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding,
-                leftColumnWidth, mainContentHeight);
+        calender.draw(gc, LayoutHelper.getRightColumnX(), LayoutHelper.getMainContentY(),
+                LayoutHelper.getRightColumnWidth(), LayoutHelper.getMainContentHeight());
+        tasks.draw(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getMainContentY(),
+                LayoutHelper.getLeftColumnWidth(), LayoutHelper.getMainContentHeight());
 
-        messageBox.setParams(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding*2 + mainContentHeight,
-                width , messageBoxHeight,
-                textboxInnerPadding, textboxInnerPadding,
-                font, 0.6, 0.05);
+        messageBox.setParams(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getMessageBoxY(),
+                width , LayoutHelper.getMessageBoxHeight(),
+                LayoutHelper.getTextboxInnerPadding(), LayoutHelper.getTextboxInnerPadding(),
+                LayoutHelper.getFont(), FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
         messageBox.addText(messageText);
         messageBox.drawText(AppColours.panelBackground, AppColours.panelText);
 

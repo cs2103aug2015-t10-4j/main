@@ -1,3 +1,4 @@
+//@@author A0133907E
 package carelender.model.data;
 
 import carelender.controller.Controller;
@@ -18,7 +19,7 @@ public class QuerySet extends QueryBase {
     
     @Override
 	public void controllerExecute() {
-		switch(keyword){
+		switch (keyword) {
 			case "username":
 				AppSettings.getInstance().setStringSetting(SettingName.USERNAME,(String) value);
 				String newNameHint = "Welcome back " + value;
@@ -39,13 +40,13 @@ public class QuerySet extends QueryBase {
 	}
 	
 	/**
-	 * Converts user input to corresponding UIType
+	 * Converts user input string to corresponding UIType
 	 * @param input
 	 * @return
 	 */
 	private UIType getUIType (String input) {
 		UIType uiType = null;
-		switch ( input ) {
+		switch (input) {
 	        case "TIMELINE":
 	        	uiType = UIType.TIMELINE;
 	            break;

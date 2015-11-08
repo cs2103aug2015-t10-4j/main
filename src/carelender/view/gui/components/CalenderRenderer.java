@@ -52,6 +52,7 @@ public class CalenderRenderer extends CanvasRenderer {
     private static final double CAL_CELL_HEIGHT_WIDTH_RATIO = 0.75;    
     private static final double CAL_CELL_SHADOW_OFFSET_RATIO = 0.7;
     
+    //@@author A0133269A
     public CalenderRenderer() {        
         monthEventNumbers = new int[NUMBER_OF_SQUARES][NUMBER_OF_RANGES_PER_DAY];
         resetEventNumbers();
@@ -81,6 +82,7 @@ public class CalenderRenderer extends CanvasRenderer {
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
 
+    //@@author A0133907E
     double sidePadding;
     double usableWidth;
     double calCellWidth;
@@ -219,6 +221,7 @@ public class CalenderRenderer extends CanvasRenderer {
         }
     }
     
+    //@@author A0133269A
     private String getMonth(int month) {
         return new DateFormatSymbols().getMonths()[month];
     }
