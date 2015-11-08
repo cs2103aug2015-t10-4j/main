@@ -163,12 +163,23 @@ public class Event implements Serializable{
 
     public String getInfo() {
         String dateString = DateFormats.DEBUG_FORMAT.format(getEarliestDate());
-        return this.name + " | " + dateString;
+        return this.uid + " | " + this.name + " | " + dateString;
     }
 
     public Event copy () {
         return new Event(this);
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        String breakline = "";
+        stringBuilder.append(breakline);
+        breakline = System.lineSeparator();
+        stringBuilder.append(getInfo());
+        return stringBuilder.toString();
+    }
+    
     public enum EventType {
         FLOATING_TASK,
         DEADLINE_TASK,

@@ -162,23 +162,19 @@ public class Model {
 	 */
 	public void undoUpdatedEvent(EventList eventList, boolean isUndo) {
 		EventList redoEventList = new EventList();
-		System.out.println("Hello");
 		for (int i = 0; i < eventList.size(); i++) {
 			for (int j = 0; j < events.size(); j++) {
 				if (events.get(j).getUid() == eventList.get(i).getUid()) {
 					redoEventList.add(events.get(j));
 					events.remove(j);
 					events.add(eventList.get(i));
-					break;
 				}
 			}			
 		}
 		// Checks if it is an undo or redo command
 		if (isUndo) {
-			System.out.println("Undo");
 			UndoManager.getInstance().redoUpdate(redoEventList);
 		} else {
-			System.out.println("Redo");
 			UndoManager.getInstance().update(redoEventList);
 		}
 		saveToFile(fileName, events);
@@ -212,7 +208,6 @@ public class Model {
 			UndoManager.getInstance().delete(eventList);
 			break;
 		case UPDATE:
-			System.out.println(eventList.toString());
 			UndoManager.getInstance().update(eventList);
 			break;
 		default:
