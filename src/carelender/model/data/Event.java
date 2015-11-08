@@ -173,6 +173,9 @@ public class Event implements Serializable{
     	sb.append(" | ");
     	
     	for ( DateRange dateRange : this.dateRange ) {
+    		sb.append(dateConcat);
+    		dateConcat = ", ";
+    		
     		String startString = DateFormats.DEBUG_FORMAT.format(dateRange.getStart());
 			sb.append(startString);
     		if ( dateRange.isRange() ) {
@@ -180,8 +183,6 @@ public class Event implements Serializable{
     			sb.append(" - ");
     			sb.append(endString);
     		}
-    		sb.append(dateConcat);
-    		dateConcat = ", ";
     	}
     	
     	if ( category != null ) {
