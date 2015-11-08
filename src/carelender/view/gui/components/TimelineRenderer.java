@@ -127,22 +127,22 @@ public class TimelineRenderer extends CanvasRenderer {
 				String keyStart = DateFormats.FORMAT_KEY(date.getStart());
 				//Event has a single date
 				if (keyEnd.equals(keyStart)) {
-					addDateRangeToDisplay(keyStart, getTimeInMinutes(date.getStart()),
-											getTimeInMinutes(date.getEnd()), String.valueOf(index));
+					addDateRangeToDisplay(keyStart, DateFormats.TIME_IN_MINUTES(date.getStart()),
+											DateFormats.TIME_IN_MINUTES(date.getEnd()), String.valueOf(index));
 				} else {
-					addDateRangeToDisplay(keyStart, getTimeInMinutes(date.getStart()),
+					addDateRangeToDisplay(keyStart, DateFormats.TIME_IN_MINUTES(date.getStart()),
 											TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
 					Date currentDay = date.getStart();
 					//Event spans multiple days, add event to each day between start and end dates.
 					for ( int i = 0; i < date.getDaysBetween(); i++ ) {
-						currentDay = addDays(currentDay, 1);
+						currentDay = DateFormats.ADD_DAYS(currentDay, 1);
 						if (!(keyEnd.equals(DateFormats.FORMAT_KEY(currentDay)))) {
 							addDateRangeToDisplay(DateFormats.FORMAT_KEY(currentDay), 0,
 													TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
 					
 						}
 					}
-					this.addDateRangeToDisplay(keyEnd, 0, this.getTimeInMinutes(date.getEnd()),
+					this.addDateRangeToDisplay(keyEnd, 0, DateFormats.TIME_IN_MINUTES(date.getEnd()),
 												String.valueOf(index));
 				}
 			}
@@ -409,41 +409,4 @@ public class TimelineRenderer extends CanvasRenderer {
 		bar.setParams(startTime, endTime, content);
 		return bar;
 	}
-	
-	/**
-	 * Get the number of minutes given a specific date.
-	 * Limited to the time on the day of the date, not total elapsed.
-	 * 
-	 * @param date
-	 * @return
-	 *  	Number of minutes in the date.
-	 */
-	private double getTimeInMinutes ( Date date ) {
-		if ( date == null ) {
-			return 0;
-		}
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		int hours = calendar.get(Calendar.HOUR_OF_DAY);
-		int minutes = calendar.get(Calendar.MINUTE);
-		
-		return ((hours * 60) + minutes);
-	}
-	
-	/**
-	 * Add the given number of days to a date.
-	 * 
-	 * @param date
-	 * @param days
-	 * @return
-	 * 		The new date after the amount of days.
-	 */
-	private Date addDays ( Date date, int days )
-    {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, days);
-        
-        return calendar.getTime();
-    }
 }

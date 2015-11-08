@@ -2,6 +2,7 @@
 package carelender.model.strings;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -40,7 +41,8 @@ public class DateFormats {
         String dayInYear = DAY_IN_YEAR.format(date);
         //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
         //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
-        for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
+        int length = dayInYear.length();
+        for (int i = 0; i < (3 - length); i++ ) {
         	dayInYear = "0" + dayInYear;
         }
         String year = YEAR.format(date);
@@ -48,4 +50,45 @@ public class DateFormats {
         //Concatenate all the parts of the key together.
         return (year + " " + dayInYear + " " + day);
 	}
+    
+    /**
+	 * Get the number of minutes given a specific date.
+	 * Limited to the time on the day of the date, not total elapsed.
+	 * 
+	 * @param date
+	 * @return
+	 *  	Number of minutes in the date.
+	 */
+	public static double TIME_IN_MINUTES ( Date date ) {
+		if ( date == null ) {
+			return 0;
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		int hours = calendar.get(Calendar.HOUR_OF_DAY);
+		int minutes = calendar.get(Calendar.MINUTE);
+		
+		return ((hours * 60) + minutes);
+	}
+	
+	/**
+	 * Add the given number of days to a date.
+	 * 
+	 * @param date
+	 * @param days
+	 * @return
+	 * 		The new date after the amount of days.
+	 */
+	public static Date ADD_DAYS ( Date date, int days )
+    {
+		if (date == null) {
+			return null;
+		}
+		
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, days);
+        
+        return calendar.getTime();
+    }
 }
