@@ -12,8 +12,8 @@ import javafx.scene.text.TextAlignment;
  * Renders the autocomplete box and automatically resizes the height according to the number of lines.
  */
 public class AutocompleteRenderer extends CanvasRenderer {
-    public static final double FONT_RATIO = 0.166;
-    public static final double HINT_FONT_RATIO = 0.15;
+    public static final double FONT_RATIO = 1/80.0;
+    public static final double HINT_FONT_RATIO = 1/90.0;
     public static final double INNER_PADDING = 5;
 
     public static final String TAB_TO_AUTOCOMPLETE = "TAB to autocomplete";
@@ -41,7 +41,7 @@ public class AutocompleteRenderer extends CanvasRenderer {
                 gc.strokeText(TAB_TO_AUTOCOMPLETE, x + INNER_PADDING * 2, y - fieldHeight - INNER_PADDING);
             }
 
-            Font font = FontLoader.load( fontSize);
+            Font font = FontLoader.load( fontSize );
             autoComplete.setParams(gc, x, y - fieldHeight, width, fieldHeight,
                     INNER_PADDING, INNER_PADDING, font, FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
 
