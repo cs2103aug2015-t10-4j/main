@@ -28,7 +28,7 @@ public class HintGenerator {
     private static final ArrayList<String> basicHints = Model.getInstance().loadStringArrayList("hints.dat");
 	private ArrayList<String> hints;
 	
-    private HintGenerator() {
+    public HintGenerator() {
     	hints = new ArrayList<String>();
         hints = basicHints;
         
