@@ -1,3 +1,4 @@
+//@@author A0121815N
 package carelender.model;
 
 import java.io.BufferedReader;
@@ -33,7 +34,7 @@ public class AppSettings {
 	private static Logger log;
 
 	@SuppressWarnings("unchecked")
-	private AppSettings() {
+    private AppSettings() {
 		File file = new File(settingsFile);
 		log = Logger.getLogger(Model.class.getName());
 		
@@ -55,7 +56,6 @@ public class AppSettings {
 				appSettingsHash.put(DataType.BOOLEAN, new HashMap<SettingName, Object>());
 				appSettingsHash.put(DataType.STRING, new HashMap<SettingName, Object>());
 			} else {
-				System.out.println("Stuffed");
 				FileInputStream fis = new FileInputStream(settingsFile);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				appSettingsHash = (HashMap<DataType, HashMap<SettingName, Object>>) ois.readObject();
