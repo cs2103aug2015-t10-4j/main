@@ -23,7 +23,6 @@ import carelender.controller.Controller;
 
 /**
  * Render the Task View.
- * @author Weizheng Lee
  */
 public class TaskRenderer extends CanvasRenderer {
 	private static final double TASKBAR_NAME_RATIO = 0.4;

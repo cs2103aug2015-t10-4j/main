@@ -15,7 +15,6 @@ public class QueryRedo extends QueryBase{
 
 	@Override
 	public EventList searchExecute() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

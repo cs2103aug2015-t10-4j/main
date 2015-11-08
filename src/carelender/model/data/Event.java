@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/*
+/**
  * Events are stored in this format when returned from the Storage component.
  * EventObjects should be within EventLists when returned from Storage.
  * 		Single objects are returned in an EventList of one element.
