@@ -46,35 +46,22 @@ public class QueryAdd extends QueryBase {
 
 	@Override
 	public void controllerExecute() {
-        /*if ( dateRanges == null ) {
-            Controller.displayMessage("Adding new task: ["+name+"]");
-        } else {
-            Controller.displayMessage("Adding new task: ["+name+"] at ");
-            for ( DateRange dateRange : dateRanges ) {
-                Controller.displayMessage( "    " + dateRange.toString() );
-            }
-        }*/
         Controller.displayMessage(QueryFeedback.addTask(name));
-
-        /*QueryList checkClashesQuery = new QueryList();
-        checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_START, queryAdd.getTime());
-        checkClashesQuery.addSearchParam(QueryList.SearchParam.DATE_END, queryAdd.getTime());
-        
-        EventList searchResults = search.parseQuery(checkClashesQuery);
-        
-        //There is at least one task that clashes with the task to add.
-        if (searchResults.size() > 0) {
-            displayMessage("Task clashes with:");
-            displayMessage(searchResults.toString());
-        } else { //Add the task to the Model.*/
-            Model.getInstance().addEvent(Controller.queryAddToEventObject(this));
-        //}
+        Model.getInstance().addEvent(convertToEventObject());
 	}
 
 	@Override
 	public EventList searchExecute() {
 		return null;
 	}
+
+    /**
+     * Converts this query object into an event object
+     * @return Event object
+     */
+    public Event convertToEventObject() {
+        return new Event(0, getName(), getDateRange(), getCategory());
+    }
     
     
 }

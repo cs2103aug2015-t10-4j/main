@@ -126,6 +126,7 @@ public class Model {
 				if (events.get(i).getUid() == eventObj.getUid()) {
 					deletedEventList.add(events.get(i));
 					events.remove(i);
+                    //break;
 				}
 			}
 		}
@@ -142,6 +143,7 @@ public class Model {
 			for (Event eventObj : eventList) {
 				if (events.get(i).getUid() == eventObj.getUid()) {
 					events.remove(i);
+                    break;
 				}
 			}
 		}

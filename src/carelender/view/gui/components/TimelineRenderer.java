@@ -142,7 +142,6 @@ public class TimelineRenderer extends CanvasRenderer {
 		                    xCurrent += ( barWidth + this.xPadding );
 		                    remainingHeight -= (barWidth + this.xPadding);
 	            		} else {
-	            			System.out.println ( "YESSSSS" );
 	            			break;
 	            		}
 	            	}
@@ -163,7 +162,6 @@ public class TimelineRenderer extends CanvasRenderer {
 		            xCurrent += ( barWidth + this.xPadding );
 		            remainingHeight -= (barWidth + this.xPadding);
         		} else {
-        			System.out.println ( "AAAHHHH" );
         			break;
         		}	
         	}

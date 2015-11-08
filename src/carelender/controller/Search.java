@@ -53,7 +53,7 @@ public class Search {
 		if (hasComplete(paramsList)) {
 			Object complete = paramsList.get(QueryList.SearchParam.COMPLETE);
 			assert ( complete != null ) : "CATEGORY paired with null object in HashMap.";
-			match = IsEventComplete(eventToCheck);
+			match = IsEventComplete(eventToCheck, (Boolean)complete);
 			
 			if ( !match ) {
 				return false;
@@ -160,8 +160,8 @@ public class Search {
 		return false;
 	}
 	
-	public static boolean IsEventComplete (Event eventToCheck) {
-		return eventToCheck.getCompleted();
+	public static boolean IsEventComplete (Event eventToCheck, boolean complete) {
+		return eventToCheck.getCompleted() == complete;
 	}
 	
 	public static boolean isEventBeforeDate (Event eventToCheck,
