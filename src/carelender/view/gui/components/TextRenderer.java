@@ -1,3 +1,4 @@
+//@@author A0125566B
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
@@ -9,16 +10,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
- * Written by : Weizheng Lee 18/10/2015
  * This class contains methods to render wrapping text.
  */
 public class TextRenderer {
 
+	private ArrayList<String> textLines;
     private GraphicsContext gc;
-
+    private Font font;
+    
     private double xPosition;
     private double yPosition;
 
@@ -28,12 +29,10 @@ public class TextRenderer {
     private double xPadding;
     private double yPadding;
 
-    private Font font;
     private double charWidth;
     private double charHeight;
     private double lineSpace;
 
-    private ArrayList<String> textLines;
     private double charsPerLine;
 
 
@@ -71,6 +70,7 @@ public class TextRenderer {
 		gc.setTextAlign(TextAlignment.LEFT);
     }
 
+    //@@author A0133269A
 	/**
 	 * Add text to the message box in a single line with ellipsis
 	 * @param textLine Line of text to add. Breaklines will be removed
@@ -104,6 +104,7 @@ public class TextRenderer {
     	}
     }
 
+ 	//@@author A0125566B
     public void addText ( String textToAdd ) {
 		if ( textToAdd == null ) {
 			return;

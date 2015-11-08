@@ -1,6 +1,6 @@
+//@@author A0125566B
 package carelender.model.data;
 
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,7 +12,6 @@ import carelender.model.Model;
 /**
  * Used for list queries
  */
-
 public class QueryList extends QueryBase {
 	private HashMap<SortParam, Comparator<Event>> sortComparators = new HashMap<>();
 	private HashMap<SearchParam, Object> searchParamsList = new HashMap<>();
@@ -83,7 +82,6 @@ public class QueryList extends QueryBase {
 	public EventList searchExecute() {
 		EventList returnList = new EventList();
 		
-		//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
 		if (Model.getInstance().retrieveEvent() != null) {
 			for (Event event : Model.getInstance().retrieveEvent()) {
 				if (Search.eventMatchesParams(event, getSearchParamsList())) {

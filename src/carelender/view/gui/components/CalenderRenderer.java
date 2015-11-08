@@ -78,7 +78,7 @@ public class CalenderRenderer extends CanvasRenderer {
     public void refreshEventList() {
         monthEvents = monthListQuery.searchExecute();
         updateEventNumbers();
-        HintGenerator.getInstance().setDailyEventNumbers(monthEventNumbers);
+        HintGenerator.getInstance().setEventNumbers(monthEventNumbers);
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
 

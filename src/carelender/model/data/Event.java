@@ -1,3 +1,4 @@
+//@@author A0125566B
 package carelender.model.data;
 
 import carelender.model.strings.DateFormats;
@@ -30,10 +31,6 @@ public class Event implements Serializable{
         category = eventObject.category;
         completed = eventObject.completed;
         DateRange [] eventObjectDateRange = eventObject.dateRange;
-//        dateRange = new DateRange[eventObjectDateRange.length];
-//        for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
-//            dateRange[i] = eventObjectDateRange[i].copy();
-//        }
         
         if ( eventObjectDateRange != null ) {
             dateRange = new DateRange[eventObjectDateRange.length];
@@ -49,12 +46,10 @@ public class Event implements Serializable{
         }
     }
     public Event (int uidToSet, String nameToSet, DateRange[] dateRangetoSet, String category) {
-        //TODO: Initialize internal fields.
         this.uid = uidToSet;
         this.name = nameToSet;
         this.dateRange = dateRangetoSet;
         this.category = category;
-        //this.completed = completed;
     }
 
     public void setUid(int uid){
@@ -100,6 +95,7 @@ public class Event implements Serializable{
     	return category;
     }
     
+    //@@author A0125566B
     public Date getLatestDate () {
         Date lastDate = null;
         if ( this.dateRange == null ) return null;
@@ -115,6 +111,7 @@ public class Event implements Serializable{
         return lastDate;
     }
 
+    //@@author A0125566B
     public Date getEarliestDate () {
         Date firstDate = null;
         if ( this.dateRange == null ) return null;
@@ -130,6 +127,7 @@ public class Event implements Serializable{
         return firstDate;
     }
     
+    //@@author A0125566B
     public Date getEarliestDateFromNow () {
         Date currentDate = new Date();
         Date firstDate = null;
@@ -147,9 +145,7 @@ public class Event implements Serializable{
         }
         return firstDate;
     }
-
-
-
+    
     public EventType getEventType () {
         if (this.dateRecurrence == null) {
             if (this.dateRange == null) {
@@ -162,7 +158,6 @@ public class Event implements Serializable{
                 return EventType.REC_FLOATING_TASK;
             }
         }
-        //TODO: Do more type checks.
         return EventType.DEADLINE_TASK;
     }
 
