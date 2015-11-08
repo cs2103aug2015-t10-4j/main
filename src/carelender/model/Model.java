@@ -308,8 +308,8 @@ public class Model {
 					break;
 				}
 				strings.add(line);
-				bufferedReader.close();
 			}
+			bufferedReader.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
