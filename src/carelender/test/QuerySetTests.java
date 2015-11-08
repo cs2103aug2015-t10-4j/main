@@ -1,10 +1,10 @@
+//@@author A0133907E
 package carelender.test;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 import carelender.model.AppSettings;
 import carelender.model.AppSettings.SettingName;
-import carelender.model.data.QuerySet;
 import carelender.view.gui.UIController.UIType;
 
 public class QuerySetTests {
@@ -42,7 +42,9 @@ public class QuerySetTests {
 				break;
 			case "startview":
 				UIType newDefaultUIType = getUIType(value.toUpperCase());
+				System.out.println(5);
 				AppSettings.getInstance().setUITypeSetting(SettingName.DEFAULT_UITYPE, newDefaultUIType);
+				System.out.println(6);
 				break;
 			default:
 				break;
