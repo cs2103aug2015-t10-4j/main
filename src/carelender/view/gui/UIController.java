@@ -291,9 +291,10 @@ public class UIController implements Initializable {
         UIRenderer.redraw();
     }
 
+    //@@author A0133907E
     public void setUI(UIType type) {
         uiType = type;
-        switch ( uiType ) {
+        switch (uiType) {
             case CALENDAR:
                 UIRenderer.setMainRenderer(monthViewRenderer);
                 break;
@@ -311,6 +312,7 @@ public class UIController implements Initializable {
         refresh();
     }
 
+    //@@author A0133269A
     /**
      * Changes the UI back to month view if in settings
      * If not toggle between month and week
