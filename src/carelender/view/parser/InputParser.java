@@ -6,11 +6,9 @@ import carelender.model.data.QueryUpdate.UpdateParam;
 import carelender.model.strings.ErrorMessages;
 import carelender.view.gui.UIController;
 import carelender.view.parser.CommandKeyword.DataPosition;
+import net.fortuna.ical4j.model.DateTime;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Parses the user input
@@ -266,11 +264,13 @@ public class InputParser {
      */
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
-
+        ArrayList<String> dateSubstrings = new ArrayList<>();
         String [] queryParts = splitQuery(input);
         String commandString = queryParts[0];
-        DateRange [] dateRanges = DateTimeParser.parseDateTime(removeQuotes(input));
-        input = DateTimeParser.replaceDateParts(input, "|DATE|");
+        DateRange [] dateRanges = DateTimeParser.parseDateTime(removeQuotes(input), dateSubstrings);
+
+        input = DateTimeParser.replaceDateParts(input, dateSubstrings.toArray(new String[dateSubstrings.size()]), "|DATE|");
+
         String [] queryPartsNoDate = splitQuery(input);
 
         Command matchedCommand = commandManager.matchCommand(commandString);
@@ -685,7 +685,7 @@ public class InputParser {
     }
     
     /**
-     * Changes everything within quotation marks to '-'
+     * Changes everything within quotation marks to '='
      * @param input User input
      * @return Processed input
      */
@@ -699,7 +699,7 @@ public class InputParser {
     			stringBuilder.append(letter);
     		} else {
 	    		if ( masking ) {
-	    			stringBuilder.append('-');
+	    			stringBuilder.append('=');
 	    		} else {
 	    			stringBuilder.append(letter);
 	    		}
