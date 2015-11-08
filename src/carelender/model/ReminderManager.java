@@ -19,10 +19,9 @@ public class ReminderManager {
 	}
 
 	private PriorityQueue<Reminder> reminders;
-	private Calendar cal;
 
 	private ReminderManager() {
-		reminders = new PriorityQueue<Reminder>();
+		reminders = new PriorityQueue<>();
 	}
 
 	public boolean addReminder(Event eventObj, Calendar reTime) {
@@ -36,7 +35,7 @@ public class ReminderManager {
 	 * @return List of reminders which have been triggered
 	 */
 	public ReminderList getReminders() {
-		cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();
 
 		ReminderList reminderList = new ReminderList();
 		while (!reminders.isEmpty()) {

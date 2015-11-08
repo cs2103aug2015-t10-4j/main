@@ -74,14 +74,14 @@ public class DateRangeRenderer {
                 if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
                     this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
 
-                    this.dateStart = DateFormats.dateFormat.format(dateRange.getStart());
+                    this.dateStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
                 } else {
                     this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
                     this.timeEnd = DateFormats.timeFormat.format(dateRange.getEnd());
 
                     if ( sameYear ) {
-                        this.dateStart = DateFormats.dateFormat.format(dateRange.getStart());
-                        this.dateEnd = DateFormats.dateFormat.format(dateRange.getEnd());
+                        this.dateStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
+                        this.dateEnd = DateFormats.dateFormatMonth.format(dateRange.getEnd());
                     } else {
                         this.dateStart = DateFormats.dateFormatYear.format(dateRange.getStart());
                         this.dateEnd = DateFormats.dateFormatYear.format(dateRange.getEnd());
@@ -89,7 +89,7 @@ public class DateRangeRenderer {
                 }
             } else {
             	if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
-                    this.timeStart = DateFormats.dateFormat.format(dateRange.getStart());
+                    this.timeStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
                     this.dateStart = "Starts";
                 } else {
                 	this.dateStart = "Starts";
@@ -101,8 +101,8 @@ public class DateRangeRenderer {
                     boolean sameYear = start.get(Calendar.YEAR) == end.get(Calendar.YEAR);
                     
                     if ( sameYear ) {
-                        this.timeStart = DateFormats.dateFormat.format(dateRange.getStart());
-                        this.timeEnd = DateFormats.dateFormat.format(dateRange.getEnd());
+                        this.timeStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
+                        this.timeEnd = DateFormats.dateFormatMonth.format(dateRange.getEnd());
                     } else {
                         this.timeStart = DateFormats.dateFormatYear.format(dateRange.getStart());
                         this.timeEnd = DateFormats.dateFormatYear.format(dateRange.getEnd());

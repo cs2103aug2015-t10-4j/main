@@ -1,3 +1,4 @@
+//@@author A0133269A
 package carelender.model.strings;
 
 /**
@@ -15,6 +16,12 @@ public class FirstStartMessages {
     }
     public static String askForNameAgain() {
         return "Please tell us what to call you.";
+    }
+    public static String firstStart() {
+        return "Welcome to CARELender(TM). ";
+    }
+    public static String welcomeBack( String username ) {
+        return "Welcome back, " + username;
     }
 
 

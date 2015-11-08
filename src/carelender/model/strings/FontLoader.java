@@ -1,3 +1,4 @@
+//@@author A0133269A
 package carelender.model.strings;
 
 import javafx.scene.text.Font;

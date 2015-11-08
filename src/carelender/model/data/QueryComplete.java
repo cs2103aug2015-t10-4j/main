@@ -1,7 +1,6 @@
 package carelender.model.data;
 
 import carelender.controller.Controller;
-import carelender.controller.callbacks.OnConfirmedCallback;
 import carelender.model.Model;
 import carelender.model.strings.QueryFeedback;
 

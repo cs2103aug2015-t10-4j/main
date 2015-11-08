@@ -1,6 +1,6 @@
+//@@author A0133269A
 package carelender.controller.states;
 
-import carelender.model.AppSettings;
 
 /**
  * Manages the states of the application

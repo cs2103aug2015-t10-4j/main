@@ -1,3 +1,4 @@
+//@@author A0133269A
 package carelender.model.strings;
 
 /**
@@ -15,12 +16,17 @@ public class ErrorMessages {
         return "Please input something to search";
     }
 
-    public static String adddNoParameters() {
+    public static String addNoParameters() {
         return "What would you like to add?";
     }
     public static String deleteNoParameters() {
         return "What would you like to delete?";
     }
+
+    public static String completeNoParameters() {
+        return "What would you like to complete?";
+    }
+
     public static String setNoParameters() {
         return "What would you like to set?";
     }
@@ -37,6 +43,9 @@ public class ErrorMessages {
 
     public static String invalidIndices() {
         return "Error parsing indices";
+    }
+    public static String singleIndexOnly() {
+        return "Please input only one index";
     }
 
     public static String invalidUpdate() {
@@ -56,4 +65,5 @@ public class ErrorMessages {
     public static String invalidNumber(String s) {
         return s + " is not a number. Please input a number";
     }
+
 }
