@@ -49,9 +49,7 @@ public class UndoManager {
 	}
 
 	/**
-	 * Pops an undo step off the undo stack
-	 * 
-	 * @return The command to undo or null if there is none
+	 * This method is called by model when an undo command is requested
 	 */
 	public void undo() {
 		if (!undoStack.isEmpty()) {
@@ -77,6 +75,9 @@ public class UndoManager {
 		redoStack.empty();
 	}
 	
+	/**
+	 * This method is called by model when a redo command is requested
+	 */
 	public void redo() {
 		if (!redoStack.isEmpty()) {
 			UndoStep redoStep = redoStack.pop();

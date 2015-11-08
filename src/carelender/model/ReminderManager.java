@@ -5,6 +5,9 @@ import java.util.PriorityQueue;
 
 import carelender.model.data.Event;
 
+/**
+ * Handles reminders for events
+ */
 public class ReminderManager {
 	private static ReminderManager singleton = null;
 
@@ -16,10 +19,9 @@ public class ReminderManager {
 	}
 
 	private PriorityQueue<Reminder> reminders;
-	Calendar cal;
+	private Calendar cal;
 
 	private ReminderManager() {
-		// Calendar cal = Calendar.getInstance();
 		reminders = new PriorityQueue<Reminder>();
 	}
 
@@ -29,13 +31,16 @@ public class ReminderManager {
 		return true;
 	}
 	
+	/**
+	 * Get reminders which have been triggered
+	 * @return List of reminders which have been triggered
+	 */
 	public ReminderList getReminders() {
 		cal = Calendar.getInstance();
 
 		ReminderList reminderList = new ReminderList();
 		while (!reminders.isEmpty()) {
 			if (reminders.peek().getReTime().compareTo(cal) == -1) {
-				System.out.println("Pop Reminder!");
 				reminderList.add(reminders.poll());
 			} else {
 				break;
@@ -44,6 +49,10 @@ public class ReminderManager {
 		return reminderList;
 	}
 	
+	/**
+	 * Readds reminder into the reminders PriorityQueue
+	 * @param reminder
+	 */
 	public void snoozeReminder(Reminder reminder){
 		reminder.snooze();
 		reminders.add(reminder);
