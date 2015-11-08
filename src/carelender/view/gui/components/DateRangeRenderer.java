@@ -3,6 +3,7 @@ package carelender.view.gui.components;
 import carelender.model.data.DateRange;
 import carelender.model.data.Event;
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -143,8 +144,8 @@ public class DateRangeRenderer {
             double connectorWidth = this.connectorWidthRatio * timeWidth;
             double strikeoutWidth = timeWidth;
 
-            Font dateFont = Font.loadFont("file:res/monaco.ttf", dateHeight - (this.yPaddingRatio * dateHeight * 2));
-            Font timeFont = Font.loadFont("file:res/monaco.ttf", timeHeight - (this.yPaddingRatio * timeHeight * 2));
+            Font dateFont = FontLoader.load( dateHeight - (this.yPaddingRatio * dateHeight * 2));
+            Font timeFont = FontLoader.load( timeHeight - (this.yPaddingRatio * timeHeight * 2));
 
             if ( !this.dateStart.equals("") ) {
 

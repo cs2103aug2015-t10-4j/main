@@ -3,6 +3,7 @@ package carelender.view.gui.components;
 import carelender.model.data.DateRange;
 import carelender.model.data.Event;
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -45,7 +46,7 @@ public class TaskBarRenderer {
     public void setContent (Event event) {
     	this.event = event;
         /*
-        font = Font.loadFont("file:res/monaco.ttf", this.initialHeight * timeTextRatio);
+        font = FontLoader.loadFont("file:res/monaco.ttf", this.initialHeight * timeTextRatio);
         this.timeText.setParams (gc, this.xPosition + this.xPadding, this.yPosition + this.yPadding + (this.nameText.getTextHeight()),
                 this.width - (this.xPadding * 2), font.getSize(), 0, 0, font, 0.6, 0.1);
         this.timeText.clearText();
@@ -124,7 +125,7 @@ public class TaskBarRenderer {
         	double xCurrent = x;
             double yCurrent = y;
             
-        	Font font = Font.loadFont("file:res/monaco.ttf", height * this.nameTextRatio);
+        	Font font = FontLoader.load( height * this.nameTextRatio);
         	
         	if ( this.strikeout ) {
         		gc.setGlobalAlpha(0.3);

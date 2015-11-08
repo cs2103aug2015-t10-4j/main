@@ -1,6 +1,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import carelender.view.gui.components.CanvasRenderer;
 import carelender.view.gui.components.TextRenderer;
 import javafx.scene.canvas.GraphicsContext;
@@ -29,7 +30,7 @@ public class PopupRenderer extends CanvasRenderer {
 		gc.fillRoundRect(x, y, width, height/10.0, 10.0, 10.0);
 		
 		double fontSize = width / 40.0; //Temporary
-		Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+		Font font = FontLoader.load( fontSize);
 		TextRenderer message = new TextRenderer();
 		message.setParams(gc, x, y+height/10.0, width, height*9.0/10.0, 3, 3, font, 0.6, 0.05);
 		message.addText(this.message);

@@ -105,7 +105,7 @@ public class BlockingStateController {
      * @param message Message to show user
      */
     public void startConfirmation ( String message, OnConfirmedCallback callback ) {
-        Controller.getGUI().displayPopup(message);
+        Controller.getUI().displayPopup(message);
         blockingState = BlockingState.CONFIRMING;
         onConfirmedCallback = callback;
         /*Controller.clearMessages();
@@ -113,11 +113,11 @@ public class BlockingStateController {
     }
 
     public void startPopup ( String message ) {
-        Controller.getGUI().displayPopup(message);
+        Controller.getUI().displayPopup(message);
         blockingState = BlockingState.POPUP;
     }
     public void startEventPopup ( Event event ) {
-        Controller.getGUI().displayEventPopup(event);
+        Controller.getUI().displayEventPopup(event);
         blockingState = BlockingState.POPUP;
     }
 
@@ -171,21 +171,21 @@ public class BlockingStateController {
             if ( onConfirmedCallback != null ) {
                 onConfirmedCallback.onConfirmed(true);
             }
-            Controller.getGUI().clearPopup();
+            Controller.getUI().clearPopup();
         } else if ( userInput.startsWith("n") ) {
             blockingState = BlockingState.NONE;
             if ( onConfirmedCallback != null ) {
                 onConfirmedCallback.onConfirmed(false);
             }
-            Controller.getGUI().clearPopup();
+            Controller.getUI().clearPopup();
         } else {
-            Controller.getGUI().displayPopup(ErrorMessages.invalidConfirmation());
+            Controller.getUI().displayPopup(ErrorMessages.invalidConfirmation());
         }
     }
 
     private void statePopup(String userInput) {
         blockingState = BlockingState.NONE;
-        Controller.getGUI().clearPopup();
+        Controller.getUI().clearPopup();
     }
 
     private void stateReminder(String userInput) {

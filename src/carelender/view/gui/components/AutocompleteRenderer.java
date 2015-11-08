@@ -1,6 +1,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import carelender.view.gui.components.CanvasRenderer;
 import carelender.view.gui.components.TextRenderer;
 import javafx.geometry.VPos;
@@ -31,7 +32,7 @@ public class AutocompleteRenderer extends CanvasRenderer {
             double fieldHeight = autocompleteOptions.length * ( 1 + lineHeight ) * fontSize + innerPadding * 2;
 
             if ( renderFirstLineBold ) {
-                gc.setFont(Font.loadFont("file:res/monaco.ttf", fontSize*0.9));
+                gc.setFont(FontLoader.load( fontSize*0.9));
                 gc.setTextBaseline(VPos.BOTTOM);
                 gc.setFill(Color.web("#555"));
                 gc.setStroke(Color.web("#555"));
@@ -40,7 +41,7 @@ public class AutocompleteRenderer extends CanvasRenderer {
                 gc.strokeText("TAB to autocomplete", x + 10, y - fieldHeight - 5);
             }
 
-            Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+            Font font = FontLoader.load( fontSize);
             autoComplete.setParams(gc, x, y - fieldHeight, width, fieldHeight,
                     innerPadding, innerPadding, font, 0.6, lineHeight);
 

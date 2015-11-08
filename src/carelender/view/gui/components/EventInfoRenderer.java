@@ -2,6 +2,7 @@ package carelender.view.gui.components;
 
 import carelender.model.data.Event;
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
@@ -34,7 +35,7 @@ public class EventInfoRenderer extends CanvasRenderer {
         gc.fillRect(x, y, width, height * headerRatio);
 
         gc.setFill(AppColours.black);
-        Font font = Font.loadFont("file:res/monaco.ttf", height * headerRatio * .8);
+        Font font = FontLoader.load( height * headerRatio * .8);
         gc.setFont(font);
         gc.setTextBaseline(VPos.TOP);
         gc.setTextAlign(TextAlignment.LEFT);

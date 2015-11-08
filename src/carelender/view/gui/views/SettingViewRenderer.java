@@ -1,6 +1,7 @@
 package carelender.view.gui.views;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import carelender.view.gui.components.CanvasRenderer;
 import carelender.view.gui.components.TabRenderer;
 import javafx.geometry.VPos;
@@ -47,7 +48,7 @@ public class SettingViewRenderer extends CanvasRenderer {
         //gc.fillRect(0, settingFieldY, width, height-settingFieldY);
 
         double fontSize = width / 40.0; //Temporary
-        Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+        Font font = FontLoader.load( fontSize);
         gc.setFont(font);
         gc.setFill(AppColours.autocompleteText);
 		gc.setTextBaseline(VPos.TOP);
@@ -55,7 +56,7 @@ public class SettingViewRenderer extends CanvasRenderer {
 
         gc.fillText("SETTINGS", width / 2, height / 2 - fontSize * 1.5);
 
-        font = Font.loadFont("file:res/monaco.ttf", fontSize * 0.8);
+        font = FontLoader.load( fontSize * 0.8);
         gc.setFont(font);
 
         gc.fillText("To access this page, please purchase the settings DLC", width / 2,  height / 2 );

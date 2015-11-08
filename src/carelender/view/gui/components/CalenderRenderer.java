@@ -11,6 +11,7 @@ import carelender.model.data.Event;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import carelender.view.gui.RenderHelper;
 import carelender.view.gui.components.CanvasRenderer;
 import javafx.geometry.VPos;
@@ -164,7 +165,7 @@ public class CalenderRenderer extends CanvasRenderer {
         gc.setFill(AppColours.panelBackground);
         gc.fillRect(x, y, width, height);
 
-        Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight * 0.5);
+        Font font = FontLoader.load( calCellHeight * 0.5);
 
         gc.setFill(AppColours.calendarCell);
         gc.setTextAlign(TextAlignment.CENTER);
@@ -176,7 +177,7 @@ public class CalenderRenderer extends CanvasRenderer {
             gc.fillText(days[i], actualX, actualY);
         }
 
-        font = Font.loadFont("file:res/monaco.ttf", calCellHeight / 4.0);
+        font = FontLoader.load( calCellHeight / 4.0);
         double monthSpacer = 0;
         for (int i = 0; i < squaresToDraw; i++ ) {
             double actualX = x + i%7 * ( calCellWidth + calCellSpacing ) + sidePadding;

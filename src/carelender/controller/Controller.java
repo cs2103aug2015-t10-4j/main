@@ -12,6 +12,7 @@ import carelender.view.gui.UIController;
 import carelender.view.gui.UIController.UIType;
 import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.util.*;
@@ -94,95 +95,254 @@ public class Controller {
 
     }
 
-
+    /**
+     * The function that handles the key event from the UIController
+     * @param keyEvent KeyEvent from JavaFX
+     */
     public static void handleKeyEvent( final KeyEvent keyEvent ) {
         if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
-            switch ( keyEvent.getCode() ) {
-                case ENTER:
-                    String text = UIController.getInputboxText();
-                    UIController.setInputboxText("");
-                    if ( UIController.getPendingAnnouncementMessage() != null ) {
-                        stopTimer();
-                        UIController.setAnnouncementMessage(UIController.getPendingAnnouncementMessage());
-                        UIController.setPendingAnnouncementMessage(null);
-                    }
-                    processCompleteInput(text);
-                    break;
-                case UP:
-                    if ( keyEvent.isControlDown() ) {
-                        UIController.taskViewScrollUp();
-                    } else {
-                        processUpPress();
-                    }
-                    break;
-                case DOWN:
-                    if ( keyEvent.isControlDown() ) {
-                        UIController.taskViewScrollDown();
-                    } else {
-                        processDownPress();
-                    }
-                    break;
-                case LEFT:
-                    if ( keyEvent.isControlDown() ) {
-                        UIController.timelineScrollLeft();
-                    }
-                    break;
-                case RIGHT:
-                    if ( keyEvent.isControlDown() ) {
-                        UIController.timelineScrollRight();
-                    }
-                    break;
-                case TAB:
-                    processTabPress();
-                    break;
-                case F1:
-                    UIController.setUI(UIType.TIMELINE);
-                    break;
-                case F2:
-                    UIController.setUI(UIType.CALENDAR);
-                    break;
-                case F3:
-                    UIController.setUI(UIType.FLOATING);
-                    break;
-                case F4:
-                    UIController.setUI(UIType.SETTING);
-                    break;
-                case PAGE_UP:
-                    UIController.taskViewScrollUp();
-                    break;
-                case PAGE_DOWN:
-                    UIController.taskViewScrollDown();
-                    break;
-                case HOME:
-                    UIController.timelineScrollLeft();
-                    break;
-                case END:
-                    UIController.timelineScrollRight();
-                    break;
-                case F12:
-                    startTimer();
-                    break;
-                default:
-                    break;
-            }
+            handleKeyPress(keyEvent.getCode(), keyEvent.isControlDown() || keyEvent.isShortcutDown());
         } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
-            switch ( keyEvent.getCode() ) {
-                case ENTER:
-                case UP:
-                case DOWN:
+            handleKeyRelease(keyEvent.getCode());
+        }
+    }
+
+    /**
+     * Called by UI while user is typing
+     * @param userInput the incomplete user input
+     */
+    public static void processIncompleteInput(String userInput) {
+        incompleteInput = userInput;
+        if ( stateManager.getAppState() == AppState.DEFAULT && !blockingStateController.isBlocked() ) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput, stringBuilder);
+            if ( autocompleteOptions != null ) {
+                //System.out.println("Autocomplete size: " + autocompleteOptions.length);
+            } else {
+                //System.out.println("No match");
+            }
+            UIController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
+        } else {
+            UIController.setAutocompleteOptions(null, null);
+        }
+
+    }
+
+    /**
+     * Converts an add query to an event object
+     * @param queryAdd
+     * @return
+     */
+    public static Event queryAddToEventObject(QueryAdd queryAdd) {
+        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange(), queryAdd.getCategory());
+        return eventObj;
+    }
+
+
+
+    public static void showHelp() {
+        //UIController.displayMessage("Available Commands:");
+        //UIController.displayMessage(InputParser.getInstance().showCommandList());
+        blockingStateController.startPopup(InputParser.getInstance().showCommandList());
+    }
+
+    public static void printWelcomeMessage() {
+        if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
+            UIController.setAnnouncementMessage("Welcome to careLender. " + FirstStartMessages.askForName());
+        } else {
+            UIController.setAnnouncementMessage("Welcome back, " + userName);
+            stateManager.changeState(AppState.DEFAULT);
+        }
+    }
+
+    /**
+     * Refreshes the list of events.
+     * It is called after every query the user inputs
+     */
+    public static void refreshDisplay () {
+        if ( currentListQuery == null) {
+            currentListQuery = new QueryList();
+            currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
+        }
+
+        currentListQuery.controllerExecute();
+        UIController.refreshOutputField();
+    }
+
+    /**
+     * Processes the user input.
+     * Called by the UIController class
+     * @param userInput The user input string
+     */
+    public static void processCompleteInput(String userInput) {
+        UIController.setAutocompleteOptions(null, null);
+        userInput = userInput.trim();
+        saveUserCommand(userInput);
+
+        boolean blocked = blockingStateController.processBlockingState(userInput);
+
+        if ( !blocked ) {
+            switch ( stateManager.getAppState() ) {
+                case FIRSTSTART:
+                    stateFirstStart(userInput);
                     break;
-                case ALT:
-                    UIController.getAutomatedCommand(false);
-                    break;
-                case CONTROL:
-                    UIController.getAutomatedCommand(true);
-                    break;
+
                 default:
-                    processIncompleteInput(UIController.getInputboxText());
+                    stateDefault(userInput);
                     break;
             }
         }
     }
+
+    /**
+     * Prints a message to screen
+     * @param message message to be displayed
+     */
+    public static void displayMessage ( String message ) {
+        UIController.displayMessage(message);
+    }
+
+    public static void displayAnnouncement ( String message ) {
+        UIController.setAnnouncementMessage(message);
+    }
+
+    public static void displayTasks (EventList events) {
+        UIController.setTaskList(events);
+    }
+
+
+    public static void clearMessages () {
+        UIController.clearMessageLog();
+    }
+
+    public static void setDisplayedList(EventList displayedList) {
+        InputParser.getInstance().setDisplayedList(displayedList);
+        UIController.setWeekEventList(displayedList);
+    }
+
+    public static BlockingStateController getBlockingStateController() {
+        return blockingStateController;
+    }
+
+
+
+    public static void setUI(UIType type) {
+        UIController.setUI(type);
+    }
+    public static void toggleUI() {
+        UIController.toggleUI();
+    }
+
+    /*public static void autocompleteSuggestion() {
+        UIController.autocompleteSuggestion();
+    }*/
+
+    public static UIType getDefaultUIType() {
+        return defaultUIType;
+    }
+
+    public static UIController getUI() {
+        return UIController;
+    }
+
+    /**
+     * Handles the key press event
+     * @param code JavaFX KeyCode
+     * @param modifier Is control or command pressed
+     */
+    private static void handleKeyPress(KeyCode code, boolean modifier) {
+        switch ( code ) {
+            case ENTER:
+                String text = UIController.getInputboxText();
+                UIController.setInputboxText("");
+                if ( UIController.getPendingAnnouncementMessage() != null ) {
+                    stopTimer();
+                    UIController.setAnnouncementMessage(UIController.getPendingAnnouncementMessage());
+                    UIController.setPendingAnnouncementMessage(null);
+                }
+                processCompleteInput(text);
+                break;
+            case UP:
+                if ( modifier ) {
+                    UIController.taskViewScrollUp();
+                } else {
+                    processUpPress();
+                }
+                break;
+            case DOWN:
+                if ( modifier ) {
+                    UIController.taskViewScrollDown();
+                } else {
+                    processDownPress();
+                }
+                break;
+            case LEFT:
+                if ( modifier ) {
+                    UIController.timelineScrollLeft();
+                }
+                break;
+            case RIGHT:
+                if ( modifier ) {
+                    UIController.timelineScrollRight();
+                }
+                break;
+            case TAB:
+                UIController.autocompleteSuggestion();
+                break;
+            case F1:
+                UIController.setUI(UIType.TIMELINE);
+                break;
+            case F2:
+                UIController.setUI(UIType.CALENDAR);
+                break;
+            case F3:
+                UIController.setUI(UIType.FLOATING);
+                break;
+            case F4:
+                UIController.setUI(UIType.SETTING);
+                break;
+            case PAGE_UP:
+                UIController.taskViewScrollUp();
+                break;
+            case PAGE_DOWN:
+                UIController.taskViewScrollDown();
+                break;
+            case HOME:
+                UIController.timelineScrollLeft();
+                break;
+            case END:
+                UIController.timelineScrollRight();
+                break;
+            case F12:
+                startTimer();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Handles the key release event
+     * @param code JavaFX KeyCode
+     */
+    private static void handleKeyRelease ( KeyCode code ) {
+        switch ( code ) {
+            case ENTER:
+            case UP:
+            case DOWN:
+                break;
+            case ALT:
+                UIController.getAutomatedCommand(false);
+                break;
+            case CONTROL:
+                UIController.getAutomatedCommand(true);
+                break;
+            default:
+                processIncompleteInput(UIController.getInputboxText());
+                break;
+        }
+    }
+
     /**
      * Called by UI when up key is pressed
      */
@@ -231,51 +391,7 @@ public class Controller {
         }
     }
 
-    /**
-     * Called by UI while user is typing
-     * @param userInput the incomplete user input
-     */
-    public static void processIncompleteInput(String userInput) {
-        incompleteInput = userInput;
-        if ( stateManager.getAppState() == AppState.DEFAULT && !blockingStateController.isBlocked() ) {
-            StringBuilder stringBuilder = new StringBuilder();
-            String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput, stringBuilder);
-            if ( autocompleteOptions != null ) {
-                //System.out.println("Autocomplete size: " + autocompleteOptions.length);
-            } else {
-                //System.out.println("No match");
-            }
-            UIController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
-        } else {
-            UIController.setAutocompleteOptions(null, null);
-        }
 
-    }
-
-    /**
-     * Processes the user input.
-     * Called by the UIController class
-     * @param userInput The user input string
-     */
-    public static void processCompleteInput(String userInput) {
-        UIController.setAutocompleteOptions(null, null);
-        userInput = userInput.trim();
-        saveUserCommand(userInput);
-
-        boolean blocked = blockingStateController.processBlockingState(userInput);
-
-        if ( !blocked ) {
-            switch ( stateManager.getAppState() ) {
-                case FIRSTSTART:
-                    stateFirstStart(userInput);
-                    break;
-
-                default:
-                    stateDefault(userInput);
-                    break;
-            }
-        }
-    }
 
     private static void stateFirstStart ( String userInput ) {
     	final OnConfirmedCallback confirmNameCallback = new OnConfirmedCallback() {
@@ -331,46 +447,7 @@ public class Controller {
         refreshDisplay();
     }
 
-    /**
-     * Converts an add query to an event object
-     * @param queryAdd
-     * @return
-     */
-    public static Event queryAddToEventObject(QueryAdd queryAdd) {
-        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange(), queryAdd.getCategory());
-        return eventObj;
-    }
 
-
-
-    public static void showHelp() {
-        //UIController.displayMessage("Available Commands:");
-        //UIController.displayMessage(InputParser.getInstance().showCommandList());
-        blockingStateController.startPopup(InputParser.getInstance().showCommandList());
-    }
-
-    public static void printWelcomeMessage() {
-        if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
-            UIController.setAnnouncementMessage("Welcome to careLender. " + FirstStartMessages.askForName());
-        } else {
-            UIController.setAnnouncementMessage("Welcome back, " + userName);
-            stateManager.changeState(AppState.DEFAULT);
-        }
-    }
-    
-    /**
-     * Refreshes the list of events.
-     * It is called after every query the user inputs
-     */
-    public static void refreshDisplay () {
-        if ( currentListQuery == null) {
-            currentListQuery = new QueryList();
-            currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
-        }
-
-        currentListQuery.controllerExecute();
-        UIController.refreshOutputField();
-    }
 
     /**
      * Refreshes the announcement box
@@ -380,45 +457,5 @@ public class Controller {
 		Controller.displayAnnouncement(firstHint);
 	}
     
-    /**
-     * Prints a message to screen
-     * @param message message to be displayed
-     */
-    public static void displayMessage ( String message ) {
-        UIController.displayMessage(message);
-    }
 
-    public static void displayAnnouncement ( String message ) {
-        UIController.setAnnouncementMessage(message);
-    }
-
-    public static void displayTasks (EventList events) {
-        UIController.setTaskList(events);
-    }
-
-
-    public static void clearMessages () {
-        UIController.clearMessageLog();
-    }
-
-    public static void setDisplayedList(EventList displayedList) {
-        InputParser.getInstance().setDisplayedList(displayedList);
-        UIController.setWeekEventList(displayedList);
-    }
-
-    public static BlockingStateController getBlockingStateController() {
-        return blockingStateController;
-    }
-
-    public static UIController getGUI() {
-    	return UIController;
-    }
-
-    public static void processTabPress() {
-        UIController.processTabPress();
-    }
-
-	public static UIType getDefaultUIType() {
-		return defaultUIType;
-	}
 }

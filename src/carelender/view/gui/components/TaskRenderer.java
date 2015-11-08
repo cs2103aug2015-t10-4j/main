@@ -1,6 +1,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -91,9 +92,9 @@ public class TaskRenderer extends CanvasRenderer {
 
         this.taskBarRender.setParams(this.xPadding, this.yPadding, 0.4);
 
-        Font font = Font.loadFont("file:res/monaco.ttf", dateBarHeight * 0.5);
-        Font dateFont = Font.loadFont("file:res/monaco.ttf", dateBarHeight * 0.5);
-        Font scrollPointerFont = Font.loadFont("file:res/monaco.ttf", this.width * 0.02);
+        Font font = FontLoader.load( dateBarHeight * 0.5);
+        Font dateFont = FontLoader.load( dateBarHeight * 0.5);
+        Font scrollPointerFont = FontLoader.load( this.width * 0.02);
 
         gc.setFill(AppColours.panelBackground);
         gc.fillRect(x, y, width, height);
@@ -105,8 +106,7 @@ public class TaskRenderer extends CanvasRenderer {
         boolean displayDate = false;
         boolean showBottomArrow = false;
         int index = 1;
-        
-        hashLoop:
+
         for ( Map.Entry<String, EventList> entry : this.taskDisplay.entrySet()) {
             String key = entry.getKey();
             EventList value = entry.getValue();

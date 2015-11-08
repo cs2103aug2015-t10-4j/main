@@ -1,6 +1,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -26,7 +27,7 @@ public class TabRenderer extends CanvasRenderer {
         double fontSize = width * fontSizeRatio; //Temporary
         double textPos = width / 4.0;
 
-        Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+        Font font = FontLoader.load( fontSize);
 
         gc.setFill(AppColours.tabBackground);
         gc.fillRect(x, y, width, height);
