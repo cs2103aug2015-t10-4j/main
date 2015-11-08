@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane alignment="center" hgap="10" prefHeight="600.0" prefWidth="500.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="carelender.view.gui.UserInterfaceController">
+<GridPane alignment="center" hgap="10" prefHeight="600.0" prefWidth="500.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="carelender.view.gui.UIController">
   <children>
     <TextField fx:id="inputText" promptText="enter command" GridPane.rowIndex="1" />
     <StackPane fx:id="canvasPane" focusTraversable="" />

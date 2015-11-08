@@ -167,7 +167,7 @@ public class Event implements Serializable{
 
     public String getInfo() {
         String dateString = new SimpleDateFormat("E dd MMM h:mma").format(getEarliestDate());
-        return dateString + " | " + this.name;
+        return this.name + " | " + dateString;
     }
 
     public Event copy () {

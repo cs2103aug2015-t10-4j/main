@@ -3,7 +3,7 @@ package carelender.view.parser;
 import carelender.model.data.*;
 import carelender.model.data.QueryUpdate.UpdateParam;
 import carelender.model.strings.ErrorMessages;
-import carelender.view.gui.UserInterfaceController;
+import carelender.view.gui.UIController;
 import carelender.view.parser.CommandKeyword.DataPosition;
 
 import java.util.ArrayList;
@@ -264,20 +264,9 @@ public class InputParser {
     public QueryBase parseCompleteInput ( String input ) {
         assert input.length() != 0 : "Cannot parse empty input";
 
-        if ( input.equalsIgnoreCase("apocalypse now") ) {
-            QueryAdd add = new QueryAdd();
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.YEAR, 173);
-            Date now = new Date();
-            DateRange dateRange = new DateRange(now, calendar.getTime(), true);
-            add.setDateRange(dateRange);
-            add.setName("End of the world");
-            return add;
-        }
-
         String [] queryParts = splitQuery(input);
         String commandString = queryParts[0];
-        DateRange [] dateRanges = DateTimeParser.parseDateTime(input);
+        DateRange [] dateRanges = DateTimeParser.parseDateTime(removeQuotes(input));
         input = DateTimeParser.replaceDateParts(input, "|DATE|");
         String [] queryPartsNoDate = splitQuery(input);
 
@@ -329,11 +318,11 @@ public class InputParser {
                 break;
             case SWITCHUI:
                 if ( matchedCommand.getCommand().startsWith("time") ) {
-                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.TIMELINE);
+                    newQuery = new QuerySwitchUI(false, UIController.UIType.TIMELINE);
                 } else if ( matchedCommand.getCommand().startsWith("cal")) {
-                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.CALENDAR);
+                    newQuery = new QuerySwitchUI(false, UIController.UIType.CALENDAR);
                 } else if ( matchedCommand.getCommand().startsWith("float") ) {
-                    newQuery = new QuerySwitchUI(false, UserInterfaceController.UIType.FLOATING);
+                    newQuery = new QuerySwitchUI(false, UIController.UIType.FLOATING);
                 } else if ( matchedCommand.getCommand().equalsIgnoreCase("switch") ) {
                     newQuery = new QuerySwitchUI(false);
                 } else { //Go to settings

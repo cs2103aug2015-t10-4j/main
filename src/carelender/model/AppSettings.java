@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import carelender.view.gui.UserInterfaceController.UIType;
+import carelender.view.gui.UIController.UIType;
 
 public class AppSettings {
 	

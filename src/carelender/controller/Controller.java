@@ -8,10 +8,11 @@ import carelender.model.AppSettings;
 import carelender.model.AppSettings.SettingName;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
-import carelender.view.gui.UserInterfaceController;
-import carelender.view.gui.UserInterfaceController.UIType;
+import carelender.view.gui.UIController;
+import carelender.view.gui.UIController.UIType;
 import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
+import javafx.scene.input.KeyEvent;
 
 import java.util.*;
 
@@ -19,7 +20,7 @@ import java.util.*;
  * Does all the logic of the application
  */
 public class Controller {
-    private static UserInterfaceController userInterfaceController = null;
+    private static UIController UIController = null;
     private static StateManager stateManager;
     private static BlockingStateController blockingStateController;
 
@@ -88,18 +89,104 @@ public class Controller {
     }
 
 
-    public static void initUserInterfaceController(UserInterfaceController userInterfaceController) {
-        Controller.userInterfaceController = userInterfaceController;
-        //Controller.userInterfaceController.setMessageList(messageList);
-        /*canvasRenderer = new MonthViewRenderer();
-        Controller.userInterfaceController.setCanvasRenderer(canvasRenderer);*/
+    public static void initUserInterfaceController(UIController UIController) {
+        Controller.UIController = UIController;
+
     }
 
 
+    public static void handleKeyEvent( final KeyEvent keyEvent ) {
+        if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
+            switch ( keyEvent.getCode() ) {
+                case ENTER:
+                    String text = UIController.getInputboxText();
+                    UIController.setInputboxText("");
+                    if ( UIController.getPendingAnnouncementMessage() != null ) {
+                        stopTimer();
+                        UIController.setAnnouncementMessage(UIController.getPendingAnnouncementMessage());
+                        UIController.setPendingAnnouncementMessage(null);
+                    }
+                    processCompleteInput(text);
+                    break;
+                case UP:
+                    if ( keyEvent.isControlDown() ) {
+                        UIController.taskViewScrollUp();
+                    } else {
+                        processUpPress();
+                    }
+                    break;
+                case DOWN:
+                    if ( keyEvent.isControlDown() ) {
+                        UIController.taskViewScrollDown();
+                    } else {
+                        processDownPress();
+                    }
+                    break;
+                case LEFT:
+                    if ( keyEvent.isControlDown() ) {
+                        UIController.timelineScrollLeft();
+                    }
+                    break;
+                case RIGHT:
+                    if ( keyEvent.isControlDown() ) {
+                        UIController.timelineScrollRight();
+                    }
+                    break;
+                case TAB:
+                    processTabPress();
+                    break;
+                case F1:
+                    UIController.setUI(UIType.TIMELINE);
+                    break;
+                case F2:
+                    UIController.setUI(UIType.CALENDAR);
+                    break;
+                case F3:
+                    UIController.setUI(UIType.FLOATING);
+                    break;
+                case F4:
+                    UIController.setUI(UIType.SETTING);
+                    break;
+                case PAGE_UP:
+                    UIController.taskViewScrollUp();
+                    break;
+                case PAGE_DOWN:
+                    UIController.taskViewScrollDown();
+                    break;
+                case HOME:
+                    UIController.timelineScrollLeft();
+                    break;
+                case END:
+                    UIController.timelineScrollRight();
+                    break;
+                case F12:
+                    startTimer();
+                    break;
+                default:
+                    break;
+            }
+        } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
+            switch ( keyEvent.getCode() ) {
+                case ENTER:
+                case UP:
+                case DOWN:
+                    break;
+                case ALT:
+                    UIController.getAutomatedCommand(false);
+                    break;
+                case CONTROL:
+                    UIController.getAutomatedCommand(true);
+                    break;
+                default:
+                    processIncompleteInput(UIController.getInputboxText());
+                    break;
+            }
+        }
+    }
     /**
      * Called by UI when up key is pressed
      */
-    public static void processUpPress() {
+    private static void processUpPress() {
         if (currentCommand < commandList.size() - 1){
             currentCommand++;
         }
@@ -109,39 +196,11 @@ public class Controller {
     /**
      * Called by UI when down key is pressed
      */
-    public static void processDownPress() {
+    private static void processDownPress() {
         if ( currentCommand >= 0 ) {
             currentCommand--;
         }
         showPreviousCommand();
-    }
-    
-    /**
-     * Called by UI when page down key is pressed
-     */
-    public static void processPageDownPress() {
-        userInterfaceController.processPageDownPress();
-    }
-
-    /**
-     * Called by UI when home key is pressed
-     */
-    public static void processHomePress() {
-    	userInterfaceController.processHomePress();
-    }
-    
-    /**
-     * Called by UI when end key is pressed
-     */
-    public static void processEndPress() {
-        userInterfaceController.processEndPress();
-    }
-
-    /**
-     * Called by UI when page up key is pressed
-     */
-    public static void processPageUpPress() {
-    	userInterfaceController.processPageUpPress();
     }
 
     /**
@@ -149,17 +208,15 @@ public class Controller {
      */
     private static void showPreviousCommand() {
         if ( currentCommand == -1 ) { //Index -1 is an empty command
-            userInterfaceController.setUserInput(incompleteInput);
+            UIController.setUserInput(incompleteInput);
         } else {
             int commandIndex = commandList.size() - currentCommand - 1;
             if (commandIndex < 0 || commandIndex >= commandList.size()) {
                 return;
             }
-            userInterfaceController.setUserInput(commandList.get(commandIndex));
+            UIController.setUserInput(commandList.get(commandIndex));
         }
     }
-
-
 
     /**
      * Saves the user's command. Removes duplicates and empty commands
@@ -188,20 +245,20 @@ public class Controller {
             } else {
                 //System.out.println("No match");
             }
-            userInterfaceController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
+            UIController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
         } else {
-            userInterfaceController.setAutocompleteOptions(null, null);
+            UIController.setAutocompleteOptions(null, null);
         }
 
     }
 
     /**
      * Processes the user input.
-     * Called by the UserInterfaceController class
+     * Called by the UIController class
      * @param userInput The user input string
      */
     public static void processCompleteInput(String userInput) {
-        userInterfaceController.setAutocompleteOptions(null, null);
+        UIController.setAutocompleteOptions(null, null);
         userInput = userInput.trim();
         saveUserCommand(userInput);
 
@@ -287,16 +344,16 @@ public class Controller {
 
 
     public static void showHelp() {
-        //userInterfaceController.displayMessage("Available Commands:");
-        //userInterfaceController.displayMessage(InputParser.getInstance().showCommandList());
+        //UIController.displayMessage("Available Commands:");
+        //UIController.displayMessage(InputParser.getInstance().showCommandList());
         blockingStateController.startPopup(InputParser.getInstance().showCommandList());
     }
 
     public static void printWelcomeMessage() {
         if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
-            userInterfaceController.setAnnouncementMessage("Welcome to careLender. " + FirstStartMessages.askForName());
+            UIController.setAnnouncementMessage("Welcome to careLender. " + FirstStartMessages.askForName());
         } else {
-            userInterfaceController.setAnnouncementMessage("Welcome back, " + userName);
+            UIController.setAnnouncementMessage("Welcome back, " + userName);
             stateManager.changeState(AppState.DEFAULT);
         }
     }
@@ -312,7 +369,7 @@ public class Controller {
         }
 
         currentListQuery.controllerExecute();
-        userInterfaceController.refreshOutputField();
+        UIController.refreshOutputField();
     }
 
     /**
@@ -328,37 +385,37 @@ public class Controller {
      * @param message message to be displayed
      */
     public static void displayMessage ( String message ) {
-        userInterfaceController.displayMessage(message);
+        UIController.displayMessage(message);
     }
 
     public static void displayAnnouncement ( String message ) {
-        userInterfaceController.setAnnouncementMessage(message);
+        UIController.setAnnouncementMessage(message);
     }
 
     public static void displayTasks (EventList events) {
-        userInterfaceController.setTaskList(events);
+        UIController.setTaskList(events);
     }
 
 
     public static void clearMessages () {
-        userInterfaceController.clearMessageLog();
+        UIController.clearMessageLog();
     }
 
     public static void setDisplayedList(EventList displayedList) {
         InputParser.getInstance().setDisplayedList(displayedList);
-        userInterfaceController.setWeekEventList(displayedList);
+        UIController.setWeekEventList(displayedList);
     }
 
     public static BlockingStateController getBlockingStateController() {
         return blockingStateController;
     }
 
-    public static UserInterfaceController getGUI() {
-    	return userInterfaceController;
+    public static UIController getGUI() {
+    	return UIController;
     }
 
     public static void processTabPress() {
-        userInterfaceController.processTabPress();
+        UIController.processTabPress();
     }
 
 	public static UIType getDefaultUIType() {

@@ -117,7 +117,7 @@ public class DateTimeParser {
      * @return String with dates replaced
      */
     public static String replaceDateParts ( String inputString, String replace ) {
-        SimpleDateGroup[] simpleDateGroups = parseDateTimeRaw(inputString);
+        SimpleDateGroup[] simpleDateGroups = parseDateTimeRaw(InputParser.getInstance().removeQuotes(inputString));
         if ( simpleDateGroups != null ) {
             for (SimpleDateGroup simpleDateGroup : simpleDateGroups) {
                 int length = simpleDateGroup.text.length();
