@@ -1,13 +1,13 @@
+//@@author A0133907E
 package carelender.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
 import carelender.model.Model;
 
 /**
- * This class is to generate the helpful hints that are displayed at the corner
+ * This class is to generate the helpful hints that are displayed under tabs
  */
 public class HintGenerator {
     private static HintGenerator singleton = null;
@@ -25,6 +25,18 @@ public class HintGenerator {
 	private static final int DAILY_FREE_THRESHOLD = 3;
 	private static final int DAILY_BUSY_THRESHOLD = 6;
 	
+    private static final ArrayList<String> basicHints = Model.getInstance().loadStringArrayList("hints.dat");
+	private ArrayList<String> hints;
+
+    private HintGenerator() {
+    	hints = new ArrayList<String>();
+        hints = basicHints;
+
+        dailyEventNumbers = new int[SIX_WEEKS];
+		weeklyEventNumbers = new int [SIX_DAYS];
+		monthlyEventNumber = 0;
+    }
+
     public static HintGenerator getInstance() {
         if ( singleton == null ) {
             singleton = new HintGenerator();
@@ -33,38 +45,31 @@ public class HintGenerator {
     }
     
     /**
-     * Called by CalendarRenderer to pass the monthEventNumbers into HintGeneratoe
-     * Update dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber
+     * Called by CalendarRenderer to pass a 2-D array monthEventNumbers into HintGenerator
+     * Update dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber accordingly
      * @param monthEventNumbers
      */
 	public void setDailyEventNumbers(int[][] monthEventNumbers) {
 		resetEventNumbers();
+
+		//Update dailyEventNumbers
 		for(int i=0; i < monthEventNumbers.length; i++){
 			for(int j=0; j < monthEventNumbers[i].length; j++){
 				dailyEventNumbers[i] += monthEventNumbers[i][j];
 			}
 		}
+
+		//Update weeklyEventNumbers and monthlyEventNumber
 		for ( int i = 0 ; i < dailyEventNumbers.length; i++) {
 			weeklyEventNumbers[i / DAYS_PER_WEEK] += dailyEventNumbers[i];
 			monthlyEventNumber += dailyEventNumbers[i];
 		}
+
 		generateHints();
 	}
-
-    ArrayList<String> basicHints;
-	ArrayList<String> hints;
-    private HintGenerator() {
-    	hints = new ArrayList<String>();
-    	basicHints = Model.getInstance().loadStringArrayList("hints.dat");
-        hints = basicHints;
-        
-        dailyEventNumbers = new int[SIX_WEEKS];
-		weeklyEventNumbers = new int [SIX_DAYS];
-		monthlyEventNumber = 0;
-    }
     
     /**
-     * Calculate the day of week for today
+     * Calculate the day of week (e.g. Monday, Friday) for today
      * @return
      */
     private int getDayOfWeek() {
@@ -73,21 +78,22 @@ public class HintGenerator {
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.setTime(new Date());
         todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
-        if( todayIndex < MONDAY_INDEX){
+        //Originally Sunday - Monday = -1 while a 6 is expected.
+        if( todayIndex < MONDAY_INDEX ){
             todayIndex = SUNDAY_INDEX;
         }
         return todayIndex;
     }
     
-    /*
-     * Reset hints to basicHints
+    /**
+     * Reset hints to the default set (basicHints)
      */
     private void resetHints() {
         hints = basicHints;
     }
     
-    /*
-     * Generate hints
+    /**
+     * Generate hints according to the number of tasks in different time ranges
      */
     public void generateHints() {
     	int todayIndex = getDayOfWeek();
@@ -99,7 +105,7 @@ public class HintGenerator {
         generateHintsForMonth();
     }
 
-    /*
+    /**
      * Generate hints for tomorrow
      */
     private void generateHintsForTomorrow(int todayIndex) {
@@ -116,7 +122,7 @@ public class HintGenerator {
         }
     }
     
-    /*
+    /**
      * Generate hints for next week
      */
     private void generateHintsForWeek(int todayIndex) {
@@ -140,7 +146,7 @@ public class HintGenerator {
         }
     }
     
-    /*
+    /**
      * Generate hints for the following 28 days
      */
     private void generateHintsForMonth(){
@@ -175,6 +181,9 @@ public class HintGenerator {
 		}
     }
 
+    /**
+     * This ENUM is just a reference on different types of hints
+     */
     enum HintType {
         HINT,       //Generic hints, like "press up to access previous commands"
         DAY_FREE,

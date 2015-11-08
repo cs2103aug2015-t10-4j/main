@@ -1,3 +1,4 @@
+//@@author A0121815N
 package carelender.model;
 
 import java.io.BufferedReader;
@@ -55,7 +56,6 @@ public class AppSettings {
 				appSettingsHash.put(DataType.BOOLEAN, new HashMap<SettingName, Object>());
 				appSettingsHash.put(DataType.STRING, new HashMap<SettingName, Object>());
 			} else {
-				System.out.println("Stuffed");
 				FileInputStream fis = new FileInputStream(SETTINGS_FILE);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				appSettingsHash = (HashMap<DataType, HashMap<SettingName, Object>>) ois.readObject();
