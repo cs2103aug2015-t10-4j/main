@@ -55,19 +55,9 @@ public class QuerySetTests {
 	}
 	
 	@Test
-	public void testSetUsername() {
+	public void testcontrollerExecute() {
 		AppSettings.getInstance().setStringSetting(SettingName.USERNAME, "Default");
 		controllerExecute("username", "new name");
 		assertEquals(AppSettings.getInstance().getStringSetting(SettingName.USERNAME), "new name");
 	}
-	
-	@Test
-	public void testSetStartview() {
-		AppSettings.getInstance().setUITypeSetting(SettingName.DEFAULT_UITYPE, UIType.TIMELINE);
-		System.out.println(AppSettings.getInstance().getStringSetting(SettingName.DEFAULT_UITYPE));
-		controllerExecute("startview", "calendar");
-		System.out.println(AppSettings.getInstance().getStringSetting(SettingName.DEFAULT_UITYPE));
-		assertEquals(AppSettings.getInstance().getStringSetting(SettingName.DEFAULT_UITYPE),  UIType.CALENDAR);
-	}
-
 }
