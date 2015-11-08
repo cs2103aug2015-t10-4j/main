@@ -22,10 +22,23 @@ import carelender.model.data.EventList;
 import carelender.controller.Controller;
 
 /**
- * Written by : Weizheng Lee 19/10/2015
- * This class contains static methods to help to render the calendar view
+ * Render the Task View.
+ * @author Weizheng Lee
  */
 public class TaskRenderer extends CanvasRenderer {
+	private static final double TASKBAR_NAME_RATIO = 0.4;
+	private static final double DIVISOR_HEIGHT_RATIO = 0.5;
+	private static final double SCROLLPOINTER_HEIGHT_RATIO = 0.04;
+	private static final double SCROLLPOINTER_WIDTH_RATIO = 0.02;
+	
+	private static final double INDEX_FONTSIZE_RATIO = 0.5;
+	private static final double DATE_FONTSIZE_RATIO = 0.5;
+	private static final double SCROLLPOINTER_FONTSIZE_RATIO = 0.02;
+	
+	private static final String FLOATING_TASK_KEY = "F";
+	private static final String SCROLLPOINTER_PAGEUP = "Pg Up";
+	private static final String SCROLLPOINTER_PAGEDOWN = "Pg Dn";
+	
     private Map<String, EventList> taskDisplay;
     private Comparator<Event> eventComparator;
     private TaskBarRenderer taskBarRender;
@@ -58,7 +71,6 @@ public class TaskRenderer extends CanvasRenderer {
             }
             return 0;
         };
-
     }
 
     public void setParams (double xPad, double yPad,
@@ -78,25 +90,91 @@ public class TaskRenderer extends CanvasRenderer {
     @Override
     public void draw(GraphicsContext gc, double x, double y, double width, double height) {
         super.draw(gc, x, y, width, height);
-
-        double xCurrent = x + this.xPadding;
-        double yCurrent = y + this.yPadding;
-
-        double dateBarWidth = this.width * dateWidthRatio;
-        double dateBarHeight = this.height * dateHeightRatio;
         
-        double taskBarWidth = this.width * taskWidthRatio;
-        double taskBarHeight = this.height * taskHeightRatio;
-
-        this.taskBarRender.setParams(this.xPadding, this.yPadding, 0.4);
-
-        Font font = FontLoader.load( dateBarHeight * 0.5);
-        Font dateFont = FontLoader.load( dateBarHeight * 0.5);
-        Font scrollPointerFont = FontLoader.load( this.width * 0.02);
-
+        taskBarRender.setParams(xPadding, yPadding, TASKBAR_NAME_RATIO);
+        
         gc.setFill(AppColours.panelBackground);
         gc.fillRect(x, y, width, height);
+        
+        renderTasks (gc, x, y, width, height);
+    }
+    
 
+    public void scrollDown () {
+        if (displayStart > 0) {
+        	displayStart--;
+        }
+        redraw();
+    }
+    
+    public void scrollUp () {
+        if (displayStart < totalTasks - 1) {
+            displayStart++;
+        }
+        redraw();
+    }
+
+    public void clearEvents () {
+        taskDisplay.clear();
+        totalTasks = 0;
+        displayStart = 0;
+    }
+    
+    public EventList getDisplayList () {
+        List<Event> concatList = new EventList();
+        for (EventList events : taskDisplay.values()) {
+            concatList.addAll(events);
+        }
+        return (EventList)concatList;
+    }
+
+    public void addEvents (EventList toDisplay) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("D d EEE");
+        for ( Event event : toDisplay ) {
+            Date currentDay = event.getEarliestDateFromNow();
+            if ( currentDay == null ) {
+            	currentDay = event.getEarliestDate();
+            }
+            if ( currentDay == null ) {
+                addEventToMap(FLOATING_TASK_KEY, event);
+            } else {
+                String day = dateFormat.format(currentDay);
+                addEventToMap(day, event);
+            }
+            totalTasks++;
+        }
+        
+        for (EventList events : taskDisplay.values()) {
+        	Collections.sort(events, eventComparator);
+        }
+    }
+    
+    private void addEventToMap (String key, Event event) {
+    	if (taskDisplay.containsKey(key)) {
+            if (!taskDisplay.get(key).contains(event)) {
+                taskDisplay.get(key).add(event);
+            }
+        } else {
+            EventList tasksOnDay = new EventList();
+            tasksOnDay.add(event);
+            taskDisplay.put(key, tasksOnDay);
+        }
+    }
+    
+    private void renderTasks (GraphicsContext gc, double x, double y, double width, double height) {
+    	double xCurrent = x + xPadding;
+        double yCurrent = y + yPadding;
+
+        double dateBarWidth = width * dateWidthRatio;
+        double dateBarHeight = height * dateHeightRatio;
+        
+        double taskBarWidth = width * taskWidthRatio;
+        double taskBarHeight = height * taskHeightRatio;
+        
+        Font dateFont = FontLoader.load(dateBarHeight * DATE_FONTSIZE_RATIO);
+        Font indexFont = FontLoader.load(dateBarHeight * INDEX_FONTSIZE_RATIO);
+        Font scrollPointerFont = FontLoader.load(width * SCROLLPOINTER_FONTSIZE_RATIO);
+    	
         int currentTaskToDisplay = 0;
         double remainingHeight = this.height - (this.yPadding * 2);
         double xPositionDate;
@@ -109,11 +187,9 @@ public class TaskRenderer extends CanvasRenderer {
             String key = entry.getKey();
             EventList value = entry.getValue();
 
-            if ( currentTaskToDisplay >= this.displayStart ) {
-	            gc.setFill (Color.web("757575"));
-	            gc.fillRect(xCurrent, yCurrent, this.width - (this.xPadding * 2), this.yPadding * 0.5);
-            
-	            yCurrent += (this.yPadding * 1.5);
+            if ( currentTaskToDisplay >= displayStart ) {
+            	renderDivisor(gc, xCurrent, yCurrent, width, yPadding);
+	            yCurrent += (yPadding * 1.5);
             }
             
             xPositionDate = xCurrent;
@@ -121,48 +197,31 @@ public class TaskRenderer extends CanvasRenderer {
 
             displayDate = false;
             for (Event event : value) {
-                if ( currentTaskToDisplay >= this.displayStart ) {
-                    this.taskBarRender.setContent(event);
+                if ( currentTaskToDisplay >= displayStart ) {
+                	taskBarRender.setContent(event);
 
-                   if ( (remainingHeight - this.taskBarRender.getHeight(taskBarHeight)) >= 0 ) {
-                    	displayDate = true;
-                    	
-                        gc.setFill(AppColours.primaryColour);
-                        gc.setTextAlign(TextAlignment.RIGHT);
-                        gc.setFont(font);
-                        gc.setTextBaseline(VPos.TOP);
-
-                        gc.fillText(String.valueOf(index), xCurrent + dateBarWidth, yCurrent);
-
-                        this.taskBarRender.draw(gc, xCurrent + dateBarWidth + this.xPadding, yCurrent,
-                        						taskBarWidth, taskBarHeight, AppColours.tasklistRowBackground,
-                        						Color.web("eeeff0"), true);
-                        yCurrent += (this.taskBarRender.getHeight(taskBarHeight) + this.yPadding);
-
-                        remainingHeight -= (this.taskBarRender.getHeight(taskBarHeight) + (this.yPadding * 2));
-                    } else {
-                    	showBottomArrow = true;
-                        break;
-                    }
-                }
+				    if ( (remainingHeight - taskBarRender.getHeight(taskBarHeight)) >= 0 ) {
+				     	displayDate = true;
+				     	
+				     	renderIndex(gc, xCurrent + dateBarWidth, yCurrent, indexFont, String.valueOf(index));
+				        
+				        taskBarRender.draw(gc, xCurrent + dateBarWidth + xPadding, yCurrent,
+				        						taskBarWidth, taskBarHeight, AppColours.tasklistRowBackground,
+				        						AppColours.tasklistText, true);
+				        yCurrent += (taskBarRender.getHeight(taskBarHeight) + yPadding);
+				
+				        remainingHeight -= (taskBarRender.getHeight(taskBarHeight) + (yPadding * 2));
+				     } else {
+				    	showBottomArrow = true;
+				        break;
+				     }
+            	}
                 index++;
                 currentTaskToDisplay++;
             }
-            
-            /*this.gc.setFill (Color.web("999"));
-            this.gc.fillRect(xPositionDate, yPositionDate, dateBarWidth, dateBarHeight);*/
 
             if ( displayDate ) {
-	            gc.setFill(AppColours.tasklistRowBackground);
-	            gc.setTextAlign(TextAlignment.LEFT);
-	           	gc.setFont(dateFont);
-            	gc.setTextBaseline(VPos.TOP);
-	
-	            String [] keyWords = key.split(" ");
-	            if ( keyWords.length > 2 ) {
-	                gc.fillText(keyWords[1], xPositionDate, yPositionDate);
-	                gc.fillText(keyWords[2], xPositionDate, yPositionDate + dateFont.getSize());
-	            }
+            	renderDate(gc, xPositionDate, yPositionDate, dateFont, key);
             }
             
             if ( showBottomArrow ) {
@@ -171,155 +230,74 @@ public class TaskRenderer extends CanvasRenderer {
         }
         
         if ( this.displayStart > 0 ) {
-        	xCurrent = x + this.width - (this.width * 0.04) - this.xPadding;
-            yCurrent = y + this.yPadding;
+        	xCurrent = x + width - (width * SCROLLPOINTER_HEIGHT_RATIO) - xPadding;
+            yCurrent = y + yPadding;
             
-        	gc.setFill (AppColours.important);
-        	gc.fillPolygon(new double[] {xCurrent, xCurrent + (this.width * 0.02), xCurrent - (this.width * 0.02)},
-        					new double[] {yCurrent, yCurrent + (this.width * 0.04), yCurrent + (this.width * 0.04)}, 3);
-        	
-        	yCurrent += (this.width * 0.04);
-        	
-        	gc.setFill(AppColours.important);
-            gc.setTextAlign(TextAlignment.CENTER);
-           	gc.setFont(scrollPointerFont);
-        	gc.setTextBaseline(VPos.TOP);
-        	gc.fillText("Pg Up", xCurrent, yCurrent);
+            renderScrollPointerUp(gc, xCurrent, yCurrent, width, scrollPointerFont);
         }
         
         if ( showBottomArrow ) {
-        	xCurrent = x + this.width - (this.width * 0.04) - this.xPadding;
-            yCurrent = y + this.height - (this.width * 0.04) - this.yPadding;
+        	xCurrent = x + width - (width * SCROLLPOINTER_HEIGHT_RATIO) - xPadding;
+            yCurrent = y + height - (width * SCROLLPOINTER_HEIGHT_RATIO) - yPadding;
             
-        	gc.setFill (AppColours.important);
-        	gc.fillPolygon(new double[] {xCurrent, xCurrent + (this.width * 0.02), xCurrent - (this.width * 0.02)},
-        					new double[] {yCurrent + (this.width * 0.04), yCurrent, yCurrent}, 3);
-        	
-        	gc.setFill(AppColours.important);
-            gc.setTextAlign(TextAlignment.CENTER);
-           	gc.setFont(scrollPointerFont);
-        	gc.setTextBaseline(VPos.BOTTOM);
-        	gc.fillText("Pg Dn", xCurrent, yCurrent);
+        	renderScrollPointerDown(gc, xCurrent, yCurrent, width, scrollPointerFont);
         }
     }
     
-    public void scrollDown () {
-        if ( this.displayStart > 0 ) {
-            this.displayStart--;
-        }
-        redraw();
+    private void renderDivisor (GraphicsContext gc, double xCurrent, double yCurrent, double width, double height) {
+    	gc.setFill (AppColours.tasklistRowBackground);
+        gc.fillRect(xCurrent, yCurrent, width - (xPadding * 2), height * DIVISOR_HEIGHT_RATIO);
     }
     
-    public void scrollUp () {
-        if ( this.displayStart < this.totalTasks - 1 ) {
-            this.displayStart++;
-        }
-        redraw();
-    }
+    private void renderIndex (GraphicsContext gc, double xCurrent, double yCurrent,
+    							Font indexFont, String index) {
+    	gc.setFill(AppColours.primaryColour);
+        gc.setTextAlign(TextAlignment.RIGHT);
+        gc.setFont(indexFont);
+        gc.setTextBaseline(VPos.TOP);
 
-    public void clearEvents () {
-        this.taskDisplay.clear();
-        this.totalTasks = 0;
-        this.displayStart = 0;
-    }
-
-    public void addEvents ( EventList toDisplay ) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("D d EEE");
-        for ( Event event : toDisplay ) {
-            Date currentDay = event.getEarliestDateFromNow();
-            if ( currentDay == null ) {
-            	currentDay = event.getEarliestDate();
-            }
-            if ( currentDay == null ) { //Floating task
-                if (this.taskDisplay.containsKey("F")) {
-                    if (!this.taskDisplay.get("F").contains(event)) {
-                        this.taskDisplay.get("F").add(event);
-                    }
-                } else {
-                    EventList tasksOnDay = new EventList();
-                    tasksOnDay.add(event);
-                    this.taskDisplay.put("F", tasksOnDay);
-                }
-            } else { //Day tasks
-                String day = dateFormat.format(currentDay);
-                if (this.taskDisplay.containsKey(day)) {
-                    if (!this.taskDisplay.get(day).contains(event)) {
-                        this.taskDisplay.get(day).add(event);
-                    }
-                } else {
-                    EventList tasksOnDay = new EventList();
-                    tasksOnDay.add(event);
-                    this.taskDisplay.put(day, tasksOnDay);
-                }
-            }
-            this.totalTasks++;
-        }
-        
-        for ( EventList events : this.taskDisplay.values()) {
-        	Collections.sort(events, this.eventComparator);
-        }
-        
-        this.setDisplayList();
+        gc.fillText(index, xCurrent, yCurrent);
     }
     
-    private void setDisplayList () {
-        List<Event> concatList = new EventList();
-        for ( EventList events : this.taskDisplay.values()) {
-            concatList.addAll(events);
+    private void renderDate (GraphicsContext gc, double xCurrent, double yCurrent,
+    							Font dateFont, String key) {
+    	gc.setFill(AppColours.tasklistRowBackground);
+        gc.setTextAlign(TextAlignment.LEFT);
+       	gc.setFont(dateFont);
+    	gc.setTextBaseline(VPos.TOP);
+
+        String [] keyWords = key.split(" ");
+        if ( keyWords.length > 2 ) {
+            gc.fillText(keyWords[1], xCurrent, yCurrent);
+            gc.fillText(keyWords[2], xCurrent, yCurrent + dateFont.getSize());
         }
     }
     
-    public EventList getDisplayList () {
-        List<Event> concatList = new EventList();
-        for ( EventList events : this.taskDisplay.values()) {
-            concatList.addAll(events);
-        }
-        return (EventList)concatList;
+    private void renderScrollPointerUp (GraphicsContext gc, double xCurrent, double yCurrent,
+    									double width, Font scrollPointerFont) {
+    	gc.setFill (AppColours.important);
+    	gc.fillPolygon(new double[] {xCurrent, xCurrent + (width * SCROLLPOINTER_WIDTH_RATIO), xCurrent - (width * SCROLLPOINTER_WIDTH_RATIO)},
+    					new double[] {yCurrent, yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO), yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO)}, 3);
+    	
+    	yCurrent += (width * SCROLLPOINTER_HEIGHT_RATIO);
+    	
+    	gc.setFill(AppColours.important);
+        gc.setTextAlign(TextAlignment.CENTER);
+       	gc.setFont(scrollPointerFont);
+    	gc.setTextBaseline(VPos.TOP);
+    	gc.fillText(SCROLLPOINTER_PAGEUP, xCurrent, yCurrent);
     }
-    /*
-    public void addEvents ( EventList toDisplay ) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d EEE");
-        for ( Event event : toDisplay ) {
-            DateRange [] dateRange = event.getDateRange();
-            for ( DateRange date : dateRange ) {
-                Date currentDay = date.getStart();
-                while (!currentDay.after(date.getEnd())) {
-                    String day = dateFormat.format(currentDay);
-                    if (this.taskDisplay.containsKey(day)) {
-                        if (!this.taskDisplay.get(day).contains(event)) {
-                            this.taskDisplay.get(day).add(event);
-                        }
-                    } else {
-                        EventList tasksOnDay = new EventList();
-                        tasksOnDay.add(event);
-                        this.taskDisplay.put (day, tasksOnDay);
-                    }
-                    currentDay = this.addDays(currentDay, 1);
-                }
-                if (!dateFormat.format(date.getStart()).equals(dateFormat.format(date.getEnd()))) {
-                    String day = dateFormat.format(date.getEnd());
-                    System.out.println(day);
-                    if (this.taskDisplay.containsKey(day)) {
-                        this.taskDisplay.get(day).add(event);
-                    } else {
-                        EventList tasksOnDay = new EventList();
-                        tasksOnDay.add(event);
-                        this.taskDisplay.put(day, tasksOnDay);
-                    }
-                }
-            }
-        }
+    
+    private void renderScrollPointerDown (GraphicsContext gc, double xCurrent, double yCurrent,
+    										double width, Font scrollPointerFont) {
+    	gc.setFill (AppColours.important);
+    	gc.fillPolygon(new double[] {xCurrent, xCurrent + (width * SCROLLPOINTER_WIDTH_RATIO), xCurrent - (width * SCROLLPOINTER_WIDTH_RATIO)},
+    					new double[] {yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO), yCurrent, yCurrent}, 3);
+    	
+    	gc.setFill(AppColours.important);
+        gc.setTextAlign(TextAlignment.CENTER);
+       	gc.setFont(scrollPointerFont);
+    	gc.setTextBaseline(VPos.BOTTOM);
+    	gc.fillText(SCROLLPOINTER_PAGEDOWN, xCurrent, yCurrent);
     }
-    */
-
-    public Date addDays ( Date date, int days )
-    {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, days);
-        
-        return calendar.getTime();
-    }
-
-
 }

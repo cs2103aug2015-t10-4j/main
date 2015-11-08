@@ -24,7 +24,7 @@ import javafx.scene.text.TextAlignment;
 public class CalenderRenderer extends CanvasRenderer {
     private QueryList monthListQuery;
 
-    int squaresToDraw; //Temp, testing purposes only
+    int squaresToDraw;
     final String [] days = {"M", "T", "W", "T", "F", "S", "S"};
 
     private EventList monthEvents = null;
@@ -55,14 +55,6 @@ public class CalenderRenderer extends CanvasRenderer {
         monthListQuery.addSearchParam(QueryList.SearchParam.DATE_END, monthEndTime);
         refreshEventList();
     }
-    
-    private void resetEventNumbers(){
-        for(int i=0; i<squaresToDraw; i++) {
-            for (int j=0; j<3; j++){
-                monthEventNumbers[i][j] = 0;
-            }
-        }
-    }
 
     public void refreshEventList() {
         monthEvents = monthListQuery.searchExecute();
@@ -70,69 +62,7 @@ public class CalenderRenderer extends CanvasRenderer {
         HintGenerator.getInstance().setDailyEventNumbers(monthEventNumbers);
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
-    
-    private void updateEventNumbers() {
-        resetEventNumbers();
-        for (Event currentEvent : monthEvents) {
-            for (int j = 0; j < currentEvent.getDateRange().length; j++) {
-                DateRange currentRage = currentEvent.getDateRange()[j];
-                Date taskStartTime = currentRage.getStart();
-                //System.out.println("start time of the event " + taskStartTime);
-                Date taskEndTime = currentRage.getEnd();
-                //System.out.println("end time of the event " + taskEndTime);
-                if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
-                    //System.out.println("In range");
-                    if (taskStartTime.before(monthStartTime)) {
-                        taskStartTime = monthStartTime;
-                    }
-                    if (taskEndTime.after(monthEndTime)) {
-                        taskEndTime = monthEndTime;
-                    }
 
-                    long offsetStartMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
-                    long offsetStartDays = TimeUnit.MILLISECONDS.toDays(offsetStartMilliseconds);
-                    //System.out.println("StartTime is away from the first day by " + offsetStartDays + " days");
-                    long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) 24;
-                    //System.out.println("StartTime is away from the first day by " + TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) + " hours");
-                    //System.out.println("It starts at " + offsetStartHours + " of that day");
-                    int offsetStartSlot = (int)offsetStartHours / 8;
-                    //System.out.println("It should fill in the " + offsetStartSlot + " slot");
-
-                    long offsetEndMilliseconds = taskEndTime.getTime() - monthStartTime.getTime();
-                    long offsetEndDays = TimeUnit.MILLISECONDS.toDays(offsetEndMilliseconds);
-                    //System.out.println("EndTime is away from the first day by " + offsetEndDays + " days");
-                    long offsetEndHours = TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) % (long) 24;
-                    //System.out.println("EndTime is away from the first day by " + TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) + " hours");
-                    //System.out.println("It ends at " + offsetEndHours + " of that day");
-                    int offsetEndSlot = (int)offsetEndHours / 8;
-                    //System.out.println("It should fill in the " + offsetEndSlot + " slot");
-
-                    for(int t=(int)offsetStartDays; t<=(int)offsetEndDays; t++) {
-                        if(t == (int) offsetStartDays && t == (int)offsetEndDays){
-                            for(int a=offsetStartSlot; a<=offsetEndSlot; a++) {
-                                monthEventNumbers[t][a]++;
-                            }
-                        } else if(t == (int) offsetStartDays){
-                            for(int a=offsetStartSlot; a<3; a++) {
-                                monthEventNumbers[t][a]++;
-                            }
-                        } else if (t == (int)offsetEndDays){
-                            for(int a=0; a<offsetEndSlot; a++) {
-                                monthEventNumbers[t][a]++;
-                            }
-                        } else {
-                            for(int a=0; a<3; a++){
-                                monthEventNumbers[t][a]++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //drawEventArray();
-    }
-
-    
     double sidePadding;
     double calCellWidth;
     double calCellHeight;
@@ -210,22 +140,67 @@ public class CalenderRenderer extends CanvasRenderer {
             c.add(Calendar.DATE, 1);
             
         }
-
-        /*
-        TextRenderer textTest = new TextRenderer (gc, sidePadding + offsetX, sidePadding + offsetY,
-                    scaledWidth * 0.6 , scaledHeight * 0.6 , 10, 10,
-                font, calCellHeight / 3.0, calCellHeight / 6.0, 0 );
-
-        textTest.addText("This is a test string for like, stuff and stuff.\n");
-        textTest.addText("Give me the thing that I love.\n");
-        textTest.addText("aaaaaaaaaaaaaaaaaaaaaaa\n");
-        textTest.addText("Do I really wrap? Is this how a burrito feels like. The twice fried beans, the painted faces.\n");
-        
-        textTest.drawText();
-        */
     }
 
-    public String getMonth(int month) {
+    private void resetEventNumbers(){
+        for(int i=0; i<squaresToDraw; i++) {
+            for (int j=0; j<3; j++){
+                monthEventNumbers[i][j] = 0;
+            }
+        }
+    }
+    
+    private void updateEventNumbers() {
+        resetEventNumbers();
+        for (int i=0; i<monthEvents.size(); i++) {
+            Event currentEvent = monthEvents.get(i);
+            for (int j=0; j<currentEvent.getDateRange().length; j++) {
+                DateRange currentRage = currentEvent.getDateRange()[j];
+                Date taskStartTime = currentRage.getStart();
+                Date taskEndTime = currentRage.getEnd();
+                if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
+                    if (taskStartTime.before(monthStartTime)) {
+                        taskStartTime = monthStartTime;
+                    }
+                    if (taskEndTime.after(monthEndTime)) {
+                        taskEndTime = monthEndTime;
+                    }
+
+                    long offsetStartMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
+                    long offsetStartDays = TimeUnit.MILLISECONDS.toDays(offsetStartMilliseconds);
+                    long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) 24;
+                    int offsetStartSlot = (int)offsetStartHours / 8;
+                    
+                    long offsetEndMilliseconds = taskEndTime.getTime() - monthStartTime.getTime();
+                    long offsetEndDays = TimeUnit.MILLISECONDS.toDays(offsetEndMilliseconds);
+                    long offsetEndHours = TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) % (long) 24;
+                    int offsetEndSlot = (int)offsetEndHours / 8;
+                    
+                    for(int t=(int)offsetStartDays; t<=(int)offsetEndDays; t++) {
+                        if(t == (int) offsetStartDays && t == (int)offsetEndDays){
+                            for(int a=offsetStartSlot; a<=offsetEndSlot; a++) {
+                                monthEventNumbers[t][a]++;
+                            }
+                        } else if(t == (int) offsetStartDays){
+                            for(int a=offsetStartSlot; a<3; a++) {
+                                monthEventNumbers[t][a]++;
+                            }
+                        } else if (t == (int)offsetEndDays){
+                            for(int a=0; a<offsetEndSlot; a++) {
+                                monthEventNumbers[t][a]++;
+                            }
+                        } else {
+                            for(int a=0; a<3; a++){
+                                monthEventNumbers[t][a]++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private String getMonth(int month) {
         return new DateFormatSymbols().getMonths()[month];
     }
 
@@ -236,15 +211,10 @@ public class CalenderRenderer extends CanvasRenderer {
         if ( width > squareHeight ) { //Height is the constraint
             scaledWidth = height * aspect;
             scaledHeight = height;
-            //System.out.println("Height constraint");
         } else { //Width is the constraint
             scaledWidth = width;
             scaledHeight = width / aspect;
-            //System.out.println("Width constraint");
         }
-
-        //System.out.println("Width : " + scaledWidth + "/" + width);
-        //System.out.println("Height: " + scaledHeight + "/" + height);
 
         offsetX = (width - scaledWidth) * 0.5;
         offsetY = 0;//(height - scaledHeight) * 0.5;
@@ -259,7 +229,6 @@ public class CalenderRenderer extends CanvasRenderer {
         calCellHeight = calCellWidth * 0.75;
         calCellShadowOffset = calCellSpacing * 0.7;
     }
-
 
     /**
      * Draws a calendar square with a drop shadow
