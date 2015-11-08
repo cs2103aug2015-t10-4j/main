@@ -1,3 +1,4 @@
+//@@author A0121815N
 package carelender.model;
 
 import java.io.BufferedReader;
@@ -18,7 +19,7 @@ import carelender.view.gui.UIController.UIType;
  */
 public class AppSettings {
 
-	private static final String settingsFile = "settings.dat";
+	private static final String SETTINGS_FILE = "settings.dat";
 	private static AppSettings singleton = null;
 
 	public static AppSettings getInstance() {
@@ -34,7 +35,7 @@ public class AppSettings {
 
 	@SuppressWarnings("unchecked")
 	private AppSettings() {
-		File file = new File(settingsFile);
+		File file = new File(SETTINGS_FILE);
 		log = Logger.getLogger(Model.class.getName());
 		
 		typeHash = new HashMap<>();
@@ -55,8 +56,7 @@ public class AppSettings {
 				appSettingsHash.put(DataType.BOOLEAN, new HashMap<SettingName, Object>());
 				appSettingsHash.put(DataType.STRING, new HashMap<SettingName, Object>());
 			} else {
-				System.out.println("Stuffed");
-				FileInputStream fis = new FileInputStream(settingsFile);
+				FileInputStream fis = new FileInputStream(SETTINGS_FILE);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				appSettingsHash = (HashMap<DataType, HashMap<SettingName, Object>>) ois.readObject();
 				ois.close();
@@ -125,7 +125,7 @@ public class AppSettings {
 	 */
 	public void saveSetting() {
 		try {
-			FileOutputStream fos = new FileOutputStream(settingsFile);
+			FileOutputStream fos = new FileOutputStream(SETTINGS_FILE);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			
 			oos.writeObject(appSettingsHash);

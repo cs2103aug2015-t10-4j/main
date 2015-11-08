@@ -1,3 +1,4 @@
+//@@author A0121815N
 package carelender.model.data;
 
 import carelender.model.UndoManager;
@@ -15,7 +16,6 @@ public class QueryRedo extends QueryBase{
 
 	@Override
 	public EventList searchExecute() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

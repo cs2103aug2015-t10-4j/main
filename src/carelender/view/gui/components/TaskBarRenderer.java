@@ -212,8 +212,7 @@ public class TaskBarRenderer {
     							Font font, boolean ellipsize ) {
     	nameText.setParams(gc, xCurrent, yCurrent,
 			                width * NAME_WIDTH_RATIO, font.getSize(),
-			                NAME_X_PADDING, NAME_Y_PADDING, font,
-			                NAME_FONT_WIDTH_RATIO, NAME_LINE_PADDING_RATIO);
+			                NAME_X_PADDING, NAME_Y_PADDING, font, NAME_LINE_PADDING_RATIO);
 		nameText.clearText();
 		if (ellipsize) {
 			nameText.addTextEllipsis(event.getName());

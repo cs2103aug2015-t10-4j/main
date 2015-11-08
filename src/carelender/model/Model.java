@@ -1,3 +1,4 @@
+//@@author A0121815N
 package carelender.model;
 
 import java.io.BufferedReader;
@@ -55,14 +56,18 @@ public class Model {
 				e.printStackTrace();
 			}
 		} else {
+			//Get events from file
 			events = getFromFile(fileName);
-		}
-		//Get Unique ID number
-		if (AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX) != null) {
-			currentUid = AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX);
-		} else {
-			currentUid = 1;
-		}
+			if (events == null) {
+				events = new EventList();
+			}
+			//Get Unique ID number
+			if (AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX) != null) {
+				currentUid = AppSettings.getInstance().getIntSetting(SettingName.CURRENT_INDEX);
+			} else {
+				currentUid = 1;
+			}
+		}	
 	}
 
 	/**
@@ -103,7 +108,7 @@ public class Model {
 
 	/**
 	 * Deletes a single Event
-	 * @param eventObj Event to be deleted
+	 * @param eventObj Event object to be deleted
 	 */
 	public void deleteEvent(Event eventObj) {
 		for (int i = 0; i < events.size(); i++) {
@@ -157,20 +162,23 @@ public class Model {
 	 */
 	public void undoUpdatedEvent(EventList eventList, boolean isUndo) {
 		EventList redoEventList = new EventList();
-		
+		System.out.println("Hello");
 		for (int i = 0; i < eventList.size(); i++) {
 			for (int j = 0; j < events.size(); j++) {
 				if (events.get(j).getUid() == eventList.get(i).getUid()) {
 					redoEventList.add(events.get(j));
 					events.remove(j);
 					events.add(eventList.get(i));
+					break;
 				}
 			}			
 		}
 		// Checks if it is an undo or redo command
 		if (isUndo) {
+			System.out.println("Undo");
 			UndoManager.getInstance().redoUpdate(redoEventList);
 		} else {
+			System.out.println("Redo");
 			UndoManager.getInstance().update(redoEventList);
 		}
 		saveToFile(fileName, events);
@@ -204,6 +212,7 @@ public class Model {
 			UndoManager.getInstance().delete(eventList);
 			break;
 		case UPDATE:
+			System.out.println(eventList.toString());
 			UndoManager.getInstance().update(eventList);
 			break;
 		default:
@@ -218,25 +227,6 @@ public class Model {
 	private void updateUndoManager(EventList eventList) {
 		UndoManager.getInstance().clearRedoStack();
 		UndoManager.getInstance().delete(eventList);
-	}
-
-	/**
-	 * Complete an event
-	 * @param eventObj
-	 * @param forComplete boolean for 
-	 */
-	public void setComplete(Event eventObj, boolean forComplete) {
-		for (int i = 0; i < events.size(); i++) {
-			if (events.get(i).getUid() == eventObj.getUid()) {
-				if (forComplete) {
-					events.get(i).setCompleted(true);
-				} else {
-					events.get(i).setCompleted(false);
-				}
-				updateUndoManager(events.get(i), UndoType.UPDATE);
-			}
-		}
-		saveToFile(fileName, events);
 	}
 	
 	/**
@@ -320,6 +310,7 @@ public class Model {
 	}
 	
 	public void setSaveFileName(String input) {
-		//filename = input;
+		fileName = new File(input);
+		events = new EventList();
 	}
 }

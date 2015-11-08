@@ -362,14 +362,14 @@ public class TimelineRenderer extends CanvasRenderer {
      */
     private String formatKey (Date date) {
 		
-        String day = DateFormats.dateFormatDay.format(date);
-        String dayInYear = DateFormats.dayInYear.format(date);
+        String day = DateFormats.DATE_FORMAT_DAY.format(date);
+        String dayInYear = DateFormats.DAY_IN_YEAR.format(date);
         //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
         //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
         for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
         	dayInYear = "0" + dayInYear;
         }
-        String year = DateFormats.year.format(date);
+        String year = DateFormats.YEAR.format(date);
         
         //Concatenate all the parts of the key together.
         return (year + " " + dayInYear + " " + day);

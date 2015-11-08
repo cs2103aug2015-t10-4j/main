@@ -90,25 +90,25 @@ public class DateRangeRenderer {
 
                 //Show only a single date when start and end are exactly the same date.
                 if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
-                    this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
+                    this.timeStart = DateFormats.TIME_FORMAT.format(dateRange.getStart());
 
-                    this.dateStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
+                    this.dateStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
                 } else {
-                    this.timeStart = DateFormats.timeFormat.format(dateRange.getStart());
-                    this.timeEnd = DateFormats.timeFormat.format(dateRange.getEnd());
+                    this.timeStart = DateFormats.TIME_FORMAT.format(dateRange.getStart());
+                    this.timeEnd = DateFormats.TIME_FORMAT.format(dateRange.getEnd());
 
                     //Show the year if the years are different between the dates.
                     if ( sameYear ) {
-                        this.dateStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
-                        this.dateEnd = DateFormats.dateFormatMonth.format(dateRange.getEnd());
+                        this.dateStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
+                        this.dateEnd = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getEnd());
                     } else {
-                        this.dateStart = DateFormats.dateFormatYear.format(dateRange.getStart());
-                        this.dateEnd = DateFormats.dateFormatYear.format(dateRange.getEnd());
+                        this.dateStart = DateFormats.DATE_FORMAT_YEAR.format(dateRange.getStart());
+                        this.dateEnd = DateFormats.DATE_FORMAT_YEAR.format(dateRange.getEnd());
                     }
                 }
             } else {
             	if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
-                    this.timeStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
+                    this.timeStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
                     this.dateStart = DATETEXT_NOTIME_START;
                 } else {
                 	this.dateStart = DATETEXT_NOTIME_START;
@@ -121,11 +121,11 @@ public class DateRangeRenderer {
                     
                     //For events without time show the date in place of the time.
                     if ( sameYear ) {
-                        this.timeStart = DateFormats.dateFormatMonth.format(dateRange.getStart());
-                        this.timeEnd = DateFormats.dateFormatMonth.format(dateRange.getEnd());
+                        this.timeStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
+                        this.timeEnd = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getEnd());
                     } else {
-                        this.timeStart = DateFormats.dateFormatYear.format(dateRange.getStart());
-                        this.timeEnd = DateFormats.dateFormatYear.format(dateRange.getEnd());
+                        this.timeStart = DateFormats.DATE_FORMAT_YEAR.format(dateRange.getStart());
+                        this.timeEnd = DateFormats.DATE_FORMAT_YEAR.format(dateRange.getEnd());
                     }
                 }
             }

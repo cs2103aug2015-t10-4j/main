@@ -2,6 +2,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -47,7 +48,7 @@ public class TextRenderer {
     
     public void setParams ( GraphicsContext gc, double x, double y,
                             double w, double h, double xPad, double yPad,
-                            Font font, double widthRatio, double lineSpaceRatio ) {
+                            Font font, double lineSpaceRatio ) {
         this.gc = gc;
 
         this.xPosition = x;
@@ -61,7 +62,7 @@ public class TextRenderer {
 
         this.font = font;
         this.charHeight = this.font.getSize();
-        this.charWidth = this.font.getSize() * widthRatio;
+        this.charWidth = this.font.getSize() * FontLoader.FONT_WIDTH_RATIO;
         this.lineSpace = this.font.getSize() * lineSpaceRatio;
 
         this.charsPerLine = Math.floor ((this.width - (this.xPadding * 2)) / this.charWidth);

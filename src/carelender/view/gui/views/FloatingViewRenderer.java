@@ -1,3 +1,4 @@
+//@@author A0133269A
 package carelender.view.gui.views;
 
 import carelender.controller.Controller;
@@ -10,10 +11,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 
 public class FloatingViewRenderer extends CanvasRenderer {
-    //CalenderRenderer
-    //MessageboxRenderer
-    //SelectionPopupRenderer
-
     TextRenderer messageBox;
     TextRenderer announcementBox;
     CalenderRenderer calender;
@@ -42,51 +39,27 @@ public class FloatingViewRenderer extends CanvasRenderer {
     @Override
     public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
         super.draw(gc, 0, 0, width, height);
-
-        //Todo: 20 -> meaningful expression
-        double fontSize = width / 60.0; //Temporary
-        Font font = FontLoader.load( fontSize);
-
-        double windowPadding = 8;
-        double textboxInnerPadding = 8;
-        double topBarHeight = height * 0.13;
-        double remainderHeight = height - topBarHeight;
-
-        double announcementBoxY = topBarHeight + windowPadding;
-
-        double leftColumnX = 0;
-
-        double announcementHeight = fontSize + textboxInnerPadding * 2;
-        double messageBoxHeight = fontSize + textboxInnerPadding * 2;
-        double mainContentHeight = remainderHeight - announcementHeight - messageBoxHeight - windowPadding * 3;
+        LayoutHelper.setParams(x,y,width,height);
 
 
+        tab.draw(gc, 0, 0, width, LayoutHelper.getTopBarHeight(), TabRenderer.FLOATING_INDEX);
 
-        tab.draw(gc, 0, 0, width, topBarHeight, 2);
-
-        /* Todo
-         * replace magic numbers;
-         * create specific class for these renderers;
-         */
-
-        announcementBox.setParams(gc, leftColumnX, announcementBoxY,
-                width, announcementHeight,
-                textboxInnerPadding, textboxInnerPadding,
-                font, 0.6, 0.05);
+        announcementBox.setParams(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getAnnouncementBoxY(),
+                width, LayoutHelper.getAnnouncementHeight(),
+                LayoutHelper.getTextboxInnerPadding(), LayoutHelper.getTextboxInnerPadding(),
+                LayoutHelper.getFont(), FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
         announcementBox.addText(announcementText);
         announcementBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
-        tasks.draw(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding,
-                width, mainContentHeight);
+        tasks.draw(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getMainContentY(),
+                width, LayoutHelper.getMainContentHeight());
 
-        messageBox.setParams(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding * 2 + mainContentHeight,
-                width, messageBoxHeight,
-                textboxInnerPadding, textboxInnerPadding,
-                font, 0.6, 0.05);
+        messageBox.setParams(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getMessageBoxY(),
+                width , LayoutHelper.getMessageBoxHeight(),
+                LayoutHelper.getTextboxInnerPadding(), LayoutHelper.getTextboxInnerPadding(),
+                LayoutHelper.getFont(), FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
         messageBox.addText(messageText);
         messageBox.drawText(AppColours.panelBackground, AppColours.panelText);
-
-
     }
 
     /**

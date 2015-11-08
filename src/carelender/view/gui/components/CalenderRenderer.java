@@ -41,6 +41,9 @@ public class CalenderRenderer extends CanvasRenderer {
     
     private static final double FIRST_FONTSIZE_RATIO = 0.5;
     private static final double SECOND_FONTSIZE_RATIO = 0.25;
+    
+    private static final double SCALED_OFFSETX_RATIO = 0.5;
+    private static final double ASPECT = 9.0/9.5;
 
     private static final double CAL_CELL_SIDE_PADDING_RATIO = 0.025;
     private static final double CAL_CELL_USABLE_WIDTH_RATIO = 2.0;
@@ -49,6 +52,7 @@ public class CalenderRenderer extends CanvasRenderer {
     private static final double CAL_CELL_HEIGHT_WIDTH_RATIO = 0.75;    
     private static final double CAL_CELL_SHADOW_OFFSET_RATIO = 0.7;
     
+    //@@author A0133269A
     public CalenderRenderer() {        
         monthEventNumbers = new int[NUMBER_OF_SQUARES][NUMBER_OF_RANGES_PER_DAY];
         resetEventNumbers();
@@ -78,6 +82,7 @@ public class CalenderRenderer extends CanvasRenderer {
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
 
+    //@@author A0133907E
     double sidePadding;
     double usableWidth;
     double calCellWidth;
@@ -216,23 +221,24 @@ public class CalenderRenderer extends CanvasRenderer {
         }
     }
     
+    //@@author A0133269A
     private String getMonth(int month) {
         return new DateFormatSymbols().getMonths()[month];
     }
 
     private void calculateScaledDimensions(double width, double height) {
-        double aspect = 9.0/9.5;
-        double squareHeight = height * aspect;
+       
+        double squareHeight = height * ASPECT;
 
         if ( width > squareHeight ) { //Height is the constraint
-            scaledWidth = height * aspect;
+            scaledWidth = height * ASPECT;
             scaledHeight = height;
         } else { //Width is the constraint
             scaledWidth = width;
-            scaledHeight = width / aspect;
+            scaledHeight = width / ASPECT;
         }
 
-        offsetX = (width - scaledWidth) * 0.5;
+        offsetX = (width - scaledWidth) * SCALED_OFFSETX_RATIO;
         offsetY = 0;//(height - scaledHeight) * 0.5;
     }
 

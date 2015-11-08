@@ -20,7 +20,11 @@ import carelender.model.data.Event;
 import carelender.model.data.EventList;
 
 /**
+<<<<<<< HEAD
  * This class contains methods to render the task view.
+=======
+ * Render the Task View.
+>>>>>>> 37a3a97e647e06c6b39ed41f6b50286090262797
  */
 public class TaskRenderer extends CanvasRenderer {
 	//Ratios used to ensure sizes scale with the window height and width.
@@ -200,14 +204,14 @@ public class TaskRenderer extends CanvasRenderer {
      */
     private String formatKey (Date date) {
 		
-        String day = DateFormats.dateFormatDay.format(date);
-        String dayInYear = DateFormats.dayInYear.format(date);
+        String day = DateFormats.DATE_FORMAT_DAY.format(date);
+        String dayInYear = DateFormats.DAY_IN_YEAR.format(date);
         //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
         //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
         for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
         	dayInYear = "0" + dayInYear;
         }
-        String year = DateFormats.year.format(date);
+        String year = DateFormats.YEAR.format(date);
         
         //Concatenate all the parts of the key together.
         return (year + " " + dayInYear + " " + day);

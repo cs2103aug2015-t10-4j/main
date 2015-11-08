@@ -3,10 +3,9 @@ package carelender.model.data;
 import carelender.model.strings.DateFormats;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/*
+/**
  * Events are stored in this format when returned from the Storage component.
  * EventObjects should be within EventLists when returned from Storage.
  * 		Single objects are returned in an EventList of one element.
@@ -31,10 +30,6 @@ public class Event implements Serializable{
         category = eventObject.category;
         completed = eventObject.completed;
         DateRange [] eventObjectDateRange = eventObject.dateRange;
-//        dateRange = new DateRange[eventObjectDateRange.length];
-//        for ( int i = 0 ; i < eventObjectDateRange.length; i++ ) {
-//            dateRange[i] = eventObjectDateRange[i].copy();
-//        }
         
         if ( eventObjectDateRange != null ) {
             dateRange = new DateRange[eventObjectDateRange.length];
@@ -50,12 +45,10 @@ public class Event implements Serializable{
         }
     }
     public Event (int uidToSet, String nameToSet, DateRange[] dateRangetoSet, String category) {
-        //TODO: Initialize internal fields.
         this.uid = uidToSet;
         this.name = nameToSet;
         this.dateRange = dateRangetoSet;
         this.category = category;
-        //this.completed = completed;
     }
 
     public void setUid(int uid){
@@ -164,12 +157,11 @@ public class Event implements Serializable{
                 return EventType.REC_FLOATING_TASK;
             }
         }
-        //TODO: Do more type checks.
         return EventType.DEADLINE_TASK;
     }
 
     public String getInfo() {
-        String dateString = DateFormats.debugFormat.format(getEarliestDate());
+        String dateString = DateFormats.DEBUG_FORMAT.format(getEarliestDate());
         return this.name + " | " + dateString;
     }
 
