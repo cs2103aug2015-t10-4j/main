@@ -123,8 +123,8 @@ public class TimelineRenderer extends CanvasRenderer {
 				continue;
 			}
 			for ( DateRange date : dateRange ) {
-				String keyEnd = formatKey(date.getEnd());
-				String keyStart = formatKey(date.getStart());
+				String keyEnd = DateFormats.FORMAT_KEY(date.getEnd());
+				String keyStart = DateFormats.FORMAT_KEY(date.getStart());
 				//Event has a single date
 				if (keyEnd.equals(keyStart)) {
 					addDateRangeToDisplay(keyStart, getTimeInMinutes(date.getStart()),
@@ -136,8 +136,8 @@ public class TimelineRenderer extends CanvasRenderer {
 					//Event spans multiple days, add event to each day between start and end dates.
 					for ( int i = 0; i < date.getDaysBetween(); i++ ) {
 						currentDay = addDays(currentDay, 1);
-						if (!(keyEnd.equals(formatKey(currentDay)))) {
-							addDateRangeToDisplay(formatKey(currentDay), 0,
+						if (!(keyEnd.equals(DateFormats.FORMAT_KEY(currentDay)))) {
+							addDateRangeToDisplay(DateFormats.FORMAT_KEY(currentDay), 0,
 													TimelineBarRenderer.MINUTES_IN_DAY, String.valueOf(index));
 					
 						}
@@ -345,36 +345,7 @@ public class TimelineRenderer extends CanvasRenderer {
     				width, height * DIVISOR_SCALE_RATIO);
     	gc.setGlobalAlpha(DEFAULT_ALPHA);
 	}
-	
-	/**
-     * Format key as YYYY D d EEE given date.
-     * YYYY and D are used to sort the keys by date.
-     * 
-     * YYYY is the year of the event.
-     * D is the day in the year.
-     * d is the day in the month.
-     * EEE is the day of the week.
-     * 
-     * @param date
-     * 		Date to format as key.
-     * @return
-     * 		Key to use in taskDisplay
-     */
-    private String formatKey (Date date) {
-		
-        String day = DateFormats.DATE_FORMAT_DAY.format(date);
-        String dayInYear = DateFormats.DAY_IN_YEAR.format(date);
-        //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
-        //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
-        for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
-        	dayInYear = "0" + dayInYear;
-        }
-        String year = DateFormats.YEAR.format(date);
-        
-        //Concatenate all the parts of the key together.
-        return (year + " " + dayInYear + " " + day);
-	}
-    
+
     /**
      * Return number of bars in total.
      * Bars used to display free days are counted as well.

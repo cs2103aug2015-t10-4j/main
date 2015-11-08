@@ -20,11 +20,7 @@ import carelender.model.data.Event;
 import carelender.model.data.EventList;
 
 /**
-<<<<<<< HEAD
  * This class contains methods to render the task view.
-=======
- * Render the Task View.
->>>>>>> 37a3a97e647e06c6b39ed41f6b50286090262797
  */
 public class TaskRenderer extends CanvasRenderer {
 	//Ratios used to ensure sizes scale with the window height and width.
@@ -178,7 +174,7 @@ public class TaskRenderer extends CanvasRenderer {
                 addEventToMap(FLOATING_TASK_KEY, event);
             } else {
                 //Concatenate all the parts of the key together.
-                addEventToMap(formatKey(currentDay), event);
+                addEventToMap(DateFormats.FORMAT_KEY(currentDay), event);
             }
             totalTasks++;
         }
@@ -187,36 +183,7 @@ public class TaskRenderer extends CanvasRenderer {
         	Collections.sort(events, eventComparator);
         }
     }
-    
-    /**
-     * Format key as YYYY D d EEE given date.
-     * YYYY and D are used to sort the keys by date.
-     * 
-     * YYYY is the year of the event.
-     * D is the day in the year.
-     * d is the day in the month.
-     * EEE is the day of the week.
-     * 
-     * @param date
-     * 		Date to format as key.
-     * @return
-     * 		Key to use in taskDisplay
-     */
-    private String formatKey (Date date) {
-		
-        String day = DateFormats.DATE_FORMAT_DAY.format(date);
-        String dayInYear = DateFormats.DAY_IN_YEAR.format(date);
-        //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
-        //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
-        for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
-        	dayInYear = "0" + dayInYear;
-        }
-        String year = DateFormats.YEAR.format(date);
-        
-        //Concatenate all the parts of the key together.
-        return (year + " " + dayInYear + " " + day);
-	}
-    
+
     /**
      * Add an event to taskDisplay with key.
      * If the key already exists in taskDisplay add it to the EventList associated.

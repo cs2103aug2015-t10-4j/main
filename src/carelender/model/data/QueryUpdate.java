@@ -9,7 +9,7 @@ import carelender.model.Model;
 import carelender.model.strings.QueryFeedback;
 
 /**
- * Used for add queries
+ * Used for update queries
  */
 public class QueryUpdate extends QueryList {
     HashMap<UpdateParam, Object> updateParamsList = new HashMap<>();;
