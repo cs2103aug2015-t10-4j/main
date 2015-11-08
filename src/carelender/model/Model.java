@@ -49,7 +49,6 @@ public class Model {
 		folderName.mkdir();
 
 		//Get saved file/create one if none exists
-		//fileName = new File(FOLDER_NAME + FILE_NAME + cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + FILE_TYPE);
 		fileName = new File(FOLDER_NAME + FILE_NAME + FILE_TYPE);
 		
 		events = new EventList();	
@@ -71,6 +70,10 @@ public class Model {
 		}
 	}
 
+	/**
+	 * Adds and event into model
+	 * @param eventObj
+	 */
 	public void addEvent(Event eventObj) {
 		eventObj.setDateCreated(new Date());
 		eventObj.setUid(currentUid);
@@ -79,11 +82,19 @@ public class Model {
 		AppSettings.getInstance().setIntSetting(SettingName.CURRENT_INDEX, currentUid +=1);
 		saveToFile(fileName, events);
 	}
-
+	
+	/**
+	 * Passes the caller an event list
+	 * @return EventObject
+	 */
 	public EventList retrieveEvent() {
 		return events;
 	}
-
+	
+	/**
+	 * Finds the event object in EventList, and updates it with a new one
+	 * @param eventObj
+	 */
 	public void updateEvent(Event eventObj) {
 		for (int i = 0; i < events.size(); i++) {
 			if (events.get(i).getUid() == eventObj.getUid()) {
@@ -94,7 +105,11 @@ public class Model {
 			}
 		}
 	}
-	// Delete single Event
+
+	/**
+	 * Deletes a single Event
+	 * @param eventObj
+	 */
 	public void deleteEvent(Event eventObj) {
 		for (int i = 0; i < events.size(); i++) {
 			if (events.get(i).getUid() == eventObj.getUid()) {
@@ -104,7 +119,11 @@ public class Model {
 			saveToFile(fileName, events);
 		}
 	}
-	// Delete multiple Events
+	
+	/**
+	 * Deletes multiple events with an EventList
+	 * @param eventList
+	 */
 	public void deleteEvent(EventList eventList) {
 		EventList deletedEventList = new EventList();
 		for (int i = 0; i < events.size(); i++) {
@@ -119,6 +138,10 @@ public class Model {
 		saveToFile(fileName, events);
 	}
 
+	/**
+	 * Undo an added event (Delete)
+	 * @param eventList
+	 */
 	public void undoAddedEvent(EventList eventList) {
 		for (int i = 0; i < events.size(); i++) {
 			for (Event eventObj : eventList) {
@@ -131,6 +154,11 @@ public class Model {
 		saveToFile(fileName, events);
 	}
 
+	/**
+	 * Undo an updated event (Revert to old)
+	 * @param eventList
+	 * @param isUndo
+	 */
 	public void undoUpdatedEvent(EventList eventList, boolean isUndo) {
 		EventList redoEventList = new EventList();
 		
@@ -151,6 +179,10 @@ public class Model {
 		saveToFile(fileName, events);
 	}
 
+	/**
+	 * Undo a deleted event (Add back)
+	 * @param eventList
+	 */
 	public void undoDeletedEvent(EventList eventList) {
 		for (int i = 0; i < eventList.size(); i++) {
 			events.add(eventList.get(i));
@@ -158,6 +190,11 @@ public class Model {
 		saveToFile(fileName, events);
 	}
 
+	/**
+	 * Update the undo manager for single EventObject
+	 * @param eventObj
+	 * @param type
+	 */
 	private void updateUndoManager(Event eventObj, UndoStep.UndoType type) {
 		EventList eventList = new EventList();
 		UndoManager.getInstance().clearRedoStack();
@@ -177,15 +214,20 @@ public class Model {
 		}
 	}
 
+	/**
+	 * Update undo manager with EventList
+	 * @param eventList
+	 */
 	private void updateUndoManager(EventList eventList) {
 		UndoManager.getInstance().clearRedoStack();
 		UndoManager.getInstance().delete(eventList);
 	}
 
-	public void setSaveFileName(String input) {
-		//filename = input;
-	}
-	
+	/**
+	 * Complete an event
+	 * @param eventObj
+	 * @param forComplete
+	 */
 	public void setComplete(Event eventObj, boolean forComplete) {
 		for (int i = 0; i < events.size(); i++) {
 			if (events.get(i).getUid() == eventObj.getUid()) {
@@ -200,6 +242,11 @@ public class Model {
 		saveToFile(fileName, events);
 	}
 	
+	/**
+	 * Method call to save EventList to disk
+	 * @param filename
+	 * @param eventList
+	 */
 	private void saveToFile(File filename, EventList eventList) {
 		try {
 			PrintWriter printWriter = new PrintWriter(filename);
@@ -214,6 +261,11 @@ public class Model {
 		}
 	}
 
+	/**
+	 * Method call to get an event list from disk
+	 * @param filename
+	 * @return
+	 */
 	private EventList getFromFile(File filename) {
 		try {
 			FileReader fileReader = new FileReader(filename);
@@ -233,27 +285,21 @@ public class Model {
 		return new EventList();
 	}
 
+	/**
+	 * Loads a string array from file
+	 * @param filename
+	 * @return
+	 */
 	public String[] loadStringArray( String filename ) {
 		ArrayList<String> strings = new ArrayList<>();
-		try {
-			FileReader fileReader = new FileReader(filename);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-			String line;
-			while ( true ) {
-				line = bufferedReader.readLine();
-				if ( line == null ) {
-					break;
-				}
-				strings.add(line);
-			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-
-		return strings.toArray(new String[strings.size()]);
+		return loadStringArrayList(filename).toArray(new String[strings.size()]);
 	}
 	
+	/**
+	 * Loads an arrayList of 
+	 * @param filename
+	 * @return
+	 */
 	public ArrayList<String> loadStringArrayList( String filename ) {
 		ArrayList<String> strings = new ArrayList<>();
 		try {
@@ -273,5 +319,9 @@ public class Model {
 		}
 
 		return strings;
+	}
+	
+	public void setSaveFileName(String input) {
+		//filename = input;
 	}
 }
