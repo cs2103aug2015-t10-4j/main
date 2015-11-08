@@ -413,7 +413,7 @@ public class Controller {
     }
 
 
-
+    //@@author A0133907E
     /**
      * Refreshes the announcement box
      */
