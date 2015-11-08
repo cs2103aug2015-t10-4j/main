@@ -39,7 +39,7 @@ public class QuerySet extends QueryBase {
 	}
 	
 	/**
-	 * Convert user input to corresponding UIType
+	 * Converts user input to corresponding UIType
 	 * @param input
 	 * @return
 	 */
