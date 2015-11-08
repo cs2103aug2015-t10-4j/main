@@ -292,6 +292,10 @@ public class UIController implements Initializable {
     }
 
     //@@author A0133907E
+    /**
+     * Set the main view of CareLendar 
+     * @param type
+     */
     public void setUI(UIType type) {
         uiType = type;
         switch (uiType) {
