@@ -116,11 +116,6 @@ public class Controller {
         if ( stateManager.getAppState() == AppState.DEFAULT && !blockingStateController.isBlocked() ) {
             StringBuilder stringBuilder = new StringBuilder();
             String [] autocompleteOptions = InputParser.getInstance().getAutocompleteOptions(userInput, stringBuilder);
-            if ( autocompleteOptions != null ) {
-                //System.out.println("Autocomplete size: " + autocompleteOptions.length);
-            } else {
-                //System.out.println("No match");
-            }
             UIController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
         } else {
             UIController.setAutocompleteOptions(null, null);
@@ -128,29 +123,15 @@ public class Controller {
 
     }
 
-    /**
-     * Converts an add query to an event object
-     * @param queryAdd
-     * @return
-     */
-    public static Event queryAddToEventObject(QueryAdd queryAdd) {
-        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange(), queryAdd.getCategory());
-        return eventObj;
-    }
-
-
-
     public static void showHelp() {
-        //UIController.displayMessage("Available Commands:");
-        //UIController.displayMessage(InputParser.getInstance().showCommandList());
         blockingStateController.startPopup(InputParser.getInstance().showCommandList());
     }
 
     public static void printWelcomeMessage() {
         if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
-            UIController.setAnnouncementMessage("Welcome to careLender. " + FirstStartMessages.askForName());
+            UIController.setAnnouncementMessage(FirstStartMessages.firstStart() + FirstStartMessages.askForName());
         } else {
-            UIController.setAnnouncementMessage("Welcome back, " + userName);
+            UIController.setAnnouncementMessage(FirstStartMessages.welcomeBack(userName));
             stateManager.changeState(AppState.DEFAULT);
         }
     }
@@ -224,18 +205,6 @@ public class Controller {
         return blockingStateController;
     }
 
-
-
-    public static void setUI(UIType type) {
-        UIController.setUI(type);
-    }
-    public static void toggleUI() {
-        UIController.toggleUI();
-    }
-
-    /*public static void autocompleteSuggestion() {
-        UIController.autocompleteSuggestion();
-    }*/
 
     public static UIType getDefaultUIType() {
         return defaultUIType;
@@ -394,9 +363,7 @@ public class Controller {
 
 
     private static void stateFirstStart ( String userInput ) {
-    	final OnConfirmedCallback confirmNameCallback = new OnConfirmedCallback() {
-            @Override
-            public void onConfirmed(boolean confirmed) {
+    	final OnConfirmedCallback confirmNameCallback = (boolean confirmed) -> {
                 System.out.println("Confirmed: " + confirmed);
                 if ( confirmed ) {
                     displayMessage(FirstStartMessages.confirmed(userName));
@@ -408,9 +375,7 @@ public class Controller {
                     displayMessage(FirstStartMessages.askForNameAgain());
                     userName = null;
                 }
-            }
-
-        };
+            };
         userName = userInput;
         blockingStateController.startConfirmation(FirstStartMessages.confirmation(userName), confirmNameCallback);
     }

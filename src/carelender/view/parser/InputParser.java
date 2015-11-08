@@ -45,6 +45,8 @@ public class InputParser {
         newCommand.setDescription("Search for events/tasks");
         newCommand.setUsage("search \"event name\" \"date/daterange\" [cat \"category\"]");
         newCommand.addKeywords("category", "category,cat", CommandKeyword.DataPosition.AFTER);
+        newCommand.addKeywords("complete", "complete,completed,finished", null);
+        newCommand.addKeywords("incomplete", "incomplete,unfinished", null);
         commandManager.addCommand(newCommand);
 
         newCommand = new Command("list", QueryType.LIST);
@@ -346,10 +348,8 @@ public class InputParser {
     	if ( commandParts.length < 3 ) {
             return new QueryError(ErrorMessages.setNoParameters());
         }
-        
-        QuerySet querySet = new QuerySet(commandParts[1].getQueryPart(), commandParts[2].getQueryPart());
-        
-        return querySet;
+
+        return new QuerySet(commandParts[1].getQueryPart(), commandParts[2].getQueryPart());
 	}
 
 	public QueryBase parseSearchCommand ( DateRange[] dateRanges, CommandPart [] commandParts ) {
@@ -387,6 +387,16 @@ public class InputParser {
                 queryList.addSearchParam(QueryList.SearchParam.CATEGORY, category);
                 pass = true;
             }
+        }
+
+        commandPart = getCommandPart("complete", commandParts);
+        if ( commandPart != null ) {
+            queryList.addSearchParam(QueryList.SearchParam.COMPLETE, true);
+        }
+
+        commandPart = getCommandPart("incomplete", commandParts);
+        if ( commandPart != null ) {
+            queryList.addSearchParam(QueryList.SearchParam.COMPLETE, false);
         }
 
         if ( !pass ) {
@@ -461,7 +471,7 @@ public class InputParser {
             return new QueryError(ErrorMessages.invalidIndices());
         }
         if ( indexList.length > 1 ) {
-            return new QueryError("Please input only one index");
+            return new QueryError(ErrorMessages.singleIndexOnly());
         }
         Event event = displayedList.get(indexList[0]);
         return new QueryShow(event);
@@ -493,16 +503,16 @@ public class InputParser {
     
     public QueryBase parseCompleteCommand ( CommandPart [] commandParts, Boolean forComplete) {
         if ( commandParts.length < 1 ) {
-            return new QueryError("What do you want to complete?");
+            return new QueryError(ErrorMessages.completeNoParameters());
         }
         if ( displayedList == null ) {
-            return new QueryError("Nothing displayed");
+            return new QueryError(ErrorMessages.nothingListed());
         }
 
         Integer [] indexList = extractIndices(commandParts[0].getQueryPart());
 
         if ( indexList == null ) {
-            return new QueryError("Error parsing indices");
+            return new QueryError(ErrorMessages.invalidIndices());
         }
         QueryComplete queryComplete = new QueryComplete(forComplete);
         for ( int i : indexList ) {
@@ -634,7 +644,7 @@ public class InputParser {
         QueryAdd queryAdd = new QueryAdd();
 
         if ( commandParts.length == 0 ) {
-            return new QueryError(ErrorMessages.adddNoParameters());
+            return new QueryError(ErrorMessages.addNoParameters());
         }
         String name = commandParts[0].getQueryPart(); //First item should be the name
         queryAdd.setName(name);
