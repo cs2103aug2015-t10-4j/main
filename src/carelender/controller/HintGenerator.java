@@ -14,16 +14,16 @@ public class HintGenerator {
     private int[] dailyEventNumbers, weeklyEventNumbers;
 	private int monthlyEventNumber;
 	
-	private static final int sixWeeksDays = 42;
-	private static final int sixDays = 6;
-	private static final int daysPerWeek = 7;
-	private static final int mondayIndex = 0;
-	private static final int sundayIndex = 6;
-	private static final int monthlyVacationThreshold= 10;
-	private static final int weeklyFreeThreshold = 18;
-	private static final int weeklyBusyThreshold = 30;
-	private static final int dailyFreeThreshold = 3;
-	private static final int dailyBusyThreshold = 6;
+	private static final int SIX_WEEKS_DAYS = 42;
+	private static final int SIX_DAYS = 6;
+	private static final int DAYS_PER_WEEK = 7;
+	private static final int MONDAY_INDEX = 0;
+	private static final int SUNDAY_INDEX = 6;
+	private static final int MONTHLY_VACATION_THRESHOLD = 10;
+	private static final int WEEKLY_FREE_THRESHOLD = 18;
+	private static final int WEEKLY_BUSY_THRESHOLD = 30;
+	private static final int DAILY_FREE_THRESHOLD = 3;
+	private static final int DAILY_BUSY_THRESHOLD = 6;
 	
     private static final ArrayList<String> basicHints = Model.getInstance().loadStringArrayList("hints.dat");
 	private ArrayList<String> hints;
@@ -31,12 +31,12 @@ public class HintGenerator {
     public HintGenerator() {
     	hints = new ArrayList<String>();
         hints = basicHints;
-        
-        dailyEventNumbers = new int[sixWeeksDays];
-		weeklyEventNumbers = new int [sixDays];
+
+        dailyEventNumbers = new int[SIX_WEEKS_DAYS];
+		weeklyEventNumbers = new int [SIX_DAYS];
 		monthlyEventNumber = 0;
     }
-	
+
     public static HintGenerator getInstance() {
         if ( singleton == null ) {
             singleton = new HintGenerator();
@@ -51,20 +51,20 @@ public class HintGenerator {
      */
 	public void setDailyEventNumbers(int[][] monthEventNumbers) {
 		resetEventNumbers();
-		
+
 		//Update dailyEventNumbers
 		for(int i=0; i < monthEventNumbers.length; i++){
 			for(int j=0; j < monthEventNumbers[i].length; j++){
 				dailyEventNumbers[i] += monthEventNumbers[i][j];
 			}
 		}
-		
+
 		//Update weeklyEventNumbers and monthlyEventNumber
 		for ( int i = 0 ; i < dailyEventNumbers.length; i++) {
-			weeklyEventNumbers[i / daysPerWeek] += dailyEventNumbers[i];
+			weeklyEventNumbers[i / DAYS_PER_WEEK] += dailyEventNumbers[i];
 			monthlyEventNumber += dailyEventNumbers[i];
 		}
-		
+
 		generateHints();
 	}
     
@@ -79,8 +79,8 @@ public class HintGenerator {
         calendar.setTime(new Date());
         todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
         //Originally Sunday - Monday = -1 while a 6 is expected.
-        if( todayIndex < mondayIndex ){
-            todayIndex = sundayIndex;
+        if( todayIndex < MONDAY_INDEX ){
+            todayIndex = SUNDAY_INDEX;
         }
         return todayIndex;
     }
@@ -110,10 +110,10 @@ public class HintGenerator {
      */
     private void generateHintsForTomorrow(int todayIndex) {
         int tomorrowIndex = todayIndex + 1;
-        if (dailyEventNumbers[tomorrowIndex] > dailyBusyThreshold) {
+        if(dailyEventNumbers[tomorrowIndex] > DAILY_BUSY_THRESHOLD) {
         	String newHint = "You have may tasks tomorrow. Rest well today :)";
             hints.add(newHint);
-        } else if (dailyEventNumbers[tomorrowIndex] > dailyFreeThreshold){
+        } else if (dailyEventNumbers[tomorrowIndex] > DAILY_FREE_THRESHOLD){
         	String newHint = "Don't forget your " + dailyEventNumbers[tomorrowIndex] + " deadlines tomorrow!";
             hints.add(newHint);
         } else {
@@ -129,14 +129,14 @@ public class HintGenerator {
         int thisWeekEventNumber = weeklyEventNumbers[0];
         int nextWeekEventNumber = weeklyEventNumbers[1];
 
-        if (nextWeekEventNumber > weeklyBusyThreshold) {
+        if (nextWeekEventNumber > WEEKLY_BUSY_THRESHOLD) {
             String newHint = "You have " + nextWeekEventNumber + " tasks next week! Be prepared.";
             hints.add(newHint);
-        } else if (nextWeekEventNumber > weeklyFreeThreshold) {
+        } else if (nextWeekEventNumber > WEEKLY_FREE_THRESHOLD) {
             String newHint = "You don't have many tasks next week. Try exercise more :)";
             hints.add(newHint);
         } else {
-            if (thisWeekEventNumber < weeklyFreeThreshold) {
+            if (thisWeekEventNumber < WEEKLY_FREE_THRESHOLD) {
                 String newHint = "Next week is so free! How nice :)";
                 hints.add(newHint);
             } else {
@@ -150,7 +150,7 @@ public class HintGenerator {
      * Generate hints for the following 28 days
      */
     private void generateHintsForMonth(){
-        if (monthlyEventNumber < monthlyVacationThreshold) {
+        if(monthlyEventNumber < MONTHLY_VACATION_THRESHOLD) {
             String newHint = "This month looks clear, why not plan a vacation?";
             hints.add(newHint);
         } else {
@@ -180,7 +180,7 @@ public class HintGenerator {
 			weeklyEventNumbers[i] = 0;
 		}
     }
-    
+
     /**
      * This ENUM is just a reference on different types of hints
      */
