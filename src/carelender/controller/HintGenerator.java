@@ -1,29 +1,41 @@
+//@@author A0133907E
 package carelender.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
 import carelender.model.Model;
 
 /**
- * This class is to generate the helpful hints that are displayed at the corner
+ * This class is to generate the helpful hints that are displayed under tabs
  */
 public class HintGenerator {
     private static HintGenerator singleton = null;
     private int[] dailyEventNumbers, weeklyEventNumbers;
 	private int monthlyEventNumber;
 	
-	private static final int sixWeeks = 42;
+	private static final int sixWeeksDays = 42;
 	private static final int sixDays = 6;
 	private static final int daysPerWeek = 7;
-	private static final int mondayIndex= 0;
+	private static final int mondayIndex = 0;
 	private static final int sundayIndex = 6;
 	private static final int monthlyVacationThreshold= 10;
 	private static final int weeklyFreeThreshold = 18;
 	private static final int weeklyBusyThreshold = 30;
 	private static final int dailyFreeThreshold = 3;
 	private static final int dailyBusyThreshold = 6;
+	
+    private static final ArrayList<String> basicHints = Model.getInstance().loadStringArrayList("hints.dat");
+	private ArrayList<String> hints;
+	
+    private HintGenerator() {
+    	hints = new ArrayList<String>();
+        hints = basicHints;
+        
+        dailyEventNumbers = new int[sixWeeksDays];
+		weeklyEventNumbers = new int [sixDays];
+		monthlyEventNumber = 0;
+    }
 	
     public static HintGenerator getInstance() {
         if ( singleton == null ) {
@@ -33,38 +45,31 @@ public class HintGenerator {
     }
     
     /**
-     * Called by CalendarRenderer to pass the monthEventNumbers into HintGeneratoe
-     * Update dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber
+     * Called by CalendarRenderer to pass a 2-D array monthEventNumbers into HintGenerator
+     * Update dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber accordingly
      * @param monthEventNumbers
      */
 	public void setDailyEventNumbers(int[][] monthEventNumbers) {
 		resetEventNumbers();
+		
+		//Update dailyEventNumbers
 		for(int i=0; i < monthEventNumbers.length; i++){
 			for(int j=0; j < monthEventNumbers[i].length; j++){
 				dailyEventNumbers[i] += monthEventNumbers[i][j];
 			}
 		}
+		
+		//Update weeklyEventNumbers and monthlyEventNumber
 		for ( int i = 0 ; i < dailyEventNumbers.length; i++) {
 			weeklyEventNumbers[i / daysPerWeek] += dailyEventNumbers[i];
 			monthlyEventNumber += dailyEventNumbers[i];
 		}
+		
 		generateHints();
 	}
-
-    ArrayList<String> basicHints;
-	ArrayList<String> hints;
-    private HintGenerator() {
-    	hints = new ArrayList<String>();
-    	basicHints = Model.getInstance().loadStringArrayList("hints.dat");
-        hints = basicHints;
-        
-        dailyEventNumbers = new int[sixWeeks];
-		weeklyEventNumbers = new int [sixDays];
-		monthlyEventNumber = 0;
-    }
     
     /**
-     * Calculate the day of week for today
+     * Calculate the day of week (e.g. Monday, Friday) for today
      * @return
      */
     private int getDayOfWeek() {
@@ -73,21 +78,22 @@ public class HintGenerator {
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.setTime(new Date());
         todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
+        //Originally Sunday - Monday = -1 while a 6 is expected.
         if( todayIndex < mondayIndex ){
             todayIndex = sundayIndex;
         }
         return todayIndex;
     }
     
-    /*
-     * Reset hints to basicHints
+    /**
+     * Reset hints to the default set (basicHints)
      */
     private void resetHints() {
         hints = basicHints;
     }
     
-    /*
-     * Generate hints
+    /**
+     * Generate hints according to the number of tasks in different time ranges
      */
     public void generateHints() {
     	int todayIndex = getDayOfWeek();
@@ -99,12 +105,12 @@ public class HintGenerator {
         generateHintsForMonth();
     }
 
-    /*
+    /**
      * Generate hints for tomorrow
      */
     private void generateHintsForTomorrow(int todayIndex) {
         int tomorrowIndex = todayIndex + 1;
-        if(dailyEventNumbers[tomorrowIndex] > dailyBusyThreshold) {
+        if (dailyEventNumbers[tomorrowIndex] > dailyBusyThreshold) {
         	String newHint = "You have may tasks tomorrow. Rest well today :)";
             hints.add(newHint);
         } else if (dailyEventNumbers[tomorrowIndex] > dailyFreeThreshold){
@@ -116,7 +122,7 @@ public class HintGenerator {
         }
     }
     
-    /*
+    /**
      * Generate hints for next week
      */
     private void generateHintsForWeek(int todayIndex) {
@@ -140,11 +146,11 @@ public class HintGenerator {
         }
     }
     
-    /*
+    /**
      * Generate hints for the following 28 days
      */
     private void generateHintsForMonth(){
-        if(monthlyEventNumber < monthlyVacationThreshold) {
+        if (monthlyEventNumber < monthlyVacationThreshold) {
             String newHint = "This month looks clear, why not plan a vacation?";
             hints.add(newHint);
         } else {
@@ -174,7 +180,10 @@ public class HintGenerator {
 			weeklyEventNumbers[i] = 0;
 		}
     }
-
+    
+    /**
+     * This ENUM is just a reference on different types of hints
+     */
     enum HintType {
         HINT,       //Generic hints, like "press up to access previous commands"
         DAY_FREE,
