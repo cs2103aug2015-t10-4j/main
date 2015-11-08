@@ -9,10 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 
 public class TimelineViewRenderer extends CanvasRenderer {
-	//TaskRenderer
-	//MessageboxRenderer
-	//SelectionPopupRenderer
-	
 	TextRenderer messageBox;
     TextRenderer announcementBox;
 

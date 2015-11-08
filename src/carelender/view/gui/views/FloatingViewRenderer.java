@@ -11,11 +11,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 
 public class FloatingViewRenderer extends CanvasRenderer {
-    private static final double windowPadding = 8;
-    private static final double textboxInnerPadding = 8;
-    private static final double fontRatio = 1/60;
-    private static final double topBarRatio = 0.13;
-
     TextRenderer messageBox;
     TextRenderer announcementBox;
     CalenderRenderer calender;

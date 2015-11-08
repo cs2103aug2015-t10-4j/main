@@ -14,7 +14,7 @@ public class HintGenerator {
     private int[] dailyEventNumbers, weeklyEventNumbers;
 	private int monthlyEventNumber;
 	
-	private static final int SIX_WEEKS = 42;
+	private static final int SIX_WEEKS_DAYS = 42;
 	private static final int SIX_DAYS = 6;
 	private static final int DAYS_PER_WEEK = 7;
 	private static final int MONDAY_INDEX = 0;
@@ -32,7 +32,7 @@ public class HintGenerator {
     	hints = new ArrayList<String>();
         hints = basicHints;
 
-        dailyEventNumbers = new int[SIX_WEEKS];
+        dailyEventNumbers = new int[SIX_WEEKS_DAYS];
 		weeklyEventNumbers = new int [SIX_DAYS];
 		monthlyEventNumber = 0;
     }
