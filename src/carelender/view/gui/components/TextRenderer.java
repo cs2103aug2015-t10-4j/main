@@ -38,7 +38,7 @@ public class TextRenderer {
 
     public TextRenderer() {
         this.gc = null;
-		this.textLines = new ArrayList<String>();
+		this.textLines = new ArrayList<>();
 }
 
     public void setPosition ( double x, double y ) {

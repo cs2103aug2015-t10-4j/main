@@ -1,15 +1,11 @@
 package carelender.model;
 
 import java.io.BufferedReader;
-/**
- * Handles all database and file saving
- */
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.*;
 import com.google.gson.Gson;
@@ -17,6 +13,9 @@ import carelender.model.AppSettings.SettingName;
 import carelender.model.UndoStep.UndoType;
 import carelender.model.data.*;
 
+/**
+ * Handles all database and file saving
+ */
 public class Model {
 
 	private static Model singleton = null;
@@ -33,16 +32,12 @@ public class Model {
 	
 	private static Logger log;
 	private EventList events;
-
-	File fileName;
-	File folderName;
-
+	private File fileName;
+	private File folderName;
 	private int currentUid;
 
 	private Model() {
 		log = Logger.getLogger(Model.class.getName());
-		//Get current time
-		Calendar cal = Calendar.getInstance();
 
 		//Initiate the Directory
 		folderName = new File(FOLDER_NAME);
@@ -72,7 +67,7 @@ public class Model {
 
 	/**
 	 * Adds and event into model
-	 * @param eventObj
+	 * @param eventObj Event to be added
 	 */
 	public void addEvent(Event eventObj) {
 		eventObj.setDateCreated(new Date());
@@ -85,7 +80,7 @@ public class Model {
 	
 	/**
 	 * Passes the caller an event list
-	 * @return EventObject
+	 * @return EventList List of events
 	 */
 	public EventList retrieveEvent() {
 		return events;
@@ -93,7 +88,7 @@ public class Model {
 	
 	/**
 	 * Finds the event object in EventList, and updates it with a new one
-	 * @param eventObj
+	 * @param eventObj Event to be updated
 	 */
 	public void updateEvent(Event eventObj) {
 		for (int i = 0; i < events.size(); i++) {
@@ -108,7 +103,7 @@ public class Model {
 
 	/**
 	 * Deletes a single Event
-	 * @param eventObj
+	 * @param eventObj Event to be deleted
 	 */
 	public void deleteEvent(Event eventObj) {
 		for (int i = 0; i < events.size(); i++) {
@@ -122,7 +117,7 @@ public class Model {
 	
 	/**
 	 * Deletes multiple events with an EventList
-	 * @param eventList
+	 * @param eventList Events to be deleted
 	 */
 	public void deleteEvent(EventList eventList) {
 		EventList deletedEventList = new EventList();
@@ -140,13 +135,12 @@ public class Model {
 
 	/**
 	 * Undo an added event (Delete)
-	 * @param eventList
+	 * @param eventList Events to be undone
 	 */
 	public void undoAddedEvent(EventList eventList) {
 		for (int i = 0; i < events.size(); i++) {
 			for (Event eventObj : eventList) {
 				if (events.get(i).getUid() == eventObj.getUid()) {
-					System.out.println("REMOVED ID" + events.get(i).getUid());
 					events.remove(i);
 				}
 			}
@@ -156,8 +150,8 @@ public class Model {
 
 	/**
 	 * Undo an updated event (Revert to old)
-	 * @param eventList
-	 * @param isUndo
+	 * @param eventList Event to be undone/redone
+	 * @param isUndo Checks if is undo or redo command
 	 */
 	public void undoUpdatedEvent(EventList eventList, boolean isUndo) {
 		EventList redoEventList = new EventList();
@@ -171,6 +165,7 @@ public class Model {
 				}
 			}			
 		}
+		// Checks if it is an undo or redo command
 		if (isUndo) {
 			UndoManager.getInstance().redoUpdate(redoEventList);
 		} else {
@@ -181,7 +176,7 @@ public class Model {
 
 	/**
 	 * Undo a deleted event (Add back)
-	 * @param eventList
+	 * @param eventList Events to be added back upon undo
 	 */
 	public void undoDeletedEvent(EventList eventList) {
 		for (int i = 0; i < eventList.size(); i++) {
@@ -192,8 +187,8 @@ public class Model {
 
 	/**
 	 * Update the undo manager for single EventObject
-	 * @param eventObj
-	 * @param type
+	 * @param eventObj Event to be undone
+	 * @param type type of undo commmad
 	 */
 	private void updateUndoManager(Event eventObj, UndoStep.UndoType type) {
 		EventList eventList = new EventList();
@@ -216,7 +211,7 @@ public class Model {
 
 	/**
 	 * Update undo manager with EventList
-	 * @param eventList
+	 * @param eventList 
 	 */
 	private void updateUndoManager(EventList eventList) {
 		UndoManager.getInstance().clearRedoStack();
@@ -226,7 +221,7 @@ public class Model {
 	/**
 	 * Complete an event
 	 * @param eventObj
-	 * @param forComplete
+	 * @param forComplete boolean for 
 	 */
 	public void setComplete(Event eventObj, boolean forComplete) {
 		for (int i = 0; i < events.size(); i++) {
@@ -314,10 +309,11 @@ public class Model {
 				}
 				strings.add(line);
 			}
+			bufferedReader.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-
+		
 		return strings;
 	}
 	

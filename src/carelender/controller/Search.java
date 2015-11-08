@@ -1,11 +1,8 @@
 package carelender.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-import carelender.model.Model;
 import carelender.model.data.*;
 
 /**
@@ -25,7 +22,7 @@ public class Search {
 			}
 			
 			if ( !match ) {
-				return match;
+				return false;
 			}
 		}
 		
@@ -37,7 +34,7 @@ public class Search {
 			}
 
 			if ( !match ) {
-				return match;
+				return false;
 			}
 		}
 		
@@ -49,19 +46,17 @@ public class Search {
 			}
 			
 			if ( !match ) {
-				return match;
+				return false;
 			}
 		}
 		
 		if (hasComplete(paramsList)) {
 			Object complete = paramsList.get(QueryList.SearchParam.COMPLETE);
 			assert ( complete != null ) : "CATEGORY paired with null object in HashMap.";
-			if (complete instanceof Boolean) {
-				match = IsEventComplete(eventToCheck, (boolean)complete);
-			}
+			match = IsEventComplete(eventToCheck);
 			
 			if ( !match ) {
-				return match;
+				return false;
 			}
 		}
 		
@@ -76,7 +71,7 @@ public class Search {
 			}
 			
 			if ( !match ) {
-				return match;
+				return false;
 			}
 		} else if (hasStartDate(paramsList)) {
 			Object startDate = paramsList.get(QueryList.SearchParam.DATE_START);
@@ -85,7 +80,7 @@ public class Search {
 			}
 			
 			if ( !match ) {
-				return match;
+				return false;
 			}
 		} else if (hasEndDate(paramsList)) {
 			Object endDate = paramsList.get(QueryList.SearchParam.DATE_END);
@@ -94,7 +89,7 @@ public class Search {
 			}
 			
 			if ( !match ) {
-				return match;
+				return false;
 			}
 		}
 		return match;
@@ -158,17 +153,15 @@ public class Search {
 				return true;
 			}
 		} else {
-			if (categoryName == stringToCheck) {
+			if (stringToCheck == null) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public static boolean IsEventComplete (Event eventToCheck,
-											boolean complete) {
-		boolean eventComplete = eventToCheck.getCompleted();
-		return eventComplete;
+	public static boolean IsEventComplete (Event eventToCheck) {
+		return eventToCheck.getCompleted();
 	}
 	
 	public static boolean isEventBeforeDate (Event eventToCheck,

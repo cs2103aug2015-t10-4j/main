@@ -1,24 +1,21 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
-import carelender.view.gui.components.CanvasRenderer;
-import carelender.view.gui.components.TextRenderer;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-import java.io.Console;
-
 /**
- * Renders the autocomplete box
+ * Renders the autocomplete box and automatically resizes the height according to the number of lines.
  */
 public class AutocompleteRenderer extends CanvasRenderer {
-
+    public static final String autocompleteMessage = "TAB to autocomplete";
     String [] autocompleteOptions = null; // = {"test", "test2", "bubu", "lala", "test some very loing line of text lorem ipsum blah blahb labhbl ablhbl abhla hblahbl hba more text so much text text text text text"};
     TextRenderer autoComplete = new TextRenderer();
     boolean renderFirstLineBold;
+
     @Override
     public void draw(GraphicsContext gc, double x, double y, double width, double height) {
         super.draw(gc, x, y, width,height);
@@ -31,16 +28,16 @@ public class AutocompleteRenderer extends CanvasRenderer {
             double fieldHeight = autocompleteOptions.length * ( 1 + lineHeight ) * fontSize + innerPadding * 2;
 
             if ( renderFirstLineBold ) {
-                gc.setFont(Font.loadFont("file:res/monaco.ttf", fontSize*0.9));
+                gc.setFont(FontLoader.load( fontSize*0.9));
                 gc.setTextBaseline(VPos.BOTTOM);
-                gc.setFill(Color.web("#555"));
-                gc.setStroke(Color.web("#555"));
+                gc.setFill(AppColours.grey);
+                gc.setStroke(AppColours.grey);
                 gc.setTextAlign(TextAlignment.LEFT);
-                gc.fillText("TAB to autocomplete", x + 10, y - fieldHeight - 5);
-                gc.strokeText("TAB to autocomplete", x + 10, y - fieldHeight - 5);
+                gc.fillText(autocompleteMessage, x + 10, y - fieldHeight - 5);
+                gc.strokeText(autocompleteMessage, x + 10, y - fieldHeight - 5);
             }
 
-            Font font = Font.loadFont("file:res/monaco.ttf", fontSize);
+            Font font = FontLoader.load( fontSize);
             autoComplete.setParams(gc, x, y - fieldHeight, width, fieldHeight,
                     innerPadding, innerPadding, font, 0.6, lineHeight);
 
@@ -52,6 +49,11 @@ public class AutocompleteRenderer extends CanvasRenderer {
         }
     }
 
+    /**
+     * Sets the lines of text for the autocomplete options
+     * @param autocompleteOptions String array for all the options to show
+     * @param renderFirstLineBold Flag to bold the first line
+     */
     public void setAutocompleteOptions(String[] autocompleteOptions, boolean renderFirstLineBold) {
         this.renderFirstLineBold = renderFirstLineBold;
         this.autocompleteOptions = autocompleteOptions;

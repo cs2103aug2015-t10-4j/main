@@ -2,6 +2,7 @@ package carelender.view.gui.components;
 
 import carelender.model.data.Event;
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
@@ -11,6 +12,7 @@ import javafx.scene.text.TextAlignment;
  * Renders the information of an event using the taskbar renderer class
  */
 public class EventInfoRenderer extends CanvasRenderer {
+    public final String title = "Event Details";
     Event event;
     TaskBarRenderer taskBarRenderer;
     public final float headerRatio = 0.06f;
@@ -34,11 +36,11 @@ public class EventInfoRenderer extends CanvasRenderer {
         gc.fillRect(x, y, width, height * headerRatio);
 
         gc.setFill(AppColours.black);
-        Font font = Font.loadFont("file:res/monaco.ttf", height * headerRatio * .8);
+        Font font = FontLoader.load( height * headerRatio * .8);
         gc.setFont(font);
         gc.setTextBaseline(VPos.TOP);
         gc.setTextAlign(TextAlignment.LEFT);
-        gc.fillText("Event Details", x, y);
+        gc.fillText(title, x, y);
 
         taskBarRenderer.draw(gc, x, y + height * headerRatio, width, width / 10, AppColours.tasklistRowBackground, AppColours.primaryColour, false);
     }

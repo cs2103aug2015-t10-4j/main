@@ -14,21 +14,15 @@ import carelender.model.Model;
  */
 
 public class QueryList extends QueryBase {
-	private HashMap<SortParam, Comparator<Event>> sortComparators = new HashMap<SortParam, Comparator<Event>>();
-	private HashMap<SearchParam, Object> searchParamsList = new HashMap<SearchParam, Object>();
+	private HashMap<SortParam, Comparator<Event>> sortComparators = new HashMap<>();
+	private HashMap<SearchParam, Object> searchParamsList = new HashMap<>();
 	
 	private void defineComparators () {
-		sortComparators.put(SortParam.NAME, new Comparator<Event>() {
-			@Override
-			public int compare(Event eventAgainst, Event eventTo) {
-				// TODO Auto-generated method stub
+		sortComparators.put(SortParam.NAME, ( Event eventAgainst, Event eventTo) -> {
 				return eventAgainst.getName().compareTo(eventTo.getName());
 			}
-        });
-        sortComparators.put(SortParam.DATE, new Comparator<Event>() {
-			@Override
-			public int compare(Event eventAgainst, Event eventTo) {
-				// TODO Auto-generated method stub
+        );
+        sortComparators.put(SortParam.DATE, (Event eventAgainst, Event eventTo) -> {
 				if (eventAgainst.getEarliestDate().before(eventTo.getEarliestDate())) {
 					return 1;
 				} else if (eventAgainst.getEarliestDate().after(eventTo.getEarliestDate())) {
@@ -36,7 +30,7 @@ public class QueryList extends QueryBase {
 				}
 				return 0;
 			}
-        });
+        );
 	}
 	
 	public QueryList() {
@@ -82,31 +76,6 @@ public class QueryList extends QueryBase {
 			Collections.sort(searchResults, this.sortComparators.get(sortType));
 		}
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("E dd MMM yyyy h:mma Z");
-		/*Controller.displayMessage("Listing events");
-		
-		if ( this.searchParamsList.containsKey(SearchParam.DATE_START) ) {
-			Date fromDate = (Date)this.searchParamsList.get(SearchParam.DATE_START);
-			Controller.displayMessage("   from " + dateFormat.format(fromDate));
-		}
-		if ( this.searchParamsList.containsKey(SearchParam.DATE_END) ) {
-			Date toDate = (Date)this.searchParamsList.get(SearchParam.DATE_END);
-			Controller.displayMessage("   till " + dateFormat.format(toDate));
-		}
-		if ( this.searchParamsList.containsKey(SearchParam.NAME_CONTAINS) ) {
-			String search = (String)this.searchParamsList.get(SearchParam.NAME_CONTAINS);
-			Controller.displayMessage("   matching: " + search);
-		}*/
-
-		/*
-		if (searchResults.size() > 0) {
-			Controller.displayMessage(searchResults.toString());
-		} else {
-			Controller.displayMessage("No results");
-		}
-
-		Controller.setDisplayedList(searchResults);
-		*/
 		Controller.displayTasks(searchResults);
 	}
 

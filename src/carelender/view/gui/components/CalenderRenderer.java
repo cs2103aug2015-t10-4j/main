@@ -11,8 +11,7 @@ import carelender.model.data.Event;
 import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
 import carelender.model.strings.AppColours;
-import carelender.view.gui.RenderHelper;
-import carelender.view.gui.components.CanvasRenderer;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -63,7 +62,7 @@ public class CalenderRenderer extends CanvasRenderer {
         HintGenerator.getInstance().setDailyEventNumbers(monthEventNumbers);
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
-    
+
     double sidePadding;
     double calCellWidth;
     double calCellHeight;
@@ -88,7 +87,7 @@ public class CalenderRenderer extends CanvasRenderer {
         gc.setFill(AppColours.panelBackground);
         gc.fillRect(x, y, width, height);
 
-        Font font = Font.loadFont("file:res/monaco.ttf", calCellHeight * 0.5);
+        Font font = FontLoader.load( calCellHeight * 0.5);
 
         gc.setFill(AppColours.calendarCell);
         gc.setTextAlign(TextAlignment.CENTER);
@@ -100,7 +99,7 @@ public class CalenderRenderer extends CanvasRenderer {
             gc.fillText(days[i], actualX, actualY);
         }
 
-        font = Font.loadFont("file:res/monaco.ttf", calCellHeight / 4.0);
+        font = FontLoader.load( calCellHeight / 4.0);
         double monthSpacer = 0;
         for (int i = 0; i < squaresToDraw; i++ ) {
             double actualX = x + i%7 * ( calCellWidth + calCellSpacing ) + sidePadding;
@@ -133,7 +132,7 @@ public class CalenderRenderer extends CanvasRenderer {
             if ( c.get(Calendar.DATE) == todayDate && c.get(Calendar.MONTH) == thisMonth ) {
                 calendarCell = AppColours.calendarTodayCell;
             }
-            RenderHelper.calendarSquare(gc, actualX, actualY,
+            calendarSquare(actualX, actualY,
                     calCellWidth, calCellHeight,
                     calCellShadowOffset,
                     calendarCell, AppColours.primaryColour,
@@ -229,5 +228,48 @@ public class CalenderRenderer extends CanvasRenderer {
         calCellWidth -= calCellSpacing;
         calCellHeight = calCellWidth * 0.75;
         calCellShadowOffset = calCellSpacing * 0.7;
+    }
+
+    /**
+     * Draws a calendar square with a drop shadow
+     * @param x X position
+     * @param y Y position
+     * @param w Width
+     * @param h Height
+     * @param dropOffset Offset of drop shadow
+     * @param background Colour of square
+     * @param textColor Colour of text
+     * @param text Text to show at bottom right
+     * @param dailyEventNumbers Array of integers to show the dots
+     */
+    public void calendarSquare ( double x, double y, double w, double h, double dropOffset, Color background, Color textColor, String text, Font font, int[] dailyEventNumbers ) {
+        gc.setFill(Color.web("#999"));
+        gc.fillRect(x + dropOffset, y + dropOffset, w, h);
+
+        gc.setFill(background);
+        gc.fillRect(x, y, w, h);
+
+        gc.setFill(textColor);
+        gc.setTextAlign(TextAlignment.RIGHT);
+        gc.setTextBaseline(VPos.BOTTOM);
+        gc.setFont(font);
+        gc.fillText(text, x + w - dropOffset * 0.5 , y + h - dropOffset * 0.5 );
+
+        double x_offset;
+        double y_offset;
+
+        for (int i = 0; i < dailyEventNumbers.length; i++) {
+            int numArc = dailyEventNumbers[i];
+
+            if (numArc > 3) {
+                numArc = 3;
+            }
+            for (int j=0; j<numArc; j++) {
+                gc.setFill(AppColours.primaryColour);
+                x_offset = x + w*((double) j)/10.0 + w*((double) j + 1.0)/20.0;
+                y_offset = y + h*((double) i)/10.0 + h*((double) i + 1.0)/20.0;
+                gc.fillRect(x_offset, y_offset, w/10.0, h/10.0);
+            }
+        }
     }
 }

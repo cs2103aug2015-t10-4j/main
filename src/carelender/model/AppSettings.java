@@ -13,8 +13,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import carelender.view.gui.UIController.UIType;
 
+/**
+ * Applications settings are handled by this class, it saves files into a settings.dat file for persistence
+ */
 public class AppSettings {
-	
+
+	private static final String settingsFile = "settings.dat";
 	private static AppSettings singleton = null;
 
 	public static AppSettings getInstance() {
@@ -28,8 +32,9 @@ public class AppSettings {
 	private HashMap<DataType, HashMap<SettingName, Object>> appSettingsHash;
 	private static Logger log;
 
+	@SuppressWarnings("unchecked")
 	private AppSettings() {
-		File file = new File("settings.dat");
+		File file = new File(settingsFile);
 		log = Logger.getLogger(Model.class.getName());
 		
 		typeHash = new HashMap<>();
@@ -44,32 +49,26 @@ public class AppSettings {
 				file.createNewFile();
 			}
 			BufferedReader br = new BufferedReader(new FileReader("settings.dat"));     
-			if (br.readLine() == null) {
-				System.out.println("Blank");				
-				appSettingsHash.put(DataType.INTEGER, new HashMap<>());
-				appSettingsHash.put(DataType.UITYPE, new HashMap<>());
-				appSettingsHash.put(DataType.BOOLEAN, new HashMap<>());
-				appSettingsHash.put(DataType.STRING, new HashMap<>());
+			if (br.readLine() == null) {			
+				appSettingsHash.put(DataType.INTEGER, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.UITYPE, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.BOOLEAN, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.STRING, new HashMap<SettingName, Object>());
 			} else {
 				System.out.println("Stuffed");
-				FileInputStream fis = new FileInputStream("settings.dat");
+				FileInputStream fis = new FileInputStream(settingsFile);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				appSettingsHash = (HashMap<DataType, HashMap<SettingName, Object>>) ois.readObject();
 				ois.close();
 				fis.close();
 			}
 			br.close();
-			System.out.println(appSettingsHash.get(DataType.BOOLEAN).get(SettingName.ISFREE));
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} catch (Exception e) {
 		}
 	}
-	
-	Boolean isDataTypeType (SettingName name , DataType type ) {
-		return typeHash.get(name) == type;
-	}
-	
+
 	public Integer getIntSetting(SettingName name) {
 		try {
 		return (int) appSettingsHash.get(DataType.INTEGER).get(name);
@@ -84,15 +83,16 @@ public class AppSettings {
 	}
 	
 	public String getStringSetting(SettingName name) {
+
 		return (String) appSettingsHash.get(DataType.STRING).get(name);
 	}
 
 	public UIType getUITypeSetting(SettingName name) {
+
 		return (UIType) appSettingsHash.get(DataType.UITYPE).get(name);
 	}
 	
 	public void setIntSetting(SettingName name, int value) {
-		System.out.println("Setting Int Setting");
 		if (isDataTypeType(name, DataType.INTEGER)) {
 			appSettingsHash.get(DataType.INTEGER).put(name, value);
 			saveSetting();
@@ -100,7 +100,6 @@ public class AppSettings {
 	}
 	
 	public void setBooleanSetting(SettingName name, boolean value) {
-		System.out.println("Setting Boolean Setting");
 		if (isDataTypeType(name, DataType.BOOLEAN)) {
 			appSettingsHash.get(DataType.BOOLEAN).put(name, value);
 			saveSetting();
@@ -108,7 +107,6 @@ public class AppSettings {
 	}
 	
 	public void setStringSetting(SettingName name, String value) {
-		System.out.println("Setting String Setting");
 		if (isDataTypeType(name, DataType.STRING)) {
 			appSettingsHash.get(DataType.STRING).put(name, value);
 			saveSetting();
@@ -116,16 +114,18 @@ public class AppSettings {
 	}
 
 	public void setUITypeSetting(SettingName name, UIType value) {
-		System.out.println("Setting UIType Setting");
 		if (isDataTypeType(name, DataType.UITYPE)) {
 			appSettingsHash.get(DataType.UITYPE).put(name, value);
 			saveSetting();
 		}
 	}
 	
+	/**
+	 * Writes current Setting HashMap to file
+	 */
 	public void saveSetting() {
 		try {
-			FileOutputStream fos = new FileOutputStream("settings.dat");
+			FileOutputStream fos = new FileOutputStream(settingsFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			
 			oos.writeObject(appSettingsHash);
@@ -134,6 +134,16 @@ public class AppSettings {
 		} catch (IOException ioe) {
 			log.log(Level.FINE, "Failed to add setting");
 		}
+	}
+
+	/**
+	 * Checks the datatype of a setting name is correct
+	 * @param name Name of setting
+	 * @param type
+	 * @return Boolean
+	 */
+	private Boolean isDataTypeType (SettingName name , DataType type ) {
+		return typeHash.get(name) == type;
 	}
 
 	public enum DataType {

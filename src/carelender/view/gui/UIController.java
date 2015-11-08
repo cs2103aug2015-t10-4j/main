@@ -181,12 +181,13 @@ public class UIController implements Initializable {
     /**
      * Processes the tab press, fills in the highlighted autocomplete item.
      */
-    public void processTabPress() {
+    public void autocompleteSuggestion() {
         if ( firstOption != null && firstOption.length() > 0 ) {
             setUserInput(firstOption + " ");
             Controller.processIncompleteInput(inputText.getText());
         }
     }
+
 
     public void setTaskList ( EventList events ) {
         monthViewRenderer.setTaskview(events);
@@ -212,6 +213,10 @@ public class UIController implements Initializable {
         }
     }
 
+    /**
+     * Sets the event list for the week view to display
+     * @param events Event
+     */
     public void setWeekEventList ( EventList events ) {
         timelineViewRenderer.setWeekView(events);
     }

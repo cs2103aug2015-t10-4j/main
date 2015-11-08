@@ -1,6 +1,6 @@
 package carelender.view.gui.components;
 
-import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -8,7 +8,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 /**
- * Written by : Weizheng Lee 27/10/2015
  * This class contains static methods to help to render the timeline view
  */
 public class TimelineBarRenderer {
@@ -25,8 +24,7 @@ public class TimelineBarRenderer {
 	public TimelineBarRenderer() {
 	}
 	
-	public void setParams ( GraphicsContext gc, double width, double height,
-							double startTime, double endTime, String content) {
+	public void setParams ( double startTime, double endTime, String content) {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		
@@ -52,7 +50,7 @@ public class TimelineBarRenderer {
 					width - 5, this.actualHeight - 5);
 			gc.setGlobalAlpha(1);
 			
-			Font font = Font.loadFont("file:res/monaco.ttf", width * 0.7);
+			Font font = FontLoader.load( width * 0.7);
 			gc.setFill(textColour);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setFont(font);
