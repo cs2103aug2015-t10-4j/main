@@ -82,7 +82,6 @@ public class CalenderRenderer extends CanvasRenderer {
         System.out.println("CalendarRenderer refreshed: " + monthEvents.size() + " items in the month");
     }
 
-    //@@author A0133907E
     double sidePadding;
     double usableWidth;
     double calCellWidth;
@@ -163,6 +162,10 @@ public class CalenderRenderer extends CanvasRenderer {
         }
     }
 
+    //@@author A0133907E
+    /**
+     * Reset monthEventNumbers to a 2D zero matrix
+     */
     private void resetEventNumbers(){
         for(int i=0; i<NUMBER_OF_SQUARES; i++) {
             for (int j=0; j<NUMBER_OF_RANGES_PER_DAY; j++){
@@ -171,22 +174,31 @@ public class CalenderRenderer extends CanvasRenderer {
         }
     }
     
+    /**
+     * Update monthEventNumbers according to the time ranges of the tasks in the eventList
+     */
     private void updateEventNumbers() {
         resetEventNumbers();
-        for (int i=0; i<monthEvents.size(); i++) {
+        for (int i = 0; i < monthEvents.size(); i++) {
             Event currentEvent = monthEvents.get(i);
-            for (int j=0; j<currentEvent.getDateRange().length; j++) {
+            for (int j = 0; j < currentEvent.getDateRange().length; j++) {
                 DateRange currentRage = currentEvent.getDateRange()[j];
                 Date taskStartTime = currentRage.getStart();
                 Date taskEndTime = currentRage.getEnd();
+                //Check is the task is within the specified time period (4 weeks including current week)
                 if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
+                	//Only the time ranges that overlap with the specified time period count
                     if (taskStartTime.before(monthStartTime)) {
                         taskStartTime = monthStartTime;
                     }
                     if (taskEndTime.after(monthEndTime)) {
                         taskEndTime = monthEndTime;
                     }
-
+                    
+                    /*
+                     * Get the offset of the current time ranges with the start time of the specified time period
+                     * in different units. Update the corresponding slots in the 2D matrix monthEventNumbers.
+                     */
                     long offsetStartMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
                     long offsetStartDays = TimeUnit.MILLISECONDS.toDays(offsetStartMilliseconds);
                     long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) NUMBER_OF_HOURS_PER_DAY;
