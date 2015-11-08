@@ -38,6 +38,11 @@ public class QuerySet extends QueryBase {
 		return null;
 	}
 	
+	/**
+	 * Convert user input to corresponding UIType
+	 * @param input
+	 * @return
+	 */
 	private UIType getUIType (String input) {
 		UIType uiType = null;
 		switch ( input ) {
