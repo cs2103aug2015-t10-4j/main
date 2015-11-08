@@ -103,40 +103,43 @@ public class DateTimeParser {
     }
 
     /**
-     * Removes all the parts of the string referencing dates to make processing easier
-     * @param inputString String to have bits removed from
-     * @return String with dates removed
-     */
-    public static String removeDateParts ( String inputString ) {
-        return replaceDateParts(inputString, "");
-    }
-
-    /**
      * Replaces all the parts of the string referencing dates to make processing easier
      * @param inputString  String to have bits removed from
+     * @param dateParts Parts of the date to be removed
      * @param replace String to replace with
      * @return String with dates replaced
      */
-    public static String replaceDateParts ( String inputString, String replace ) {
-        SimpleDateGroup[] simpleDateGroups = parseDateTimeRaw(InputParser.getInstance().removeQuotes(inputString));
-        if ( simpleDateGroups != null ) {
-            for (SimpleDateGroup simpleDateGroup : simpleDateGroups) {
-                int length = simpleDateGroup.text.length();
-                String part1 = inputString.substring(0, simpleDateGroup.position - 1 );
-                String part2 = inputString.substring(simpleDateGroup.position + length - 1);
-                inputString = part1 + replace + part2;
-            }
+    public static String replaceDateParts ( String inputString, String[] dateParts, String replace ) {
+        //This magical regex matches all "and" "," "&" outside quotation marks
+        //It will then remove all of those outside quotes
+        inputString = inputString.replaceAll("(and|,|&)(?=(?:[^\"]|\"[^\"]*\")*$)", "");
+        for ( String dateSubstring : dateParts ) {
+            inputString = inputString.replace(dateSubstring, replace);
         }
         return inputString;
     }
+
+
+    
     /**
      * Similar to parseDateTimeRaw, but it tries to detect date ranges in the text.
      * @param inputString Date string to be parsed
      * @return Array of DateRange objects
      */
     public static DateRange[] parseDateTime(String inputString) {
+    	return parseDateTime(inputString,null);
+    }
+    
+    /**
+     * Similar to parseDateTimeRaw, but it tries to detect date ranges in the text. This also returns the substrings that contain datetimes.
+     * @param inputString Date string to be parsed
+     * @param dates ArrayList that contains the parts of the string that the datetime was detected from
+     * @return Array of DateRange objects
+     */
+    public static DateRange[] parseDateTime(String inputString, ArrayList<String> dates) {
         ArrayList<DateRange> dateRanges = new ArrayList<>();
         //Natty cannot process strings like "mon-tue", it needs the space
+        inputString = inputString.toLowerCase().replaceAll(" - ", "-");
         inputString = inputString.toLowerCase().replaceAll("-", " - ");
         //Split the string by "and" "," "&"
         String [] inputParts = inputString.split("(and|,|&)");
@@ -145,7 +148,8 @@ public class DateTimeParser {
         }
         SimpleDateGroup[] dateGroups;
 
-        for ( String inputPart : inputParts ) {
+        for ( int i = 0; i < inputParts.length; i++ ) {
+        	String inputPart = inputParts[i];
             dateGroups = parseDateTimeRaw(inputPart);
             if ( dateGroups == null ) continue;
             //By here, the array should only have one item
@@ -168,6 +172,9 @@ public class DateTimeParser {
                     for ( Date date : dateGroup.dates ) {
                         dateRanges.add(new DateRange(date, dateGroup.hasTime));
                     }
+                }
+                if ( dates != null ) {
+                	dates.add(dateGroup.text);
                 }
             }
         }
