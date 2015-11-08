@@ -24,18 +24,33 @@ import javafx.scene.text.TextAlignment;
 public class CalenderRenderer extends CanvasRenderer {
     private QueryList monthListQuery;
 
-    int squaresToDraw;
-    final String [] days = {"M", "T", "W", "T", "F", "S", "S"};
+    final int NUMBER_OF_SQUARES = 42;
+    final int NUMBER_OF_RANGES_PER_DAY = 3;
+    final String [] DAYS = {"M", "T", "W", "T", "F", "S", "S"};
 
     private EventList monthEvents = null;
     private int[][] monthEventNumbers;
     private Date monthStartTime;
     private Date monthEndTime;
+
+    private static final int NUMBER_OF_DAYS_PER_WEEK = 7;
+    private static final int TIME_RANGE_UNIT = 8;
+    private static final int NUMBER_OF_HOURS_PER_DAY = 24;
+
+    private static final int ARC_THRESHOLD = 3;
     
-    public CalenderRenderer() {
-        squaresToDraw = 6*7;
-        
-        monthEventNumbers = new int[squaresToDraw][3];
+    private static final double FIRST_FONTSIZE_RATIO = 0.5;
+    private static final double SECOND_FONTSIZE_RATIO = 0.25;
+
+    private static final double CAL_CELL_SIDE_PADDING_RATIO = 0.025;
+    private static final double CAL_CELL_USABLE_WIDTH_RATIO = 2.0;
+    private static final double CAL_CELL_WIDTH_RATIO = 1.0 / 7.0;
+    private static final double CAL_CELL_SPACING_RATIO = 0.1;
+    private static final double CAL_CELL_HEIGHT_WIDTH_RATIO = 0.75;    
+    private static final double CAL_CELL_SHADOW_OFFSET_RATIO = 0.7;
+    
+    public CalenderRenderer() {        
+        monthEventNumbers = new int[NUMBER_OF_SQUARES][NUMBER_OF_RANGES_PER_DAY];
         resetEventNumbers();
         
         monthListQuery = new QueryList();
@@ -48,7 +63,7 @@ public class CalenderRenderer extends CanvasRenderer {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         monthStartTime = cal.getTime();
-        cal.add(Calendar.DAY_OF_MONTH, squaresToDraw);
+        cal.add(Calendar.DAY_OF_MONTH, NUMBER_OF_SQUARES);
         monthEndTime = cal.getTime();
 
         monthListQuery.addSearchParam(QueryList.SearchParam.DATE_START, monthStartTime);
@@ -64,6 +79,7 @@ public class CalenderRenderer extends CanvasRenderer {
     }
 
     double sidePadding;
+    double usableWidth;
     double calCellWidth;
     double calCellHeight;
     double calCellSpacing;
@@ -87,23 +103,23 @@ public class CalenderRenderer extends CanvasRenderer {
         gc.setFill(AppColours.panelBackground);
         gc.fillRect(x, y, width, height);
 
-        Font font = FontLoader.load( calCellHeight * 0.5);
+        Font font = FontLoader.load( calCellHeight * FIRST_FONTSIZE_RATIO);
 
         gc.setFill(AppColours.calendarCell);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(font);
         gc.setTextBaseline(VPos.TOP);
-        for (int i = 0 ; i < 7; i++ ) {
+        for (int i = 0 ; i < NUMBER_OF_DAYS_PER_WEEK; i++ ) {
             double actualX = x + i * ( calCellWidth + calCellSpacing ) + sidePadding + offsetX + calCellWidth * 0.5;
             double actualY = y + offsetY + sidePadding;
-            gc.fillText(days[i], actualX, actualY);
+            gc.fillText(DAYS[i], actualX, actualY);
         }
 
-        font = FontLoader.load( calCellHeight / 4.0);
+        font = FontLoader.load( calCellHeight * SECOND_FONTSIZE_RATIO);
         double monthSpacer = 0;
-        for (int i = 0; i < squaresToDraw; i++ ) {
-            double actualX = x + i%7 * ( calCellWidth + calCellSpacing ) + sidePadding;
-            double actualY = y + (i/7) * ( calCellHeight + calCellSpacing ) + sidePadding;
+        for (int i = 0; i < NUMBER_OF_SQUARES; i++ ) {
+            double actualX = x + i%NUMBER_OF_DAYS_PER_WEEK * ( calCellWidth + calCellSpacing ) + sidePadding;
+            double actualY = y + (i/NUMBER_OF_DAYS_PER_WEEK) * ( calCellHeight + calCellSpacing ) + sidePadding;
 
             int date = c.get(Calendar.DATE);
             if ( i == 0 ) {
@@ -143,8 +159,8 @@ public class CalenderRenderer extends CanvasRenderer {
     }
 
     private void resetEventNumbers(){
-        for(int i=0; i<squaresToDraw; i++) {
-            for (int j=0; j<3; j++){
+        for(int i=0; i<NUMBER_OF_SQUARES; i++) {
+            for (int j=0; j<NUMBER_OF_RANGES_PER_DAY; j++){
                 monthEventNumbers[i][j] = 0;
             }
         }
@@ -168,13 +184,13 @@ public class CalenderRenderer extends CanvasRenderer {
 
                     long offsetStartMilliseconds = taskStartTime.getTime() - monthStartTime.getTime();
                     long offsetStartDays = TimeUnit.MILLISECONDS.toDays(offsetStartMilliseconds);
-                    long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) 24;
-                    int offsetStartSlot = (int)offsetStartHours / 8;
+                    long offsetStartHours = TimeUnit.MILLISECONDS.toHours(offsetStartMilliseconds) % (long) NUMBER_OF_HOURS_PER_DAY;
+                    int offsetStartSlot = (int)offsetStartHours / TIME_RANGE_UNIT;
                     
                     long offsetEndMilliseconds = taskEndTime.getTime() - monthStartTime.getTime();
                     long offsetEndDays = TimeUnit.MILLISECONDS.toDays(offsetEndMilliseconds);
-                    long offsetEndHours = TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) % (long) 24;
-                    int offsetEndSlot = (int)offsetEndHours / 8;
+                    long offsetEndHours = TimeUnit.MILLISECONDS.toHours(offsetEndMilliseconds) % (long) NUMBER_OF_HOURS_PER_DAY;
+                    int offsetEndSlot = (int)offsetEndHours / TIME_RANGE_UNIT;
                     
                     for(int t=(int)offsetStartDays; t<=(int)offsetEndDays; t++) {
                         if(t == (int) offsetStartDays && t == (int)offsetEndDays){
@@ -182,7 +198,7 @@ public class CalenderRenderer extends CanvasRenderer {
                                 monthEventNumbers[t][a]++;
                             }
                         } else if(t == (int) offsetStartDays){
-                            for(int a=offsetStartSlot; a<3; a++) {
+                            for(int a=offsetStartSlot; a<NUMBER_OF_RANGES_PER_DAY; a++) {
                                 monthEventNumbers[t][a]++;
                             }
                         } else if (t == (int)offsetEndDays){
@@ -190,7 +206,7 @@ public class CalenderRenderer extends CanvasRenderer {
                                 monthEventNumbers[t][a]++;
                             }
                         } else {
-                            for(int a=0; a<3; a++){
+                            for(int a=0; a<NUMBER_OF_RANGES_PER_DAY; a++){
                                 monthEventNumbers[t][a]++;
                             }
                         }
@@ -221,13 +237,13 @@ public class CalenderRenderer extends CanvasRenderer {
     }
 
     private void calulateCellProperties() {
-        sidePadding = scaledWidth * 0.025;
-        double usableWidth = scaledWidth - sidePadding * 2; // Give 2.5% padding on each size
-        calCellWidth = usableWidth / 7.0;
-        calCellSpacing = calCellWidth * 0.1; //Make spacing 10% of each cell size
+        sidePadding = scaledWidth * CAL_CELL_SIDE_PADDING_RATIO;
+        usableWidth = scaledWidth - sidePadding * CAL_CELL_USABLE_WIDTH_RATIO; // Give 2.5% padding on each size
+        calCellWidth = usableWidth * CAL_CELL_WIDTH_RATIO;
+        calCellSpacing = calCellWidth * CAL_CELL_SPACING_RATIO; //Make spacing 10% of each cell size
         calCellWidth -= calCellSpacing;
-        calCellHeight = calCellWidth * 0.75;
-        calCellShadowOffset = calCellSpacing * 0.7;
+        calCellHeight = calCellWidth * CAL_CELL_HEIGHT_WIDTH_RATIO;
+        calCellShadowOffset = calCellSpacing * CAL_CELL_SHADOW_OFFSET_RATIO;
     }
 
     /**
@@ -261,8 +277,8 @@ public class CalenderRenderer extends CanvasRenderer {
         for (int i = 0; i < dailyEventNumbers.length; i++) {
             int numArc = dailyEventNumbers[i];
 
-            if (numArc > 3) {
-                numArc = 3;
+            if (numArc > ARC_THRESHOLD) {
+                numArc = ARC_THRESHOLD;
             }
             for (int j=0; j<numArc; j++) {
                 gc.setFill(AppColours.primaryColour);
