@@ -318,6 +318,7 @@ public class Model {
 	}
 	
 	public void setSaveFileName(String input) {
-		//filename = input;
+		fileName = new File(input);
+		events = new EventList();
 	}
 }
