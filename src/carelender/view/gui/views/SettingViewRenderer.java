@@ -40,7 +40,7 @@ public class SettingViewRenderer extends CanvasRenderer {
         double wordPaddingH = 8;
 		double settingHeight = 40;
 
-        tab.draw(gc, 0, 0, width, topBarHeight, 3);
+        tab.draw(gc, 0, 0, width, topBarHeight, TabRenderer.SETTINGS_INDEX);
 
         gc.setTextAlign(TextAlignment.LEFT);
 

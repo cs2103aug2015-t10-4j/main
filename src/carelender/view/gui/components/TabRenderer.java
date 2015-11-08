@@ -8,6 +8,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 public class TabRenderer extends CanvasRenderer {
+    public static final int TIMELINE_INDEX = 0;
+    public static final int CALENDER_INDEX = 1;
+    public static final int FLOATING_INDEX = 2;
+    public static final int SETTINGS_INDEX = 3;
+
     final private String [] tabText = { "Timeline", "Calendar", "Floating", "Settings" };
     private static final double FONT_SIZE_RATIO = 1.0/23.0;
     private static final double TEXT_POS_RATIO = 1.0/4.0;
@@ -21,6 +26,15 @@ public class TabRenderer extends CanvasRenderer {
         draw(gc, x, y, width, height, -1);
     }
 
+    /**
+     * Draws the tab view, but with an extra parameter that highlights the tab index
+     * @param gc Graphics Context to draw to
+     * @param x X position of drawable area
+     * @param y Y position of drawable area
+     * @param width Width of drawable area
+     * @param height Height of drawable area
+     * @param tab Tab index to highlight
+     */
     public void draw(GraphicsContext gc, double x, double y, double width, double height, int tab) {
         super.draw(gc, x, y, width,height);
 

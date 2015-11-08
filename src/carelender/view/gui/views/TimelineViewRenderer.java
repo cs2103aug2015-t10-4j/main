@@ -42,45 +42,26 @@ public class TimelineViewRenderer extends CanvasRenderer {
     public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
     	super.draw(gc, 0, 0, width, height);
 
-        //Todo: 20 -> meaningful expression
-        double fontSize = width / 60.0; //Temporary
-        Font font = FontLoader.load(fontSize);
+        LayoutHelper.setParams(x,y,width,height);
 
-        double windowPadding = 8;
-        double textboxInnerPadding = 8;
-        double topBarHeight = height * 0.13;
-        double remainderHeight = height - topBarHeight;
+        tab.draw(gc, 0, 0, width, LayoutHelper.getTopBarHeight(), TabRenderer.TIMELINE_INDEX);
 
-        double announcementBoxY = topBarHeight + windowPadding;
-
-        double leftColumnWidth = 0.5 * width - windowPadding;
-        double rightColumnWidth = 0.5 * width;
-        double leftColumnX = 0;
-        double rightColumnX = leftColumnX + leftColumnWidth + windowPadding;
-
-        double announcementHeight = fontSize + textboxInnerPadding * 2;
-        double messageBoxHeight = fontSize + textboxInnerPadding * 2;
-        double mainContentHeight = remainderHeight - announcementHeight - messageBoxHeight - windowPadding * 3;
-
-
-        tab.draw(gc, 0, 0, width, topBarHeight, 0);
-
-        announcementBox.setParams(gc, leftColumnX, announcementBoxY,
-                width, announcementHeight,
-                textboxInnerPadding, textboxInnerPadding,
-                font, FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
+        announcementBox.setParams(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getAnnouncementBoxY(),
+                width, LayoutHelper.getAnnouncementHeight(),
+                LayoutHelper.getTextboxInnerPadding(), LayoutHelper.getTextboxInnerPadding(),
+                LayoutHelper.getFont(), FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
         announcementBox.addText(announcementText);
         announcementBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
-        weekView.draw(gc, rightColumnX, announcementBoxY + announcementHeight + windowPadding,
-                rightColumnWidth, mainContentHeight);
-        taskView.draw(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding,
-                leftColumnWidth, mainContentHeight);
+        weekView.draw(gc, LayoutHelper.getRightColumnX(), LayoutHelper.getMainContentY(),
+                LayoutHelper.getRightColumnWidth(), LayoutHelper.getMainContentHeight());
+        taskView.draw(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getMainContentY(),
+                LayoutHelper.getLeftColumnWidth(), LayoutHelper.getMainContentHeight());
 
-        messageBox.setParams(gc, leftColumnX, announcementBoxY + announcementHeight + windowPadding * 2 + mainContentHeight,
-                width, messageBoxHeight,
-                textboxInnerPadding, textboxInnerPadding,
-                font, FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
+        messageBox.setParams(gc, LayoutHelper.getLeftColumnX(), LayoutHelper.getMessageBoxY(),
+                width , LayoutHelper.getMessageBoxHeight(),
+                LayoutHelper.getTextboxInnerPadding(), LayoutHelper.getTextboxInnerPadding(),
+                LayoutHelper.getFont(), FontLoader.DEFAULT_LINE_HEIGHT_RATIO);
         messageBox.addText(messageText);
         messageBox.drawText(AppColours.panelBackground, AppColours.panelText);
 
