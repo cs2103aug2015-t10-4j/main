@@ -132,6 +132,9 @@ public class HintGenerator {
         MONTH_BUSY,
     }
     
+    /**
+     * Reset dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber
+     */
     private void resetEventNumbers(){
     	for(int i=0; i < dailyEventNumbers.length; i++){
     		dailyEventNumbers[i] = 0;
@@ -141,7 +144,12 @@ public class HintGenerator {
 			weeklyEventNumbers[i] = 0;
 		}
     }
-
+    
+    /**
+     * Called by CalendarRenderer to pass the monthEventNumbers into HintGeneratoe
+     * Update dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber
+     * @param monthEventNumbers
+     */
 	public void setDailyEventNumbers(int[][] monthEventNumbers) {
 		resetEventNumbers();
 		for(int i=0; i < monthEventNumbers.length; i++){
