@@ -124,6 +124,20 @@ public class Controller {
     }
 
     /**
+     * Called by UI when home key is pressed
+     */
+    public static void processHomePress() {
+    	userInterfaceController.processHomePress();
+    }
+    
+    /**
+     * Called by UI when end key is pressed
+     */
+    public static void processEndPress() {
+        userInterfaceController.processEndPress();
+    }
+
+    /**
      * Called by UI when page up key is pressed
      */
     public static void processPageUpPress() {

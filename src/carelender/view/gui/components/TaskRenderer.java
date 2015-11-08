@@ -218,6 +218,7 @@ public class TaskRenderer extends CanvasRenderer {
     public void clearEvents () {
         this.taskDisplay.clear();
         this.totalTasks = 0;
+        this.displayStart = 0;
     }
 
     public void addEvents ( EventList toDisplay ) {

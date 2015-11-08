@@ -147,6 +147,12 @@ public class UserInterfaceController implements Initializable {
                                 case PAGE_DOWN:
                                     Controller.processPageDownPress();
                                     break;
+                                case HOME:
+                                	Controller.processHomePress();
+                                	break;
+                                case END:
+                                	Controller.processEndPress();
+                                	break;
                                 default:
                                     Controller.processIncompleteInput(inputText.getText());
                                     break;
@@ -215,6 +221,28 @@ public class UserInterfaceController implements Initializable {
                 break;
             case FLOATING:
                 floatingViewRenderer.getTaskRenderer().scrollDown();
+                break;
+        }
+    }
+    
+    /**
+     * Called by UI when End key is pressed
+     */
+    public void processEndPress() {
+        switch ( uiType ) {
+            case TIMELINE:
+                timelineViewRenderer.getTimelineRenderer().scrollUp();
+                break;
+        }
+    }
+
+    /**
+     * Called by UI when home key is pressed
+     */
+    public void processHomePress() {
+        switch ( uiType ) {
+            case TIMELINE:
+                timelineViewRenderer.getTimelineRenderer().scrollDown();
                 break;
         }
     }
