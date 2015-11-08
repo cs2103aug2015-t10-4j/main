@@ -144,7 +144,7 @@ public class TaskRenderer extends CanvasRenderer {
                         remainingHeight -= (this.taskBarRender.getHeight(taskBarHeight) + (this.yPadding * 2));
                     } else {
                     	showBottomArrow = true;
-                        break hashLoop;
+                        break;
                     }
                 }
                 index++;
@@ -165,6 +165,10 @@ public class TaskRenderer extends CanvasRenderer {
 	                gc.fillText(keyWords[1], xPositionDate, yPositionDate);
 	                gc.fillText(keyWords[2], xPositionDate, yPositionDate + dateFont.getSize());
 	            }
+            }
+            
+            if ( showBottomArrow ) {
+            	break;
             }
         }
         
