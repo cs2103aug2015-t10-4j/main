@@ -51,7 +51,6 @@ public class QueryUpdate extends QueryList {
 			public void onConfirmed(boolean confirmed) {
 				if ( confirmed ) {
 					for ( Event event : updateList ) {
-						//TODO: This will have to change if we want to do bulk updating.
 						System.out.println("UPDATING:" + (String)updateParamsList.get(QueryUpdate.UpdateParam.NAME));
 						if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
 							String fromName = (String)updateParamsList.get(QueryUpdate.UpdateParam.NAME);
@@ -69,7 +68,6 @@ public class QueryUpdate extends QueryList {
 						}
 
 						//Call Model updateEvent function
-						//this.model.updateEvent ( event );
 						Model.getInstance().updateEvent(event);
 						System.out.println(event.getName());
 					}
@@ -96,14 +94,6 @@ public class QueryUpdate extends QueryList {
 	@Override
 	public EventList searchExecute() {
 		EventList returnList = new EventList();
-		//TODO: Replace the null parameter in retrieveEvent to something that makes sense.
-		/*if (Model.getInstance().retrieveEvent() != null) {
-			for (Event event : Model.getInstance().retrieveEvent()) {
-				if (Search.eventMatchesParams(event, getSearchParamsList())) {
-					returnList.add(event.copy());
-				}
-			}
-		}*/
 		return returnList;
 	}
 }
