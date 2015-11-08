@@ -1,15 +1,11 @@
 package carelender.model;
 
 import java.io.BufferedReader;
-/**
- * Handles all database and file saving
- */
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.*;
 import com.google.gson.Gson;
@@ -17,6 +13,9 @@ import carelender.model.AppSettings.SettingName;
 import carelender.model.UndoStep.UndoType;
 import carelender.model.data.*;
 
+/**
+ * Handles all database and file saving
+ */
 public class Model {
 
 	private static Model singleton = null;
@@ -33,16 +32,12 @@ public class Model {
 	
 	private static Logger log;
 	private EventList events;
-
-	File fileName;
-	File folderName;
-
+	private File fileName;
+	private File folderName;
 	private int currentUid;
 
 	private Model() {
 		log = Logger.getLogger(Model.class.getName());
-		//Get current time
-		Calendar cal = Calendar.getInstance();
 
 		//Initiate the Directory
 		folderName = new File(FOLDER_NAME);
@@ -146,7 +141,6 @@ public class Model {
 		for (int i = 0; i < events.size(); i++) {
 			for (Event eventObj : eventList) {
 				if (events.get(i).getUid() == eventObj.getUid()) {
-					System.out.println("REMOVED ID" + events.get(i).getUid());
 					events.remove(i);
 				}
 			}
@@ -171,6 +165,7 @@ public class Model {
 				}
 			}			
 		}
+		// Checks if it is an undo or redo command
 		if (isUndo) {
 			UndoManager.getInstance().redoUpdate(redoEventList);
 		} else {
@@ -313,11 +308,12 @@ public class Model {
 					break;
 				}
 				strings.add(line);
+				bufferedReader.close();
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-
+		
 		return strings;
 	}
 	
