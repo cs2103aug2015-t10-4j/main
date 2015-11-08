@@ -165,6 +165,38 @@ public class Event implements Serializable{
         String dateString = DateFormats.DEBUG_FORMAT.format(getEarliestDate());
         return this.name + " | " + dateString;
     }
+    
+    public String getDetailedInfo() {
+    	String dateConcat = " ";
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(name);
+    	sb.append(" | ");
+    	
+    	for ( DateRange dateRange : this.dateRange ) {
+    		String startString = DateFormats.DEBUG_FORMAT.format(dateRange.getStart());
+			sb.append(startString);
+    		if ( dateRange.isRange() ) {
+    			String endString = DateFormats.DEBUG_FORMAT.format(dateRange.getEnd());
+    			sb.append(" - ");
+    			sb.append(endString);
+    		}
+    		sb.append(dateConcat);
+    		dateConcat = ", ";
+    	}
+    	
+    	if ( category != null ) {
+    		sb.append( "| cat: ");
+    		sb.append(category);
+    		sb.append(" ");
+    	}
+    	
+    	if ( completed ) {
+    		sb.append("| complete");
+    	} else {
+    		sb.append("| incomplete");
+    	}
+        return sb.toString();
+    }
 
     public Event copy () {
         return new Event(this);
