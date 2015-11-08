@@ -17,6 +17,7 @@ import carelender.view.gui.UIController.UIType;
  * Applications settings are handled by this class, it saves files into a settings.dat file for persistence
  */
 public class AppSettings {
+
 	private static final String settingsFile = "settings.dat";
 	private static AppSettings singleton = null;
 
@@ -47,13 +48,12 @@ public class AppSettings {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			BufferedReader br = new BufferedReader(new FileReader(settingsFile));
-			if (br.readLine() == null) {
-				System.out.println("Blank");				
-				appSettingsHash.put(DataType.INTEGER, new HashMap<>());
-				appSettingsHash.put(DataType.UITYPE, new HashMap<>());
-				appSettingsHash.put(DataType.BOOLEAN, new HashMap<>());
-				appSettingsHash.put(DataType.STRING, new HashMap<>());
+			BufferedReader br = new BufferedReader(new FileReader("settings.dat"));     
+			if (br.readLine() == null) {			
+				appSettingsHash.put(DataType.INTEGER, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.UITYPE, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.BOOLEAN, new HashMap<SettingName, Object>());
+				appSettingsHash.put(DataType.STRING, new HashMap<SettingName, Object>());
 			} else {
 				System.out.println("Stuffed");
 				FileInputStream fis = new FileInputStream(settingsFile);
@@ -83,15 +83,12 @@ public class AppSettings {
 	}
 	
 	public String getStringSetting(SettingName name) {
+
 		return (String) appSettingsHash.get(DataType.STRING).get(name);
 	}
 
-	/**
-	 * Gets a UI setting
-	 * @param name
-	 * @return UIType setting
-	 */
 	public UIType getUITypeSetting(SettingName name) {
+
 		return (UIType) appSettingsHash.get(DataType.UITYPE).get(name);
 	}
 	

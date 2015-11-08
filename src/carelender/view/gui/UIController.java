@@ -255,7 +255,9 @@ public class UIController implements Initializable {
 
     public void setUserInput ( String inputText ) {
         this.inputText.setText(inputText);
-        this.inputText.positionCaret(inputText.length());
+        if ( inputText != null ) {
+            this.inputText.positionCaret(inputText.length());
+        }
     }
 
     public void refreshOutputField() {
