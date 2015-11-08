@@ -1,6 +1,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -53,25 +54,23 @@ public class TaskRenderer extends CanvasRenderer {
 
     public TaskRenderer () {
         this.taskBarRender = new TaskBarRenderer();
-        this.taskDisplay = new TreeMap<String, EventList>();
+        this.taskDisplay = new TreeMap<>();
         
         this.totalTasks = 0;
         this.displayStart = 0;
-        this.eventComparator = new Comparator<Event>() {
-									@Override
-									public int compare(Event eventAgainst, Event eventTo) {
-										if ( eventAgainst.getEarliestDate() == null || eventTo.getEarliestDate() == null ) {
-											return 0;
-										}
-										
-										if (eventAgainst.getEarliestDate().before(eventTo.getEarliestDate())) {
-											return -1;
-										} else if (eventAgainst.getEarliestDate().after(eventTo.getEarliestDate())) {
-											return 1;
-										}
-										return 0;
-									}
-        						};
+
+        this.eventComparator = (Event eventAgainst, Event eventTo) -> {
+            if ( eventAgainst.getEarliestDate() == null || eventTo.getEarliestDate() == null ) {
+                return 0;
+            }
+
+            if (eventAgainst.getEarliestDate().before(eventTo.getEarliestDate())) {
+                return -1;
+            } else if (eventAgainst.getEarliestDate().after(eventTo.getEarliestDate())) {
+                return 1;
+            }
+            return 0;
+        };
     }
 
     public void setParams (double xPad, double yPad,
@@ -171,21 +170,20 @@ public class TaskRenderer extends CanvasRenderer {
         
         double taskBarWidth = width * taskWidthRatio;
         double taskBarHeight = height * taskHeightRatio;
-
         
-        Font dateFont = Font.loadFont("file:res/monaco.ttf", dateBarHeight * DATE_FONTSIZE_RATIO);
-        Font indexFont = Font.loadFont("file:res/monaco.ttf", dateBarHeight * INDEX_FONTSIZE_RATIO);
-        Font scrollPointerFont = Font.loadFont("file:res/monaco.ttf", width * SCROLLPOINTER_FONTSIZE_RATIO);
+        Font dateFont = FontLoader.load(dateBarHeight * DATE_FONTSIZE_RATIO);
+        Font indexFont = FontLoader.load(dateBarHeight * INDEX_FONTSIZE_RATIO);
+        Font scrollPointerFont = FontLoader.load(width * SCROLLPOINTER_FONTSIZE_RATIO);
     	
-    	int currentTaskToDisplay = 0;
-        int index = 1;
-        double remainingHeight = height - (yPadding * 2);
-        double xPositionDate = 0;
-        double yPositionDate = 0;
-        boolean displayDate = false;
+        int currentTaskToDisplay = 0;
+        double remainingHeight = this.height - (this.yPadding * 2);
+        double xPositionDate;
+        double yPositionDate;
+        boolean displayDate;
         boolean showBottomArrow = false;
-        
-        for ( Map.Entry<String, EventList> entry : taskDisplay.entrySet()) {
+        int index = 1;
+
+        for ( Map.Entry<String, EventList> entry : this.taskDisplay.entrySet()) {
             String key = entry.getKey();
             EventList value = entry.getValue();
 

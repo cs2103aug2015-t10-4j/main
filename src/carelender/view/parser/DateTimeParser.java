@@ -11,7 +11,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Created by JiaXun on 10/10/2015.
+ * Class to parse the date and time bits of the input.
+ * Originally using regex, now it uses the natty library
  */
 public class DateTimeParser {
     //Matches all kinds of date time strings
@@ -117,7 +118,7 @@ public class DateTimeParser {
      * @return String with dates replaced
      */
     public static String replaceDateParts ( String inputString, String replace ) {
-        SimpleDateGroup[] simpleDateGroups = parseDateTimeRaw(inputString);
+        SimpleDateGroup[] simpleDateGroups = parseDateTimeRaw(InputParser.getInstance().removeQuotes(inputString));
         if ( simpleDateGroups != null ) {
             for (SimpleDateGroup simpleDateGroup : simpleDateGroups) {
                 int length = simpleDateGroup.text.length();

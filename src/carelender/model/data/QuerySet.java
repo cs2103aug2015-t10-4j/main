@@ -3,7 +3,7 @@ package carelender.model.data;
 import carelender.controller.Controller;
 import carelender.model.AppSettings;
 import carelender.model.AppSettings.SettingName;
-import carelender.view.gui.UserInterfaceController.UIType;
+import carelender.view.gui.UIController.UIType;
 
 public class QuerySet extends QueryBase {
 	
@@ -38,6 +38,11 @@ public class QuerySet extends QueryBase {
 		return null;
 	}
 	
+	/**
+	 * Converts user input to corresponding UIType
+	 * @param input
+	 * @return
+	 */
 	private UIType getUIType (String input) {
 		UIType uiType = null;
 		switch ( input ) {

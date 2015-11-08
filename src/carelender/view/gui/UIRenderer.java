@@ -2,18 +2,17 @@ package carelender.view.gui;
 
 import carelender.view.gui.components.AutocompleteRenderer;
 import carelender.view.gui.components.CanvasRenderer;
-import carelender.view.gui.components.TextRenderer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
  * Used to render the popup and normal layers
  */
-public class UserInterfaceRenderer extends CanvasRenderer {
+public class UIRenderer extends CanvasRenderer {
     private CanvasRenderer mainRenderer;
     private CanvasRenderer popupRenderer;
     AutocompleteRenderer autocompleteRenderer;
-    public UserInterfaceRenderer() {
+    public UIRenderer() {
         autocompleteRenderer = new AutocompleteRenderer();
     }
 

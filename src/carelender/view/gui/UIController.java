@@ -18,13 +18,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 
-import javax.naming.ldap.Control;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 
-public class UserInterfaceController implements Initializable {
+public class UIController implements Initializable {
     @FXML
     private TextField inputText;
 
@@ -45,7 +44,7 @@ public class UserInterfaceController implements Initializable {
 
     private PopupRenderer popupRenderer;
     private EventInfoRenderer eventInfoRenderer;
-    private UserInterfaceRenderer userInterfaceRenderer;
+    private UIRenderer UIRenderer;
     private String firstOption;
 
     private String pendingAnnouncementMessage = null; //Used for the automation part
@@ -63,8 +62,8 @@ public class UserInterfaceController implements Initializable {
         popupRenderer = new PopupRenderer();
         messageList = new ArrayList<>();
 
-        userInterfaceRenderer = new UserInterfaceRenderer();
-        canvas.setRenderer(userInterfaceRenderer);
+        UIRenderer = new UIRenderer();
+        canvas.setRenderer(UIRenderer);
 
         // Bind canvas size to stack pane size.
         canvas.widthProperty().bind(
@@ -89,75 +88,7 @@ public class UserInterfaceController implements Initializable {
         final EventHandler<KeyEvent> keyEventHandler =
                 new EventHandler<KeyEvent>() {
                     public void handle(final KeyEvent keyEvent) {
-                        if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
-                            switch ( keyEvent.getCode() ) {
-                                case ENTER:
-                                    String text = inputText.getText();
-                                    inputText.setText("");
-                                    if ( pendingAnnouncementMessage != null ) {
-                                        Controller.stopTimer();
-                                        setAnnouncementMessage(pendingAnnouncementMessage);
-                                        pendingAnnouncementMessage = null;
-                                    }
-                                    Controller.processCompleteInput(text);
-                                    break;
-                                case UP:
-                                    Controller.processUpPress();
-                                    break;
-                                case DOWN:
-                                    Controller.processDownPress();
-                                    break;
-                                case TAB:
-                                    Controller.processTabPress();
-                                    break;
-                                case F1:
-                                    setUI(UIType.TIMELINE);
-                                    break;
-                                case F2:
-                                    setUI(UIType.CALENDAR);
-                                    break;
-                                case F3:
-                                    setUI(UIType.FLOATING);
-                                    break;
-                                case F4:
-                                    setUI(UIType.SETTING);
-                                    break;
-
-                                case F12:
-                                    Controller.startTimer();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
-                            switch ( keyEvent.getCode() ) {
-                                case ENTER:
-                                case UP:
-                                case DOWN:
-                                    break;
-                                case ALT:
-                                    getAutomatedCommand(false);
-                                    break;
-                                case CONTROL:
-                                    getAutomatedCommand(true);
-                                    break;
-                                case PAGE_UP:
-                                    Controller.processPageUpPress();
-                                    break;
-                                case PAGE_DOWN:
-                                    Controller.processPageDownPress();
-                                    break;
-                                case HOME:
-                                	Controller.processHomePress();
-                                	break;
-                                case END:
-                                	Controller.processEndPress();
-                                	break;
-                                default:
-                                    Controller.processIncompleteInput(inputText.getText());
-                                    break;
-                            }
-                        }
+                        Controller.handleKeyEvent(keyEvent);
                     }
                 };
         inputText.setOnKeyPressed( keyEventHandler );
@@ -194,7 +125,7 @@ public class UserInterfaceController implements Initializable {
     /**
      * Called by UI when page down key is pressed
      */
-    public void processPageDownPress() {
+    public void taskViewScrollDown() {
         switch ( uiType ) {
             case TIMELINE:
                 timelineViewRenderer.getTaskRenderer().scrollUp();
@@ -211,7 +142,7 @@ public class UserInterfaceController implements Initializable {
     /**
      * Called by UI when page up key is pressed
      */
-    public void processPageUpPress() {
+    public void taskViewScrollUp() {
         switch ( uiType ) {
             case TIMELINE:
                 timelineViewRenderer.getTaskRenderer().scrollDown();
@@ -228,7 +159,7 @@ public class UserInterfaceController implements Initializable {
     /**
      * Called by UI when End key is pressed
      */
-    public void processEndPress() {
+    public void timelineScrollRight() {
         switch ( uiType ) {
             case TIMELINE:
                 timelineViewRenderer.getTimelineRenderer().scrollUp();
@@ -239,7 +170,7 @@ public class UserInterfaceController implements Initializable {
     /**
      * Called by UI when home key is pressed
      */
-    public void processHomePress() {
+    public void timelineScrollLeft() {
         switch ( uiType ) {
             case TIMELINE:
                 timelineViewRenderer.getTimelineRenderer().scrollDown();
@@ -250,12 +181,13 @@ public class UserInterfaceController implements Initializable {
     /**
      * Processes the tab press, fills in the highlighted autocomplete item.
      */
-    public void processTabPress() {
+    public void autocompleteSuggestion() {
         if ( firstOption != null && firstOption.length() > 0 ) {
             setUserInput(firstOption + " ");
             Controller.processIncompleteInput(inputText.getText());
         }
     }
+
 
     public void setTaskList ( EventList events ) {
         monthViewRenderer.setTaskview(events);
@@ -281,6 +213,10 @@ public class UserInterfaceController implements Initializable {
         }
     }
 
+    /**
+     * Sets the event list for the week view to display
+     * @param events Event
+     */
     public void setWeekEventList ( EventList events ) {
         timelineViewRenderer.setWeekView(events);
     }
@@ -292,7 +228,7 @@ public class UserInterfaceController implements Initializable {
         if ( firstOption != null && firstOption.length() > 0 ) {
             renderFirstLineBold = true;
         }
-        userInterfaceRenderer.setAutocompleteOptions(autocompleteOptions, renderFirstLineBold);
+        UIRenderer.setAutocompleteOptions(autocompleteOptions, renderFirstLineBold);
         refresh();
     }
 
@@ -350,23 +286,23 @@ public class UserInterfaceController implements Initializable {
     }
 
     public void refresh() {
-        userInterfaceRenderer.redraw();
+        UIRenderer.redraw();
     }
 
     public void setUI(UIType type) {
         uiType = type;
         switch ( uiType ) {
             case CALENDAR:
-                userInterfaceRenderer.setMainRenderer(monthViewRenderer);
+                UIRenderer.setMainRenderer(monthViewRenderer);
                 break;
             case TIMELINE:
-                userInterfaceRenderer.setMainRenderer(timelineViewRenderer);
+                UIRenderer.setMainRenderer(timelineViewRenderer);
                 break;
             case FLOATING:
-                userInterfaceRenderer.setMainRenderer(floatingViewRenderer);
+                UIRenderer.setMainRenderer(floatingViewRenderer);
                 break;
             case SETTING:
-                userInterfaceRenderer.setMainRenderer(settingViewRenderer);
+                UIRenderer.setMainRenderer(settingViewRenderer);
                 break;
         }
         updateTaskList();
@@ -391,21 +327,49 @@ public class UserInterfaceController implements Initializable {
 
     public void displayPopup( String message ) {
         popupRenderer.setMessage(message);
-        userInterfaceRenderer.setPopupRenderer(popupRenderer);
+        UIRenderer.setPopupRenderer(popupRenderer);
         refresh();
     }
 
     public void displayEventPopup( Event event ) {
         eventInfoRenderer.setEvent(event);
-        userInterfaceRenderer.setPopupRenderer(eventInfoRenderer);
+        UIRenderer.setPopupRenderer(eventInfoRenderer);
         refresh();
     }
 
     public void clearPopup(){
-        userInterfaceRenderer.setPopupRenderer(null);
+        UIRenderer.setPopupRenderer(null);
         refresh();
     }
 
+
+    /**
+     * Gets the text in the input box
+     * @return The text in the input box
+     */
+    public String getInputboxText() {
+        return inputText.getText();
+    }
+
+    /**
+     * Sets the text in the input box
+     * @param text Text to go into the input box
+     */
+    public void setInputboxText(String text) {
+        inputText.setText(text);
+    }
+
+    /**
+     * Pending announcement message that will be set when enter is pressed
+     * @return
+     */
+    public String getPendingAnnouncementMessage() {
+        return pendingAnnouncementMessage;
+    }
+
+    public void setPendingAnnouncementMessage(String pendingAnnouncementMessage) {
+        this.pendingAnnouncementMessage = pendingAnnouncementMessage;
+    }
 
     public enum UIType {
         CALENDAR, TIMELINE, FLOATING, SETTING

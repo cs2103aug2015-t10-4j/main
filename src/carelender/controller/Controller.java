@@ -8,10 +8,12 @@ import carelender.model.AppSettings;
 import carelender.model.AppSettings.SettingName;
 import carelender.model.data.*;
 import carelender.model.strings.FirstStartMessages;
-import carelender.view.gui.UserInterfaceController;
-import carelender.view.gui.UserInterfaceController.UIType;
+import carelender.view.gui.UIController;
+import carelender.view.gui.UIController.UIType;
 import carelender.view.parser.DateTimeParser;
 import carelender.view.parser.InputParser;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.util.*;
 
@@ -19,7 +21,7 @@ import java.util.*;
  * Does all the logic of the application
  */
 public class Controller {
-    private static UserInterfaceController userInterfaceController = null;
+    private static UIController UIController = null;
     private static StateManager stateManager;
     private static BlockingStateController blockingStateController;
 
@@ -88,89 +90,20 @@ public class Controller {
     }
 
 
-    public static void initUserInterfaceController(UserInterfaceController userInterfaceController) {
-        Controller.userInterfaceController = userInterfaceController;
-        //Controller.userInterfaceController.setMessageList(messageList);
-        /*canvasRenderer = new MonthViewRenderer();
-        Controller.userInterfaceController.setCanvasRenderer(canvasRenderer);*/
-    }
+    public static void initUserInterfaceController(UIController UIController) {
+        Controller.UIController = UIController;
 
-
-    /**
-     * Called by UI when up key is pressed
-     */
-    public static void processUpPress() {
-        if (currentCommand < commandList.size() - 1){
-            currentCommand++;
-        }
-        showPreviousCommand();
     }
 
     /**
-     * Called by UI when down key is pressed
+     * The function that handles the key event from the UIController
+     * @param keyEvent KeyEvent from JavaFX
      */
-    public static void processDownPress() {
-        if ( currentCommand >= 0 ) {
-            currentCommand--;
-        }
-        showPreviousCommand();
-    }
-    
-    /**
-     * Called by UI when page down key is pressed
-     */
-    public static void processPageDownPress() {
-        userInterfaceController.processPageDownPress();
-    }
-
-    /**
-     * Called by UI when home key is pressed
-     */
-    public static void processHomePress() {
-    	userInterfaceController.processHomePress();
-    }
-    
-    /**
-     * Called by UI when end key is pressed
-     */
-    public static void processEndPress() {
-        userInterfaceController.processEndPress();
-    }
-
-    /**
-     * Called by UI when page up key is pressed
-     */
-    public static void processPageUpPress() {
-    	userInterfaceController.processPageUpPress();
-    }
-
-    /**
-     * Shows any previous command based on the currentCommand variable
-     */
-    private static void showPreviousCommand() {
-        if ( currentCommand == -1 ) { //Index -1 is an empty command
-            userInterfaceController.setUserInput(incompleteInput);
-        } else {
-            int commandIndex = commandList.size() - currentCommand - 1;
-            if (commandIndex < 0 || commandIndex >= commandList.size()) {
-                return;
-            }
-            userInterfaceController.setUserInput(commandList.get(commandIndex));
-        }
-    }
-
-
-
-    /**
-     * Saves the user's command. Removes duplicates and empty commands
-     * @param userInput User input to save
-     */
-    private static void saveUserCommand ( String userInput ) {
-        if ( userInput.length() > 0 ) {
-            int index = commandList.indexOf(userInput);
-            if ( index >= 0 ) commandList.remove(index);
-            commandList.add(userInput);
-            currentCommand = -1;
+    public static void handleKeyEvent( final KeyEvent keyEvent ) {
+        if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
+            handleKeyPress(keyEvent.getCode(), keyEvent.isControlDown() || keyEvent.isShortcutDown());
+        } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
+            handleKeyRelease(keyEvent.getCode());
         }
     }
 
@@ -188,20 +121,61 @@ public class Controller {
             } else {
                 //System.out.println("No match");
             }
-            userInterfaceController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
+            UIController.setAutocompleteOptions(autocompleteOptions, stringBuilder.toString());
         } else {
-            userInterfaceController.setAutocompleteOptions(null, null);
+            UIController.setAutocompleteOptions(null, null);
         }
 
     }
 
     /**
+     * Converts an add query to an event object
+     * @param queryAdd
+     * @return
+     */
+    public static Event queryAddToEventObject(QueryAdd queryAdd) {
+        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange(), queryAdd.getCategory());
+        return eventObj;
+    }
+
+
+
+    public static void showHelp() {
+        //UIController.displayMessage("Available Commands:");
+        //UIController.displayMessage(InputParser.getInstance().showCommandList());
+        blockingStateController.startPopup(InputParser.getInstance().showCommandList());
+    }
+
+    public static void printWelcomeMessage() {
+        if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
+            UIController.setAnnouncementMessage("Welcome to careLender. " + FirstStartMessages.askForName());
+        } else {
+            UIController.setAnnouncementMessage("Welcome back, " + userName);
+            stateManager.changeState(AppState.DEFAULT);
+        }
+    }
+
+    /**
+     * Refreshes the list of events.
+     * It is called after every query the user inputs
+     */
+    public static void refreshDisplay () {
+        if ( currentListQuery == null) {
+            currentListQuery = new QueryList();
+            currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
+        }
+
+        currentListQuery.controllerExecute();
+        UIController.refreshOutputField();
+    }
+
+    /**
      * Processes the user input.
-     * Called by the UserInterfaceController class
+     * Called by the UIController class
      * @param userInput The user input string
      */
     public static void processCompleteInput(String userInput) {
-        userInterfaceController.setAutocompleteOptions(null, null);
+        UIController.setAutocompleteOptions(null, null);
         userInput = userInput.trim();
         saveUserCommand(userInput);
 
@@ -219,6 +193,205 @@ public class Controller {
             }
         }
     }
+
+    /**
+     * Prints a message to screen
+     * @param message message to be displayed
+     */
+    public static void displayMessage ( String message ) {
+        UIController.displayMessage(message);
+    }
+
+    public static void displayAnnouncement ( String message ) {
+        UIController.setAnnouncementMessage(message);
+    }
+
+    public static void displayTasks (EventList events) {
+        UIController.setTaskList(events);
+    }
+
+
+    public static void clearMessages () {
+        UIController.clearMessageLog();
+    }
+
+    public static void setDisplayedList(EventList displayedList) {
+        InputParser.getInstance().setDisplayedList(displayedList);
+        UIController.setWeekEventList(displayedList);
+    }
+
+    public static BlockingStateController getBlockingStateController() {
+        return blockingStateController;
+    }
+
+
+
+    public static void setUI(UIType type) {
+        UIController.setUI(type);
+    }
+    public static void toggleUI() {
+        UIController.toggleUI();
+    }
+
+    /*public static void autocompleteSuggestion() {
+        UIController.autocompleteSuggestion();
+    }*/
+
+    public static UIType getDefaultUIType() {
+        return defaultUIType;
+    }
+
+    public static UIController getUI() {
+        return UIController;
+    }
+
+    /**
+     * Handles the key press event
+     * @param code JavaFX KeyCode
+     * @param modifier Is control or command pressed
+     */
+    private static void handleKeyPress(KeyCode code, boolean modifier) {
+        switch ( code ) {
+            case ENTER:
+                String text = UIController.getInputboxText();
+                UIController.setInputboxText("");
+                if ( UIController.getPendingAnnouncementMessage() != null ) {
+                    stopTimer();
+                    UIController.setAnnouncementMessage(UIController.getPendingAnnouncementMessage());
+                    UIController.setPendingAnnouncementMessage(null);
+                }
+                processCompleteInput(text);
+                break;
+            case UP:
+                if ( modifier ) {
+                    UIController.taskViewScrollUp();
+                } else {
+                    processUpPress();
+                }
+                break;
+            case DOWN:
+                if ( modifier ) {
+                    UIController.taskViewScrollDown();
+                } else {
+                    processDownPress();
+                }
+                break;
+            case LEFT:
+                if ( modifier ) {
+                    UIController.timelineScrollLeft();
+                }
+                break;
+            case RIGHT:
+                if ( modifier ) {
+                    UIController.timelineScrollRight();
+                }
+                break;
+            case TAB:
+                UIController.autocompleteSuggestion();
+                break;
+            case F1:
+                UIController.setUI(UIType.TIMELINE);
+                break;
+            case F2:
+                UIController.setUI(UIType.CALENDAR);
+                break;
+            case F3:
+                UIController.setUI(UIType.FLOATING);
+                break;
+            case F4:
+                UIController.setUI(UIType.SETTING);
+                break;
+            case PAGE_UP:
+                UIController.taskViewScrollUp();
+                break;
+            case PAGE_DOWN:
+                UIController.taskViewScrollDown();
+                break;
+            case HOME:
+                UIController.timelineScrollLeft();
+                break;
+            case END:
+                UIController.timelineScrollRight();
+                break;
+            case F12:
+                startTimer();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Handles the key release event
+     * @param code JavaFX KeyCode
+     */
+    private static void handleKeyRelease ( KeyCode code ) {
+        switch ( code ) {
+            case ENTER:
+            case UP:
+            case DOWN:
+                break;
+            case ALT:
+                UIController.getAutomatedCommand(false);
+                break;
+            case CONTROL:
+                UIController.getAutomatedCommand(true);
+                break;
+            default:
+                processIncompleteInput(UIController.getInputboxText());
+                break;
+        }
+    }
+
+    /**
+     * Called by UI when up key is pressed
+     */
+    private static void processUpPress() {
+        if (currentCommand < commandList.size() - 1){
+            currentCommand++;
+        }
+        showPreviousCommand();
+    }
+
+    /**
+     * Called by UI when down key is pressed
+     */
+    private static void processDownPress() {
+        if ( currentCommand >= 0 ) {
+            currentCommand--;
+        }
+        showPreviousCommand();
+    }
+
+    /**
+     * Shows any previous command based on the currentCommand variable
+     */
+    private static void showPreviousCommand() {
+        if ( currentCommand == -1 ) { //Index -1 is an empty command
+            UIController.setUserInput(incompleteInput);
+        } else {
+            int commandIndex = commandList.size() - currentCommand - 1;
+            if (commandIndex < 0 || commandIndex >= commandList.size()) {
+                return;
+            }
+            UIController.setUserInput(commandList.get(commandIndex));
+        }
+    }
+
+    /**
+     * Saves the user's command. Removes duplicates and empty commands
+     * @param userInput User input to save
+     */
+    private static void saveUserCommand ( String userInput ) {
+        if ( userInput.length() > 0 ) {
+            int index = commandList.indexOf(userInput);
+            if ( index >= 0 ) commandList.remove(index);
+            commandList.add(userInput);
+            currentCommand = -1;
+        }
+    }
+
+
 
     private static void stateFirstStart ( String userInput ) {
     	final OnConfirmedCallback confirmNameCallback = new OnConfirmedCallback() {
@@ -274,46 +447,7 @@ public class Controller {
         refreshDisplay();
     }
 
-    /**
-     * Converts an add query to an event object
-     * @param queryAdd
-     * @return
-     */
-    public static Event queryAddToEventObject(QueryAdd queryAdd) {
-        Event eventObj = new Event(0, queryAdd.getName(), queryAdd.getDateRange(), queryAdd.getCategory());
-        return eventObj;
-    }
 
-
-
-    public static void showHelp() {
-        //userInterfaceController.displayMessage("Available Commands:");
-        //userInterfaceController.displayMessage(InputParser.getInstance().showCommandList());
-        blockingStateController.startPopup(InputParser.getInstance().showCommandList());
-    }
-
-    public static void printWelcomeMessage() {
-        if ( stateManager.isState(AppState.FIRSTSTART) && userName == null ) {
-            userInterfaceController.setAnnouncementMessage("Welcome to careLender. " + FirstStartMessages.askForName());
-        } else {
-            userInterfaceController.setAnnouncementMessage("Welcome back, " + userName);
-            stateManager.changeState(AppState.DEFAULT);
-        }
-    }
-    
-    /**
-     * Refreshes the list of events.
-     * It is called after every query the user inputs
-     */
-    public static void refreshDisplay () {
-        if ( currentListQuery == null) {
-            currentListQuery = new QueryList();
-            currentListQuery.addSearchParam(QueryList.SearchParam.DATE_START, DateTimeParser.getDate(0));
-        }
-
-        currentListQuery.controllerExecute();
-        userInterfaceController.refreshOutputField();
-    }
 
     /**
      * Refreshes the announcement box
@@ -323,45 +457,5 @@ public class Controller {
 		Controller.displayAnnouncement(firstHint);
 	}
     
-    /**
-     * Prints a message to screen
-     * @param message message to be displayed
-     */
-    public static void displayMessage ( String message ) {
-        userInterfaceController.displayMessage(message);
-    }
 
-    public static void displayAnnouncement ( String message ) {
-        userInterfaceController.setAnnouncementMessage(message);
-    }
-
-    public static void displayTasks (EventList events) {
-        userInterfaceController.setTaskList(events);
-    }
-
-
-    public static void clearMessages () {
-        userInterfaceController.clearMessageLog();
-    }
-
-    public static void setDisplayedList(EventList displayedList) {
-        InputParser.getInstance().setDisplayedList(displayedList);
-        userInterfaceController.setWeekEventList(displayedList);
-    }
-
-    public static BlockingStateController getBlockingStateController() {
-        return blockingStateController;
-    }
-
-    public static UserInterfaceController getGUI() {
-    	return userInterfaceController;
-    }
-
-    public static void processTabPress() {
-        userInterfaceController.processTabPress();
-    }
-
-	public static UIType getDefaultUIType() {
-		return defaultUIType;
-	}
 }

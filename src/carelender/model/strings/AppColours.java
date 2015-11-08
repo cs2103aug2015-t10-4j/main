@@ -23,6 +23,7 @@ public class AppColours {
     public final static Color tabHighlight = Color.web("FF0");
     public final static Color black = Color.web("000");
     public final static Color white = Color.web("FFF");
+    public final static Color grey = Color.web("555");
     public final static Color important = Color.web("bd4d59");
     public final static Color information = Color.web("c7f464");
     public final static Color [] category = {Color.web("d1686e"),

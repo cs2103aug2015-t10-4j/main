@@ -3,6 +3,9 @@ package carelender.model;
 import java.util.Calendar;
 import java.util.Date;
 
+/*
+ * A reminder object which stores reminder timings
+ */
 public class Reminder {
 	private int uid;
 	private Date start;
@@ -20,6 +23,10 @@ public class Reminder {
 	
 	public void snooze(){
 		reTime.add(Calendar.MINUTE, 10);
+	}
+	
+	public int getUid() {
+		return uid;
 	}
 	
 	public Calendar getReTime(){

@@ -1,6 +1,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -18,7 +19,6 @@ import carelender.model.data.Event;
 import carelender.model.data.EventList;
 
 /**
- * Written by : Weizheng Lee 27/10/2015
  * This class contains static methods to help to render the calendar view
  */
 public class TimelineRenderer extends CanvasRenderer {
@@ -33,7 +33,7 @@ public class TimelineRenderer extends CanvasRenderer {
     private int displayStart;
 
     public TimelineRenderer() {
-        this.weekDisplay = new TreeMap<String, ArrayList<TimelineBarRenderer>>();
+        this.weekDisplay = new TreeMap<>();
         this.displayStart = 0;
 	}
 
@@ -50,8 +50,8 @@ public class TimelineRenderer extends CanvasRenderer {
     public void draw(GraphicsContext gc, double x, double y, double width, double height) {
     	super.draw(gc, x, y, width, height);
 
-    	Font font = Font.loadFont("file:res/monaco.ttf", this.labelWidth/5);
-    	Font fontLarge = Font.loadFont("file:res/monaco.ttf", this.labelWidth/3);
+    	Font font = FontLoader.load( this.labelWidth/5);
+    	Font fontLarge = FontLoader.load( this.labelWidth/3);
     	
     	int numberOfBars = this.weekDisplay.size();
     	int lastDay = -1;
@@ -236,7 +236,7 @@ public class TimelineRenderer extends CanvasRenderer {
 	
 	private TimelineBarRenderer createWeekBar (double startTime, double endTime, String content) {
 		TimelineBarRenderer bar = new TimelineBarRenderer();
-		bar.setParams(this.gc, this.width, this.height, startTime, endTime, content);
+		bar.setParams(startTime, endTime, content);
 		return bar;
 	}
 	
