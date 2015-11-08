@@ -1,6 +1,7 @@
 package carelender.view.gui.components;
 
 import carelender.model.strings.AppColours;
+import carelender.model.strings.DateFormats;
 import carelender.model.strings.FontLoader;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -25,6 +26,7 @@ import carelender.controller.Controller;
  * Render the Task View.
  */
 public class TaskRenderer extends CanvasRenderer {
+	//Ratios used to ensure sizes scale with the window height and width.
 	private static final double TASKBAR_NAME_RATIO = 0.4;
 	private static final double DIVISOR_HEIGHT_RATIO = 0.5;
 	private static final double SCROLLPOINTER_HEIGHT_RATIO = 0.04;
@@ -58,6 +60,7 @@ public class TaskRenderer extends CanvasRenderer {
         this.totalTasks = 0;
         this.displayStart = 0;
 
+        //Comparator to compare events by date range.
         this.eventComparator = (Event eventAgainst, Event eventTo) -> {
             if ( eventAgainst.getEarliestDate() == null || eventTo.getEarliestDate() == null ) {
                 return 0;
@@ -71,7 +74,18 @@ public class TaskRenderer extends CanvasRenderer {
             return 0;
         };
     }
-
+    
+    /**
+     * Set the ratios for the task bars and date display, along with padding.
+     * Ratios are with respect to the width and height of the window respectively.
+     * 
+     * @param xPad
+     * @param yPad
+     * @param taskWidthRatio
+     * @param taskHeightRatio
+     * @param dateWidthRatio
+     * @param dateHeightRatio
+     */
     public void setParams (double xPad, double yPad,
                            double taskWidthRatio, double taskHeightRatio,
                            double dateWidthRatio, double dateHeightRatio) {
@@ -98,7 +112,10 @@ public class TaskRenderer extends CanvasRenderer {
         renderTasks (gc, x, y, width, height);
     }
     
-
+    /**
+     * Shifts the scroll window up for the task renderer.
+     * Redraws canvas on each call.
+     */
     public void scrollDown () {
         if (displayStart > 0) {
         	displayStart--;
@@ -106,6 +123,10 @@ public class TaskRenderer extends CanvasRenderer {
         redraw();
     }
     
+    /**
+     * Shifts the scroll window down for the task renderer.
+     * Redraws canvas on each call.
+     */
     public void scrollUp () {
         if (displayStart < totalTasks - 1) {
             displayStart++;
@@ -113,12 +134,21 @@ public class TaskRenderer extends CanvasRenderer {
         redraw();
     }
 
+    /**
+     * Remove events in taskDisplay map and sets the scroll window back to default.
+     */
     public void clearEvents () {
         taskDisplay.clear();
         totalTasks = 0;
         displayStart = 0;
     }
     
+    /**
+     * Concatenates content of each EventList within taskDisplay TreeMap into one EventList.
+     * 
+     * @return
+     * 		EventList with all events in the taskDisplay.
+     */
     public EventList getDisplayList () {
         List<Event> concatList = new EventList();
         for (EventList events : taskDisplay.values()) {
@@ -127,18 +157,43 @@ public class TaskRenderer extends CanvasRenderer {
         return (EventList)concatList;
     }
 
+    /**
+     * Adds all events in EventList to taskDisplay, with the day of the event as keys
+     * Events stretching over several days are added into several key-value pairs in the taskDislay
+     * 
+     * @param toDisplay
+     * 		EventList containing events to be added to taskDisplay
+     */
     public void addEvents (EventList toDisplay) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("D d EEE");
         for ( Event event : toDisplay ) {
             Date currentDay = event.getEarliestDateFromNow();
+            //If there is no earliest date range from the current time
+            //Find the earliest date of all the date ranges.
             if ( currentDay == null ) {
             	currentDay = event.getEarliestDate();
             }
-            if ( currentDay == null ) {
+            
+            if ( currentDay == null ) { //Event is a floating task.
                 addEventToMap(FLOATING_TASK_KEY, event);
             } else {
-                String day = dateFormat.format(currentDay);
-                addEventToMap(day, event);
+            	//Format key as YYYY D d EEE
+            	//YYYY and D are used to sort the keys by date.
+            	
+            	//YYYY is the year of the event.
+            	//D is the day in the year.
+            	//d is the day in the month.
+            	//EEE is the day of the week.
+                String day = DateFormats.dateFormatDay.format(currentDay);
+                String dayInYear = DateFormats.dayInYear.format(currentDay);
+                //If the day in the year is less than 3 digits, prepend with 0s, eg. 64 to 064
+                //Necessary for radix sort of String keys in TreeMap to ensure order is preserved.
+                for (int i = 0; i < (3 - dayInYear.length()); i++ ) {
+                	dayInYear = "0" + dayInYear;
+                }
+                String year = DateFormats.year.format(currentDay);
+                
+                //Concatenate all the parts of the key together.
+                addEventToMap(year + " " + dayInYear + " " + day, event);
             }
             totalTasks++;
         }
@@ -267,8 +322,8 @@ public class TaskRenderer extends CanvasRenderer {
 
         String [] keyWords = key.split(" ");
         if ( keyWords.length > 2 ) {
-            gc.fillText(keyWords[1], xCurrent, yCurrent);
-            gc.fillText(keyWords[2], xCurrent, yCurrent + dateFont.getSize());
+            gc.fillText(keyWords[2], xCurrent, yCurrent);
+            gc.fillText(keyWords[3], xCurrent, yCurrent + dateFont.getSize());
         }
     }
     
