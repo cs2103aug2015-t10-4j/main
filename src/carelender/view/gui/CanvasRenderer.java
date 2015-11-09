@@ -1,5 +1,5 @@
 //@@author A0133269A
-package carelender.view.gui.components;
+package carelender.view.gui;
 
 import javafx.scene.canvas.GraphicsContext;
 
@@ -8,11 +8,11 @@ import javafx.scene.canvas.GraphicsContext;
  * It has to be extended and the child class should override draw to do the drawing
  */
 public abstract class CanvasRenderer {
-    GraphicsContext gc = null;
-    double x = 0;
-    double y = 0;
-    double width = 0;
-    double height = 0;
+    protected GraphicsContext gc = null;
+    protected double x = 0;
+    protected double y = 0;
+    protected double width = 0;
+    protected double height = 0;
 
     public CanvasRenderer() {}
 

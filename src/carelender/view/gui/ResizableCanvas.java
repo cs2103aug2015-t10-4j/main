@@ -1,7 +1,6 @@
 //@@author A0133269A
 package carelender.view.gui;
 
-import carelender.view.gui.components.CanvasRenderer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

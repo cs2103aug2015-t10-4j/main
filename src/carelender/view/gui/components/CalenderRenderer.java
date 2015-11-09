@@ -12,6 +12,7 @@ import carelender.model.data.EventList;
 import carelender.model.data.QueryList;
 import carelender.model.strings.AppColours;
 import carelender.model.strings.FontLoader;
+import carelender.view.gui.CanvasRenderer;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
