@@ -126,12 +126,12 @@ public class Model {
 	 */
 	public void deleteEvent(EventList eventList) {
 		EventList deletedEventList = new EventList();
-		for (int i = 0; i < events.size(); i++) {
-			for (Event eventObj : eventList) {
-				if (events.get(i).getUid() == eventObj.getUid()) {
-					deletedEventList.add(events.get(i));
-					events.remove(i);
-                    //break;
+		for (int i = 0; i < eventList.size(); i++) {
+			for (int j = 0; j < events.size(); j++) {
+				if (eventList.get(i).getUid() == events.get(j).getUid()) {
+					deletedEventList.add(events.get(j));
+					events.remove(j);
+                    break;
 				}
 			}
 		}
