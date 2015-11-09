@@ -149,8 +149,6 @@ public class Model {
      * @param eventList Events to be undone
      */
     public void undoAddedEvent(EventList eventList) {
-        System.out.println( "           "+eventList.toString());
-        System.out.println("REMOVE");
         EventList redoEventList = new EventList();
         for (int i = 0; i < eventList.size(); i++) {
             for (int j = 0; j < events.size(); j++) {
@@ -171,8 +169,6 @@ public class Model {
      */
     public void undoUpdatedEvent(EventList eventList, boolean isUndo) {
         EventList redoEventList = new EventList();
-        System.out.println("ME ALLED");
-        System.out.println(eventList.toString());
         for (int i = 0; i < eventList.size(); i++) {
             for (int j = 0; j < events.size(); j++) {
                 if (events.get(j).getUid() == eventList.get(i).getUid()) {
@@ -202,8 +198,6 @@ public class Model {
             redoEventList.add(eventList.get(i));
             events.add(eventList.get(i));
         }
-        System.out.println("ADDDDDDDDDD");
-        System.out.println(redoEventList.toString());
         UndoManager.getInstance().add(redoEventList);
         saveToFile(fileName, events);
     }
