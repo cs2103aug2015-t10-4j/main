@@ -14,6 +14,11 @@ add I am a potato
 add "TGI Fridays lunch and dinner" 1 week from now afternoon to night cat Food
 add "My Birthday :)" tomorrow
 add "Slumber Party" 14 days from now afternoon to 16 days from now afternoon cat self
+?
+delete 1-6
+yes
+undo
+update 1,3,5 cat new
 list tomorrow
 list
 update 1 date tomorrow night

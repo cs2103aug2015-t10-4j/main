@@ -36,10 +36,23 @@ public class PopupRenderer extends CanvasRenderer {
         gc.fillRoundRect(x, y, width, height * TAB_HEIGHT_RATIO, ROUNDED_RADIUS, ROUNDED_RADIUS);
 
         double fontSize = width * FONT_SIZE_RATIO;
-        Font font = FontLoader.load( fontSize);
+        
         TextRenderer message = new TextRenderer();
+        Font font = FontLoader.load( fontSize);
         message.setParams(gc, x, y + height * TEXT_HEIGHT_OFFSET_RATIO, width, height * TEXT_HEIGHT_RATIO, TEXT_PAD, TEXT_PAD, font, LINE_SPACE_RATIO);
         message.addText(this.message);
+        double textLines = message.getTextLines();
+        
+        double smallFontSize = height / textLines * 0.8;
+
+        //If there are too many lines, it will scale according to height
+        if ( smallFontSize < fontSize ) {
+        	fontSize = smallFontSize;
+        	font = FontLoader.load( fontSize);
+            message.setParams(gc, x, y + height * TEXT_HEIGHT_OFFSET_RATIO, width, height * TEXT_HEIGHT_RATIO, TEXT_PAD, TEXT_PAD, font, LINE_SPACE_RATIO);
+            message.addText(this.message);
+        }
+        
         message.drawText(AppColours.popupBackground, AppColours.popupText);
     }
 }

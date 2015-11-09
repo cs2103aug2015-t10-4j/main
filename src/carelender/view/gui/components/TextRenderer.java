@@ -245,10 +245,22 @@ public class TextRenderer {
         }
     }
     
+    /**
+     * Get the height of the text box in pixels
+     * @return Height of the text box
+     */
     public double getTextHeight () {
         return (this.textLines.size() * this.charHeight)
                 + (((this.textLines.size() - 1) <= 0 ? 0 : (this.textLines.size() - 1)) * this.lineSpace)
                 + (this.yPadding * 2);
+    }
+    
+    /**
+     * Get the number of lines for the text
+     * @return number of lines
+     */
+    public int getTextLines () {
+        return this.textLines.size();
     }
     
     private String separateEndline ( String toParse ) {
