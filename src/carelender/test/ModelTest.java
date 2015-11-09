@@ -43,8 +43,6 @@ public class ModelTest {
 		dummyEvent2 = new Event(2, "Event 2", dates, null);
 		dummyEvent3 = new Event(3, "Event 3", dates, null);
 		dummyEvent4 = new Event(4, "Event 4", dates, null);
-		
-		
 	}
 	
 	@Test
