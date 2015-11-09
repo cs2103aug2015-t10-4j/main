@@ -10,11 +10,11 @@ public class QueryGeneric extends QueryBase {
     }
     
     @Override
-	public void controllerExecute() {
-	}
+    public void controllerExecute() {
+    }
 
-	@Override
-	public EventList searchExecute() {
-		return null;
-	}
+    @Override
+    public EventList searchExecute() {
+        return null;
+    }
 }

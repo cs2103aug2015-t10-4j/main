@@ -3,11 +3,10 @@ package carelender.view.gui.views;
 
 import carelender.model.strings.AppColours;
 import carelender.model.strings.FontLoader;
-import carelender.view.gui.components.CanvasRenderer;
+import carelender.view.gui.CanvasRenderer;
 import carelender.view.gui.components.TabRenderer;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 

@@ -294,11 +294,11 @@ public class InputParser {
                 newQuery = parseSetCommand(commandParts);
                 break;
             case COMPLETE:
-            	if (commandString.equals("complete")) {
-            		newQuery = parseCompleteCommand(commandParts, true);
-            	} else {
-            		newQuery = parseCompleteCommand(commandParts, false);
-            	}
+                if (commandString.equals("complete")) {
+                    newQuery = parseCompleteCommand(commandParts, true);
+                } else {
+                    newQuery = parseCompleteCommand(commandParts, false);
+                }
                 break;    
             case UPDATE:
                 newQuery = parseUpdateCommand(commandParts);
@@ -346,14 +346,14 @@ public class InputParser {
     }
 
     private QueryBase parseSetCommand(CommandPart [] commandParts) {
-    	if ( commandParts.length < 3 ) {
+        if ( commandParts.length < 3 ) {
             return new QueryError(ErrorMessages.setNoParameters());
         }
 
         return new QuerySet(commandParts[1].getQueryPart(), commandParts[2].getQueryPart());
-	}
+    }
 
-	public QueryBase parseSearchCommand ( DateRange[] dateRanges, CommandPart [] commandParts ) {
+    public QueryBase parseSearchCommand ( DateRange[] dateRanges, CommandPart [] commandParts ) {
         QueryList queryList = new QueryList();
 
         boolean pass = false;
@@ -596,7 +596,7 @@ public class InputParser {
         }
         
         for ( int i : indexList ) {
-        	
+
             Event event = displayedList.get(i);
             if ( event != null ) {
                 queryUpdate.addEvent(event);
@@ -605,36 +605,36 @@ public class InputParser {
         
         commandPart = getCommandPart("name", commandParts);
         if ( commandPart != null ) {
-        	data = commandPart.getKeywordData();
+            data = commandPart.getKeywordData();
             if ( data != null ) {
-            	queryUpdate.addUpdateParam(UpdateParam.NAME, data);
-            	pass = true;
+                queryUpdate.addUpdateParam(UpdateParam.NAME, data);
+                pass = true;
             }
         }
         
         commandPart = getCommandPart("date", commandParts);
         if ( commandPart != null ) {
-        	data = commandPart.getKeywordData();
+            data = commandPart.getKeywordData();
             if ( data != null ) {
-            	DateRange[] dateRanges = DateTimeParser.parseDateTime(data);
-            	if ( dateRanges != null ) {
-            		queryUpdate.addUpdateParam(UpdateParam.DATE_RANGE, dateRanges);
-            		pass = true;
-            	}
+                DateRange[] dateRanges = DateTimeParser.parseDateTime(data);
+                if ( dateRanges != null ) {
+                    queryUpdate.addUpdateParam(UpdateParam.DATE_RANGE, dateRanges);
+                    pass = true;
+                }
             }
         }
         
         commandPart = getCommandPart("category", commandParts);
         if ( commandPart != null ) {
-        	data = commandPart.getKeywordData();
+            data = commandPart.getKeywordData();
             if ( data != null ) {
-            	queryUpdate.addUpdateParam(UpdateParam.CATEGORY, data);
-            	pass = true;
+                queryUpdate.addUpdateParam(UpdateParam.CATEGORY, data);
+                pass = true;
             }
         }
         
         if ( !pass ) {
-        	return new QueryError(ErrorMessages.invalidUpdate());
+            return new QueryError(ErrorMessages.invalidUpdate());
         }
         
 
@@ -690,22 +690,22 @@ public class InputParser {
      * @return Processed input
      */
     public String removeQuotes ( String input ) {
-    	StringBuilder stringBuilder = new StringBuilder();
-    	boolean masking = false;
-    	for ( int i = 0; i < input.length(); i++ ) {
-    		char letter = input.charAt(i);
-    		if ( letter == '"') {
-    			masking = !masking;
-    			stringBuilder.append(letter);
-    		} else {
-	    		if ( masking ) {
-	    			stringBuilder.append('=');
-	    		} else {
-	    			stringBuilder.append(letter);
-	    		}
-    		}
-    	}
-    	return stringBuilder.toString();
+        StringBuilder stringBuilder = new StringBuilder();
+        boolean masking = false;
+        for ( int i = 0; i < input.length(); i++ ) {
+            char letter = input.charAt(i);
+            if ( letter == '"') {
+                masking = !masking;
+                stringBuilder.append(letter);
+            } else {
+                if ( masking ) {
+                    stringBuilder.append('=');
+                } else {
+                    stringBuilder.append(letter);
+                }
+            }
+        }
+        return stringBuilder.toString();
     }
 
     /**
@@ -788,7 +788,7 @@ public class InputParser {
      * @return null if there is an error in parsing
      */
     protected Integer[] extractIndices ( String indexString ) {
-    	indexString = indexString.replace(" ", "");
+        indexString = indexString.replace(" ", "");
         String errorMessage = "";
         boolean pass = true;
         ArrayList<Integer> indexList = new ArrayList<>();
@@ -865,7 +865,7 @@ public class InputParser {
             System.out.println(errorMessage);
         }
         if ( pass ) {
-        	return indexList.toArray(new Integer[indexList.size()]);
+            return indexList.toArray(new Integer[indexList.size()]);
         }
         return null;
     }

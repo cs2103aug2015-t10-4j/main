@@ -6,9 +6,9 @@ import carelender.model.Model;
 import carelender.model.strings.QueryFeedback;
 
 public class QueryComplete extends QueryBase{
-	private EventList events;
-	private boolean forComplete;
-	
+    private EventList events;
+    private boolean forComplete;
+
     public QueryComplete(Boolean forComplete) {  	
         super(QueryType.COMPLETE);
         this.forComplete = forComplete;
@@ -24,22 +24,22 @@ public class QueryComplete extends QueryBase{
     }
     
     @Override
-	public void controllerExecute() {
-    	for (int i = 0; i < events.size(); i++) {
-    		events.get(i).setCompleted(forComplete);
-			
-		}
-    	Model.getInstance().updateEvent(events);
-    	if (forComplete) {
-    		Controller.displayMessage(QueryFeedback.completeTask(events.size()));
-    	} else {
-    		Controller.displayMessage(QueryFeedback.uncompleteTask(events.size()));
-    	}
-	}
+    public void controllerExecute() {
+        for (int i = 0; i < events.size(); i++) {
+            events.get(i).setCompleted(forComplete);
 
-	@Override
-	public EventList searchExecute() {
-		EventList returnList = new EventList();
-		return returnList;
-	}
+        }
+        Model.getInstance().updateEvent(events);
+        if (forComplete) {
+            Controller.displayMessage(QueryFeedback.completeTask(events.size()));
+        } else {
+            Controller.displayMessage(QueryFeedback.uncompleteTask(events.size()));
+        }
+    }
+
+    @Override
+    public EventList searchExecute() {
+        EventList returnList = new EventList();
+        return returnList;
+    }
 }

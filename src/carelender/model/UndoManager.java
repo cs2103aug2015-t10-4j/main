@@ -10,92 +10,92 @@ import java.util.Stack;
  */
 
 public class UndoManager {
-	private static UndoManager singleton = null;
+    private static UndoManager singleton = null;
 
-	public static UndoManager getInstance() {
-		if (singleton == null) {
-			singleton = new UndoManager();
-		}
-		return singleton;
-	}
+    public static UndoManager getInstance() {
+        if (singleton == null) {
+            singleton = new UndoManager();
+        }
+        return singleton;
+    }
 
-	private Stack<UndoStep> undoStack;
-	private Stack<UndoStep> redoStack;
+    private Stack<UndoStep> undoStack;
+    private Stack<UndoStep> redoStack;
 
-	private UndoManager() {
-		undoStack = new Stack<>();
-		redoStack = new Stack<>();
-	}
+    private UndoManager() {
+        undoStack = new Stack<>();
+        redoStack = new Stack<>();
+    }
 
-	/**
-	 * Called when a new item or new items are added. Will create a
-	 * corresponding delete query on the stack
-	 * 
-	 * @param added
-	 */
-	public void add(EventList added) {
-		undoStack.push(new UndoStep(added, UndoStep.UndoType.ADD));
-	}
+    /**
+     * Called when a new item or new items are added. Will create a
+     * corresponding delete query on the stack
+     *
+     * @param added
+     */
+    public void add(EventList added) {
+        undoStack.push(new UndoStep(added, UndoStep.UndoType.ADD));
+    }
 
-	public void delete(EventList deleted) {
-		undoStack.push(new UndoStep(deleted, UndoStep.UndoType.DELETE));
-	}
+    public void delete(EventList deleted) {
+        undoStack.push(new UndoStep(deleted, UndoStep.UndoType.DELETE));
+    }
 
-	public void update(EventList beforeUpdate) {
-		undoStack.push(new UndoStep(beforeUpdate, UndoStep.UndoType.UPDATE));
-	}
-	
-	public void redoUpdate(EventList beforeUpdate) {
-		redoStack.push(new UndoStep(beforeUpdate, UndoStep.UndoType.UPDATE));
-	}
+    public void update(EventList beforeUpdate) {
+        undoStack.push(new UndoStep(beforeUpdate, UndoStep.UndoType.UPDATE));
+    }
 
-	/**
-	 * This method is called by model when an undo command is requested
-	 */
-	public void undo() {
-		if (!undoStack.isEmpty()) {
-			UndoStep undoStep = undoStack.pop();
-			redoStack.push(undoStep);
-			switch (undoStep.getUndoType()) {
-			case ADD:
-				Model.getInstance().undoAddedEvent(undoStep.getUndoData());
-				break;
-			case DELETE:
-				Model.getInstance().undoDeletedEvent(undoStep.getUndoData());
-				break;
-			case UPDATE:
-				Model.getInstance().undoUpdatedEvent(undoStep.getUndoData(), true);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	
-	public void clearRedoStack() {
-		redoStack.empty();
-	}
-	
-	/**
-	 * This method is called by model when a redo command is requested
-	 */
-	public void redo() {
-		if (!redoStack.isEmpty()) {
-			UndoStep redoStep = redoStack.pop();
-			undoStack.push(redoStep);
-			switch (redoStep.getUndoType()) {
-			case ADD:
-				Model.getInstance().undoDeletedEvent(redoStep.getUndoData());
-				break;
-			case DELETE:
-				Model.getInstance().undoAddedEvent(redoStep.getUndoData());
-				break;
-			case UPDATE:
-				Model.getInstance().undoUpdatedEvent(redoStep.getUndoData(), false);
-				break;
-			default:
-				break;
-			}
-		}
-	}
+    public void redoUpdate(EventList beforeUpdate) {
+        redoStack.push(new UndoStep(beforeUpdate, UndoStep.UndoType.UPDATE));
+    }
+
+    /**
+     * This method is called by model when an undo command is requested
+     */
+    public void undo() {
+        if (!undoStack.isEmpty()) {
+            UndoStep undoStep = undoStack.pop();
+            redoStack.push(undoStep);
+            switch (undoStep.getUndoType()) {
+            case ADD:
+                Model.getInstance().undoAddedEvent(undoStep.getUndoData());
+                break;
+            case DELETE:
+                Model.getInstance().undoDeletedEvent(undoStep.getUndoData());
+                break;
+            case UPDATE:
+                Model.getInstance().undoUpdatedEvent(undoStep.getUndoData(), true);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    public void clearRedoStack() {
+        redoStack.empty();
+    }
+
+    /**
+     * This method is called by model when a redo command is requested
+     */
+    public void redo() {
+        if (!redoStack.isEmpty()) {
+            UndoStep redoStep = redoStack.pop();
+            undoStack.push(redoStep);
+            switch (redoStep.getUndoType()) {
+            case ADD:
+                Model.getInstance().undoDeletedEvent(redoStep.getUndoData());
+                break;
+            case DELETE:
+                Model.getInstance().undoAddedEvent(redoStep.getUndoData());
+                break;
+            case UPDATE:
+                Model.getInstance().undoUpdatedEvent(redoStep.getUndoData(), false);
+                break;
+            default:
+                break;
+            }
+        }
+    }
 }

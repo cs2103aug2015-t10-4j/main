@@ -9,10 +9,10 @@ import java.util.ArrayList;
  */
 public class ReminderList extends ArrayList<Reminder>{
 
-	/**
-	 * Default Serial ID
-	 */
-	private static final long serialVersionUID = 1L;
-	
+    /**
+     * Default Serial ID
+     */
+    private static final long serialVersionUID = 1L;
+
 
 }

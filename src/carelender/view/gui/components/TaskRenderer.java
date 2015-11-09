@@ -24,20 +24,20 @@ import carelender.model.data.EventList;
  * This class contains methods to render the task view.
  */
 public class TaskRenderer extends CanvasRenderer {
-	//Ratios used to ensure sizes scale with the window height and width.
-	private static final double TASKBAR_NAME_RATIO = 0.4;
-	private static final double DIVISOR_HEIGHT_RATIO = 0.5;
-	private static final double SCROLLPOINTER_HEIGHT_RATIO = 0.04;
-	private static final double SCROLLPOINTER_WIDTH_RATIO = 0.02;
-	
-	private static final double INDEX_FONTSIZE_RATIO = 0.5;
-	private static final double DATE_FONTSIZE_RATIO = 0.5;
-	private static final double SCROLLPOINTER_FONTSIZE_RATIO = 0.02;
-	
-	private static final String FLOATING_TASK_KEY = "F";
-	private static final String SCROLLPOINTER_PAGEUP = "Pg Up";
-	private static final String SCROLLPOINTER_PAGEDOWN = "Pg Dn";
-	
+    //Ratios used to ensure sizes scale with the window height and width.
+    private static final double TASKBAR_NAME_RATIO = 0.4;
+    private static final double DIVISOR_HEIGHT_RATIO = 0.5;
+    private static final double SCROLLPOINTER_HEIGHT_RATIO = 0.04;
+    private static final double SCROLLPOINTER_WIDTH_RATIO = 0.02;
+
+    private static final double INDEX_FONTSIZE_RATIO = 0.5;
+    private static final double DATE_FONTSIZE_RATIO = 0.5;
+    private static final double SCROLLPOINTER_FONTSIZE_RATIO = 0.02;
+
+    private static final String FLOATING_TASK_KEY = "F";
+    private static final String SCROLLPOINTER_PAGEUP = "Pg Up";
+    private static final String SCROLLPOINTER_PAGEDOWN = "Pg Dn";
+
     private Map<String, EventList> taskDisplay;
     private Comparator<Event> eventComparator;
     private TaskBarRenderer taskBarRender;
@@ -116,7 +116,7 @@ public class TaskRenderer extends CanvasRenderer {
      */
     public void scrollDown () {
         if (displayStart > 0) {
-        	displayStart--;
+            displayStart--;
         }
         redraw();
     }
@@ -168,7 +168,7 @@ public class TaskRenderer extends CanvasRenderer {
             //If there is no earliest date range from the current time
             //Find the earliest date of all the date ranges.
             if ( currentDay == null ) {
-            	currentDay = event.getEarliestDate();
+                currentDay = event.getEarliestDate();
             }
             
             if ( currentDay == null ) { //Event is a floating task.
@@ -181,7 +181,7 @@ public class TaskRenderer extends CanvasRenderer {
         }
         
         for (EventList events : taskDisplay.values()) {
-        	Collections.sort(events, eventComparator);
+            Collections.sort(events, eventComparator);
         }
     }
 
@@ -196,7 +196,7 @@ public class TaskRenderer extends CanvasRenderer {
      * 		The event to add.
      */
     private void addEventToMap (String key, Event event) {
-    	if (taskDisplay.containsKey(key)) {
+        if (taskDisplay.containsKey(key)) {
             if (!taskDisplay.get(key).contains(event)) {
                 taskDisplay.get(key).add(event);
             }
@@ -217,7 +217,7 @@ public class TaskRenderer extends CanvasRenderer {
      * @param height
      */
     private void renderTasks (GraphicsContext gc, double x, double y, double width, double height) {
-    	double xCurrent = x + xPadding;
+        double xCurrent = x + xPadding;
         double yCurrent = y + yPadding;
 
         double dateBarWidth = width * dateWidthRatio;
@@ -229,7 +229,7 @@ public class TaskRenderer extends CanvasRenderer {
         Font dateFont = FontLoader.load(dateBarHeight * DATE_FONTSIZE_RATIO);
         Font indexFont = FontLoader.load(dateBarHeight * INDEX_FONTSIZE_RATIO);
         Font scrollPointerFont = FontLoader.load(width * SCROLLPOINTER_FONTSIZE_RATIO);
-    	
+
         //Variables to keep track of scroll window.
         int currentTaskToDisplay = 0;
         //Available space in the task view window to draw task bars.
@@ -249,8 +249,8 @@ public class TaskRenderer extends CanvasRenderer {
             EventList value = entry.getValue();
 
             if ( currentTaskToDisplay >= displayStart ) {
-            	renderDivisor(gc, xCurrent, yCurrent, width, yPadding);
-	            yCurrent += (yPadding * 1.5);
+                renderDivisor(gc, xCurrent, yCurrent, width, yPadding);
+                yCurrent += (yPadding * 1.5);
             }
             
             xPositionDate = xCurrent;
@@ -259,51 +259,51 @@ public class TaskRenderer extends CanvasRenderer {
             displayDate = false;
             for (Event event : value) {
                 if ( currentTaskToDisplay >= displayStart ) {
-                	taskBarRender.setContent(event);
+                    taskBarRender.setContent(event);
 
-				    if ( (remainingHeight - taskBarRender.getHeight(taskBarHeight)) >= 0 ) {
-						displayDate = true;
-						
-						renderIndex(gc, xCurrent + dateBarWidth, yCurrent, indexFont, String.valueOf(index));
-						
-						taskBarRender.draw(gc, xCurrent + dateBarWidth + xPadding, yCurrent,
-												taskBarWidth, taskBarHeight, AppColours.tasklistRowBackground,
-												AppColours.tasklistText, true);
-						
-						yCurrent += (taskBarRender.getHeight(taskBarHeight) + yPadding);
-						remainingHeight -= (taskBarRender.getHeight(taskBarHeight) + (yPadding * 2));
-				     } else {
-				    	//Task to add exceeds the remaining space in the window.
-						showBottomArrow = true;
-						break;
-				    }
-            	}
+                    if ( (remainingHeight - taskBarRender.getHeight(taskBarHeight)) >= 0 ) {
+                        displayDate = true;
+
+                        renderIndex(gc, xCurrent + dateBarWidth, yCurrent, indexFont, String.valueOf(index));
+
+                        taskBarRender.draw(gc, xCurrent + dateBarWidth + xPadding, yCurrent,
+                                                taskBarWidth, taskBarHeight, AppColours.tasklistRowBackground,
+                                                AppColours.tasklistText, true);
+
+                        yCurrent += (taskBarRender.getHeight(taskBarHeight) + yPadding);
+                        remainingHeight -= (taskBarRender.getHeight(taskBarHeight) + (yPadding * 2));
+                     } else {
+                        //Task to add exceeds the remaining space in the window.
+                        showBottomArrow = true;
+                        break;
+                    }
+                }
                 index++;
                 currentTaskToDisplay++;
             }
 
             if ( displayDate ) {
-            	renderDate(gc, xPositionDate, yPositionDate, dateFont, key);
+                renderDate(gc, xPositionDate, yPositionDate, dateFont, key);
             }
             
             if ( showBottomArrow ) {
-            	//Prevent subsequent tasks from being printed within scroll window.
-            	break;
+                //Prevent subsequent tasks from being printed within scroll window.
+                break;
             }
         }
         
         if ( this.displayStart > 0 ) {
-        	xCurrent = x + width - (width * SCROLLPOINTER_HEIGHT_RATIO) - xPadding;
+            xCurrent = x + width - (width * SCROLLPOINTER_HEIGHT_RATIO) - xPadding;
             yCurrent = y + yPadding;
             
             renderScrollPointerUp(gc, xCurrent, yCurrent, width, scrollPointerFont);
         }
         
         if ( showBottomArrow ) {
-        	xCurrent = x + width - (width * SCROLLPOINTER_HEIGHT_RATIO) - xPadding;
+            xCurrent = x + width - (width * SCROLLPOINTER_HEIGHT_RATIO) - xPadding;
             yCurrent = y + height - (width * SCROLLPOINTER_HEIGHT_RATIO) - yPadding;
             
-        	renderScrollPointerDown(gc, xCurrent, yCurrent, width, scrollPointerFont);
+            renderScrollPointerDown(gc, xCurrent, yCurrent, width, scrollPointerFont);
         }
     }
     
@@ -317,7 +317,7 @@ public class TaskRenderer extends CanvasRenderer {
      * @param height
      */
     private void renderDivisor (GraphicsContext gc, double xCurrent, double yCurrent, double width, double height) {
-    	gc.setFill (AppColours.tasklistRowBackground);
+        gc.setFill (AppColours.tasklistRowBackground);
         gc.fillRect(xCurrent, yCurrent, width - (xPadding * 2), height * DIVISOR_HEIGHT_RATIO);
     }
     
@@ -331,8 +331,8 @@ public class TaskRenderer extends CanvasRenderer {
      * @param index
      */
     private void renderIndex (GraphicsContext gc, double xCurrent, double yCurrent,
-    							Font indexFont, String index) {
-    	gc.setFill(AppColours.primaryColour);
+                                Font indexFont, String index) {
+        gc.setFill(AppColours.primaryColour);
         gc.setTextAlign(TextAlignment.RIGHT);
         gc.setFont(indexFont);
         gc.setTextBaseline(VPos.TOP);
@@ -350,11 +350,11 @@ public class TaskRenderer extends CanvasRenderer {
      * @param key
      */
     private void renderDate (GraphicsContext gc, double xCurrent, double yCurrent,
-    							Font dateFont, String key) {
-    	gc.setFill(AppColours.tasklistRowBackground);
+                                Font dateFont, String key) {
+        gc.setFill(AppColours.tasklistRowBackground);
         gc.setTextAlign(TextAlignment.LEFT);
-       	gc.setFont(dateFont);
-    	gc.setTextBaseline(VPos.TOP);
+        gc.setFont(dateFont);
+        gc.setTextBaseline(VPos.TOP);
 
         String [] keyWords = key.split(" ");
         //Only display the day of month and day of week of the key.
@@ -374,18 +374,18 @@ public class TaskRenderer extends CanvasRenderer {
      * @param scrollPointerFont
      */
     private void renderScrollPointerUp (GraphicsContext gc, double xCurrent, double yCurrent,
-    									double width, Font scrollPointerFont) {
-    	gc.setFill (AppColours.important);
-    	gc.fillPolygon(new double[] {xCurrent, xCurrent + (width * SCROLLPOINTER_WIDTH_RATIO), xCurrent - (width * SCROLLPOINTER_WIDTH_RATIO)},
-    					new double[] {yCurrent, yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO), yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO)}, 3);
-    	
-    	yCurrent += (width * SCROLLPOINTER_HEIGHT_RATIO);
-    	
-    	gc.setFill(AppColours.important);
+                                        double width, Font scrollPointerFont) {
+        gc.setFill (AppColours.important);
+        gc.fillPolygon(new double[] {xCurrent, xCurrent + (width * SCROLLPOINTER_WIDTH_RATIO), xCurrent - (width * SCROLLPOINTER_WIDTH_RATIO)},
+                        new double[] {yCurrent, yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO), yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO)}, 3);
+
+        yCurrent += (width * SCROLLPOINTER_HEIGHT_RATIO);
+
+        gc.setFill(AppColours.important);
         gc.setTextAlign(TextAlignment.CENTER);
-       	gc.setFont(scrollPointerFont);
-    	gc.setTextBaseline(VPos.TOP);
-    	gc.fillText(SCROLLPOINTER_PAGEUP, xCurrent, yCurrent);
+        gc.setFont(scrollPointerFont);
+        gc.setTextBaseline(VPos.TOP);
+        gc.fillText(SCROLLPOINTER_PAGEUP, xCurrent, yCurrent);
     }
     
     /**
@@ -398,15 +398,15 @@ public class TaskRenderer extends CanvasRenderer {
      * @param scrollPointerFont
      */
     private void renderScrollPointerDown (GraphicsContext gc, double xCurrent, double yCurrent,
-    										double width, Font scrollPointerFont) {
-    	gc.setFill (AppColours.important);
-    	gc.fillPolygon(new double[] {xCurrent, xCurrent + (width * SCROLLPOINTER_WIDTH_RATIO), xCurrent - (width * SCROLLPOINTER_WIDTH_RATIO)},
-    					new double[] {yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO), yCurrent, yCurrent}, 3);
-    	
-    	gc.setFill(AppColours.important);
+                                            double width, Font scrollPointerFont) {
+        gc.setFill (AppColours.important);
+        gc.fillPolygon(new double[] {xCurrent, xCurrent + (width * SCROLLPOINTER_WIDTH_RATIO), xCurrent - (width * SCROLLPOINTER_WIDTH_RATIO)},
+                        new double[] {yCurrent + (width * SCROLLPOINTER_HEIGHT_RATIO), yCurrent, yCurrent}, 3);
+
+        gc.setFill(AppColours.important);
         gc.setTextAlign(TextAlignment.CENTER);
-       	gc.setFont(scrollPointerFont);
-    	gc.setTextBaseline(VPos.BOTTOM);
-    	gc.fillText(SCROLLPOINTER_PAGEDOWN, xCurrent, yCurrent);
+        gc.setFont(scrollPointerFont);
+        gc.setTextBaseline(VPos.BOTTOM);
+        gc.fillText(SCROLLPOINTER_PAGEDOWN, xCurrent, yCurrent);
     }
 }

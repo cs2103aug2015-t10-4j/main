@@ -12,13 +12,13 @@ public class QueryHelp extends QueryBase {
     }
     
     @Override
-	public void controllerExecute() {
-		Controller.clearMessages();
-    	Controller.showHelp();
-	}
+    public void controllerExecute() {
+        Controller.clearMessages();
+        Controller.showHelp();
+    }
 
-	@Override
-	public EventList searchExecute() {
-		return null;
-	}
+    @Override
+    public EventList searchExecute() {
+        return null;
+    }
 }

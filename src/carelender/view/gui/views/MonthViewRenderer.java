@@ -12,7 +12,6 @@ import javafx.scene.canvas.GraphicsContext;
 public class MonthViewRenderer extends CanvasRenderer {
     TextRenderer messageBox;
     TextRenderer announcementBox;
-    //AutocompleteRenderer autocompleteRenderer;
     CalenderRenderer calender;
 
     private EventList listResults;

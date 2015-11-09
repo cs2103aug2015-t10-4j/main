@@ -188,7 +188,7 @@ public class CalenderRenderer extends CanvasRenderer {
                 Date taskEndTime = currentRage.getEnd();
                 //Check is the task is within the specified time period (4 weeks including current week)
                 if (!(taskStartTime.after(monthEndTime) || taskEndTime.before(monthStartTime))) {
-                	//Only the time ranges that overlap with the specified time period count
+                    //Only the time ranges that overlap with the specified time period count
                     if (taskStartTime.before(monthStartTime)) {
                         taskStartTime = monthStartTime;
                     }

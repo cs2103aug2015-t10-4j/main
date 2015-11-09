@@ -30,15 +30,15 @@ public class QueryError extends QueryBase {
     }
     
     @Override
-	public void controllerExecute() {
-    	Controller.displayMessage(getMessage());
+    public void controllerExecute() {
+        Controller.displayMessage(getMessage());
         if ( isHelpDisplayed() ) {
             Controller.showHelp();
         }
-	}
+    }
 
-	@Override
-	public EventList searchExecute() {
-		return null;
-	}
+    @Override
+    public EventList searchExecute() {
+        return null;
+    }
 }

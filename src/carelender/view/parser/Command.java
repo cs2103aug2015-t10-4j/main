@@ -1,3 +1,4 @@
+//@@author A0133269A
 package carelender.view.parser;
 
 import carelender.model.data.QueryType;
@@ -14,7 +15,7 @@ public class Command {
     
     
 
-	private QueryType type;
+    private QueryType type;
     ArrayList<CommandKeyword> keywords;
     public Command(String name, QueryType type) {
         command = name.trim();
@@ -123,13 +124,13 @@ public class Command {
     }
     
     public String getUsage() {
-		return usage;
-	}
+        return usage;
+    }
 
-	public void setUsage(String usage) {
-		this.usage = usage;
-	}
-	
+    public void setUsage(String usage) {
+        this.usage = usage;
+    }
+
     public String getCommand() {
         return command;
     }

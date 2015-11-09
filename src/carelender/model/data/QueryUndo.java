@@ -9,13 +9,13 @@ public class QueryUndo extends QueryBase{
         super(QueryType.UNDO);
     }
 
-	@Override
-	public void controllerExecute() {
-		UndoManager.getInstance().undo();
-	}
+    @Override
+    public void controllerExecute() {
+        UndoManager.getInstance().undo();
+    }
 
-	@Override
-	public EventList searchExecute() {
-		return null;
-	}
+    @Override
+    public EventList searchExecute() {
+        return null;
+    }
 }

@@ -6,6 +6,5 @@ package carelender.controller.states;
  */
 public enum AppState {
     FIRSTSTART,     //Shown to the user when the application first starts
-    DEFAULT,        //Normal screen the user sees
-    SETTINGS        //Settings screen
+    DEFAULT        //Normal screen the user sees
 }

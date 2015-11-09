@@ -9,19 +9,19 @@ import javafx.application.Platform;
 
 public class ReminderCaller extends TimerTask {
 
-	@Override
-	public void run() {
-		//Controller.getUI().clearMessageLog();
-		Controller.displayAnnouncement(HintGenerator.getInstance().getHints());
-		ReminderList reminders = new ReminderList();
-		reminders = ReminderManager.getInstance().getReminders();
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				Controller.getUI().refresh();
-			}
-		});
+    @Override
+    public void run() {
+        //Controller.getUI().clearMessageLog();
+        Controller.displayAnnouncement(HintGenerator.getInstance().getHints());
+        ReminderList reminders = new ReminderList();
+        reminders = ReminderManager.getInstance().getReminders();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Controller.getUI().refresh();
+            }
+        });
 
-	}
+    }
 
 }

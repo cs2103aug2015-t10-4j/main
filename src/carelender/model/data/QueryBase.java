@@ -5,7 +5,7 @@ package carelender.model.data;
  * Base class for all query objects
  */
 public abstract class QueryBase {
-	public String userInput;
+    public String userInput;
     private QueryType queryType;
 
     //Do not allow anyone to create a QueryBase

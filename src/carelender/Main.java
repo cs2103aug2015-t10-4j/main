@@ -23,10 +23,10 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(ClassLoader.getSystemResource("userInterface.fxml"));
         /*Parent root = FXMLLoader.load(new File("src/userinterface.fxml").toURI().toURL());
         if (root == null) {
-        	System.out.println("Not from src");
+            System.out.println("Not from src");
             root = FXMLLoader.load(new File("userinterface.fxml").toURI().toURL());
         } else {
-        	System.out.println("From src");
+            System.out.println("From src");
         }*/
         primaryStage.setTitle("CareLender");
         primaryStage.setScene(new Scene(root, 1024, 768));

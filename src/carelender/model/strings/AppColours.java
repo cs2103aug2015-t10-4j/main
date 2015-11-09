@@ -30,8 +30,8 @@ public class AppColours {
     
     public final static int NUM_CATEGORIES = 5;
     public final static Color [] category = {Color.web("d1686e"),
-    										Color.web("d4986a"),
-    										Color.web("5fae57"),
-    										Color.web("41837e"),
-    										Color.web("a45287")};
+                                            Color.web("d4986a"),
+                                            Color.web("5fae57"),
+                                            Color.web("41837e"),
+                                            Color.web("a45287")};
 }

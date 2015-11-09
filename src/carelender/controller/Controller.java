@@ -53,9 +53,9 @@ public class Controller {
         isTimerRunning = false;
         userName = null;
         if(AppSettings.getInstance().getStringSetting(SettingName.USERNAME) != null){
-        	userName = AppSettings.getInstance().getStringSetting(SettingName.USERNAME);
-        	startTimer();
-        	System.out.println("Username: " + userName);
+            userName = AppSettings.getInstance().getStringSetting(SettingName.USERNAME);
+            startTimer();
+            System.out.println("Username: " + userName);
         } else {
             if ( !isTimerRunning ) {
                 isTimerRunning = true;
@@ -367,7 +367,7 @@ public class Controller {
      * @param userInput User's input
      */
     private static void stateFirstStart ( String userInput ) {
-    	final OnConfirmedCallback confirmNameCallback = (boolean confirmed) -> {
+        final OnConfirmedCallback confirmNameCallback = (boolean confirmed) -> {
                 System.out.println("Confirmed: " + confirmed);
                 if ( confirmed ) {
                     displayMessage(FirstStartMessages.confirmed(userName));
@@ -425,10 +425,10 @@ public class Controller {
     /**
      * Refreshes the announcement box
      */
-	private static void refreshAnnoucementBox() {
-		String firstHint = "I'll be giving you some helpful information here!";
-		Controller.displayAnnouncement(firstHint);
-	}
+    private static void refreshAnnoucementBox() {
+        String firstHint = "I'll be giving you some helpful information here!";
+        Controller.displayAnnouncement(firstHint);
+    }
     
 
 }

@@ -70,7 +70,7 @@ public class Event implements Serializable{
         this.completed = completed;
     }
     public boolean getCompleted(){
-    	return completed;
+        return completed;
     }
     
     public void setDateRange (DateRange[] dateRangeToSet) {
@@ -85,14 +85,14 @@ public class Event implements Serializable{
     }
 
     public Date getDateCreated() {
-    	return dateCreated;
+        return dateCreated;
     }
  
     public void setCategory(String category) {
-    	this.category = category;
+        this.category = category;
     }
     public String getCategory() {
-    	return category;
+        return category;
     }
     
     //@@author A0125566B
@@ -167,35 +167,35 @@ public class Event implements Serializable{
     }
     //@@author A0133269A
     public String getDetailedInfo() {
-    	String dateConcat = " ";
-    	StringBuilder sb = new StringBuilder();
-    	sb.append(name);
-    	sb.append(" | ");
-    	
-    	for ( DateRange dateRange : this.dateRange ) {
-    		sb.append(dateConcat);
-    		dateConcat = ", ";
-    		
-    		String startString = DateFormats.DEBUG_FORMAT.format(dateRange.getStart());
-			sb.append(startString);
-    		if ( dateRange.isRange() ) {
-    			String endString = DateFormats.DEBUG_FORMAT.format(dateRange.getEnd());
-    			sb.append(" - ");
-    			sb.append(endString);
-    		}
-    	}
-    	
-    	if ( category != null ) {
-    		sb.append( "| cat: ");
-    		sb.append(category);
-    		sb.append(" ");
-    	}
-    	
-    	if ( completed ) {
-    		sb.append("| complete");
-    	} else {
-    		sb.append("| incomplete");
-    	}
+        String dateConcat = " ";
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+        sb.append(" | ");
+
+        for ( DateRange dateRange : this.dateRange ) {
+            sb.append(dateConcat);
+            dateConcat = ", ";
+
+            String startString = DateFormats.DEBUG_FORMAT.format(dateRange.getStart());
+            sb.append(startString);
+            if ( dateRange.isRange() ) {
+                String endString = DateFormats.DEBUG_FORMAT.format(dateRange.getEnd());
+                sb.append(" - ");
+                sb.append(endString);
+            }
+        }
+
+        if ( category != null ) {
+            sb.append( "| cat: ");
+            sb.append(category);
+            sb.append(" ");
+        }
+
+        if ( completed ) {
+            sb.append("| complete");
+        } else {
+            sb.append("| incomplete");
+        }
         return sb.toString();
     }
 

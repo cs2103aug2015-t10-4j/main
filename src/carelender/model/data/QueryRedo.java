@@ -9,13 +9,13 @@ public class QueryRedo extends QueryBase{
         super(QueryType.REDO);
     }
 
-	@Override
-	public void controllerExecute() {
-		UndoManager.getInstance().redo();
-	}
+    @Override
+    public void controllerExecute() {
+        UndoManager.getInstance().redo();
+    }
 
-	@Override
-	public EventList searchExecute() {
-		return null;
-	}
+    @Override
+    public EventList searchExecute() {
+        return null;
+    }
 }

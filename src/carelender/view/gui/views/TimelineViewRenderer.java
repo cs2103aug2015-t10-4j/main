@@ -4,6 +4,7 @@ import carelender.controller.Controller;
 import carelender.model.data.EventList;
 import carelender.model.strings.AppColours;
 import carelender.model.strings.FontLoader;
+import carelender.view.gui.CanvasRenderer;
 import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
@@ -21,7 +22,7 @@ public class TimelineViewRenderer extends CanvasRenderer {
     private static final double DATE_WIDTH_RATIO = 0.2;
     private static final double DATE_HEIGHT_RATIO = 0.1;
 
-	TextRenderer messageBox;
+    TextRenderer messageBox;
     TextRenderer announcementBox;
 
     private EventList listResults;
@@ -48,7 +49,7 @@ public class TimelineViewRenderer extends CanvasRenderer {
 
     @Override
     public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
-    	super.draw(gc, 0, 0, width, height);
+        super.draw(gc, 0, 0, width, height);
 
         this.weekView.setParams(TIMELINE_X_PADDING, TIMELINE_Y_PADDING,
                                 TIMELINE_BAR_WIDTH_RATIO * width, TIMELINE_BAR_LABEL_RATIO * width);

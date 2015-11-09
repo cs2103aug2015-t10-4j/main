@@ -1,3 +1,4 @@
+//@@author A0133269A
 package carelender.view.parser;
 
 import carelender.model.data.DateRange;
@@ -15,7 +16,9 @@ import java.util.regex.Pattern;
  * Originally using regex, now it uses the natty library
  */
 public class DateTimeParser {
-    //Matches all kinds of date time strings
+    //@@author A0133269A-unused
+    //Matches all kinds of date time strings, unused since natty came along
+    //In case of emergency, break glass
     private static final Map<String, DateTimeFormat> DATE_FORMAT_REGEXPS = new HashMap<String, DateTimeFormat>() {{
         put("^\\d{8}$", new DateTimeFormat("yyyyMMdd", false, true));
         put("^\\d{1,2}-\\d{1,2}-\\d{4}$", new DateTimeFormat("dd-MM-yyyy", false, true));
@@ -127,9 +130,10 @@ public class DateTimeParser {
      * @return Array of DateRange objects
      */
     public static DateRange[] parseDateTime(String inputString) {
-    	return parseDateTime(inputString,null);
+        return parseDateTime(inputString,null);
     }
-    
+
+    //@@author A0133269A
     /**
      * Similar to parseDateTimeRaw, but it tries to detect date ranges in the text. This also returns the substrings that contain datetimes.
      * @param inputString Date string to be parsed
@@ -149,7 +153,7 @@ public class DateTimeParser {
         SimpleDateGroup[] dateGroups;
 
         for ( int i = 0; i < inputParts.length; i++ ) {
-        	String inputPart = inputParts[i];
+            String inputPart = inputParts[i];
             dateGroups = parseDateTimeRaw(inputPart);
             if ( dateGroups == null ) continue;
             //By here, the array should only have one item
@@ -174,7 +178,7 @@ public class DateTimeParser {
                     }
                 }
                 if ( dates != null ) {
-                	dates.add(dateGroup.text);
+                    dates.add(dateGroup.text);
                 }
             }
         }
@@ -196,8 +200,8 @@ public class DateTimeParser {
      * @return SimpleDateGroup object array, null if no dates found
      */
     public static SimpleDateGroup[] parseDateTimeRaw (String inputString) {
-    	assert inputString.length() != 0 : "Cannot parse empty input";
-    	
+        assert inputString.length() != 0 : "Cannot parse empty input";
+
         Parser parser = new Parser();
         List <DateGroup> groups = parser.parse(inputString);
         if ( groups.size() == 0 ) {
@@ -235,6 +239,7 @@ public class DateTimeParser {
         return Pattern.compile(timeRegex).matcher(dateString).find();
     }
 
+    //@@author A0133269A-unused
     /**
      * Sets date object to 00:00hrs
      * @return Date object
@@ -263,6 +268,7 @@ public class DateTimeParser {
         return calendar.getTime();
     }
 
+    //@@author A0133269A
     /**
      * Gets the date object with times set to 0
      * @param dayOffset Offset the number of days

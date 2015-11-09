@@ -81,7 +81,7 @@ public class DateRangeRenderer {
         //Set the content for the date ranges.
         if ( dateRange != null ) {
             if ( dateRange.hasTime() ) {
-            	//Check if the start and date are in the same year.
+                //Check if the start and date are in the same year.
                 Calendar start = Calendar.getInstance();
                 start.setTime(dateRange.getStart());
                 Calendar end = Calendar.getInstance();
@@ -107,12 +107,12 @@ public class DateRangeRenderer {
                     }
                 }
             } else {
-            	if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
+                if ( dateRange.getStart().equals(dateRange.getEnd()) ) {
                     this.timeStart = DateFormats.DATE_FORMAT_MONTH.format(dateRange.getStart());
                     this.dateStart = DATETEXT_NOTIME_START;
                 } else {
-                	this.dateStart = DATETEXT_NOTIME_START;
-                	this.dateEnd = DATETEXT_NOTIME_END;
+                    this.dateStart = DATETEXT_NOTIME_START;
+                    this.dateEnd = DATETEXT_NOTIME_END;
                     Calendar start = Calendar.getInstance();
                     start.setTime(dateRange.getStart());
                     Calendar end = Calendar.getInstance();
@@ -164,19 +164,19 @@ public class DateRangeRenderer {
             Font timeFont = FontLoader.load( timeHeight - (yPaddingRatio * timeHeight * 2));
 
             if ( !this.dateStart.equals("") ) {
-            	renderDate(gc, xCurrent, yCurrent, backgroundColour, dateFont, dateStart);
+                renderDate(gc, xCurrent, yCurrent, backgroundColour, dateFont, dateStart);
             }
 
             xCurrent += (timeWidth + connectorWidth);
             if ( !this.dateEnd.equals("") ) {
-            	renderDate(gc, xCurrent, yCurrent, backgroundColour, dateFont, dateEnd);
+                renderDate(gc, xCurrent, yCurrent, backgroundColour, dateFont, dateEnd);
             }
 
             xCurrent = x;
             yCurrent += dateHeight;
             if ( !this.timeStart.equals("") ) {
-            	renderTime(gc, xCurrent, yCurrent, timeWidth, timeHeight,
-            				backgroundColour, textColour, timeFont, timeStart);
+                renderTime(gc, xCurrent, yCurrent, timeWidth, timeHeight,
+                            backgroundColour, textColour, timeFont, timeStart);
             }
 
             xCurrent += timeWidth;
@@ -186,7 +186,7 @@ public class DateRangeRenderer {
                 xCurrent += connectorWidth;
 
                 renderTime(gc, xCurrent, yCurrent, timeWidth, timeHeight,
-        				backgroundColour, textColour, timeFont, timeEnd);
+                        backgroundColour, textColour, timeFont, timeEnd);
                 
                 strikeoutWidth += (timeWidth + connectorWidth);
             }
@@ -194,8 +194,8 @@ public class DateRangeRenderer {
             xCurrent = x;
             yCurrent += (timeHeight * 0.5) - (DateRangeRenderer.STRIKEOUT_HEIGHT * 0.5);
             if ( this.strikeout ) {
-            	renderStrikeout(gc, xCurrent, yCurrent, strikeoutWidth,
-            					DateRangeRenderer.STRIKEOUT_HEIGHT, AppColours.important);
+                renderStrikeout(gc, xCurrent, yCurrent, strikeoutWidth,
+                                DateRangeRenderer.STRIKEOUT_HEIGHT, AppColours.important);
             }
         }
     }
@@ -212,8 +212,8 @@ public class DateRangeRenderer {
      * 		Date to be displayed.
      */
     private void renderDate (GraphicsContext gc, double xCurrent, double yCurrent,
-    							Color colour, Font dateFont, String text) {
-    	gc.setFill(colour);
+                                Color colour, Font dateFont, String text) {
+        gc.setFill(colour);
         gc.setTextAlign(TextAlignment.LEFT);
         gc.setFont(dateFont);
         gc.setTextBaseline(VPos.TOP);
@@ -234,9 +234,9 @@ public class DateRangeRenderer {
      * @param text
      */
     private void renderTime (GraphicsContext gc, double xCurrent, double yCurrent,
-    							double width, double height,
-    							Color backgroundColour, Color textColour, Font timeFont, String text) {
-    	gc.setFill(backgroundColour);
+                                double width, double height,
+                                Color backgroundColour, Color textColour, Font timeFont, String text) {
+        gc.setFill(backgroundColour);
         gc.fillRect(xCurrent, yCurrent, width, height);
 
         gc.setFill(textColour);
@@ -259,8 +259,8 @@ public class DateRangeRenderer {
      * @param backgroundColour
      */
     private void renderConnector (GraphicsContext gc, double xCurrent, double yCurrent,
-									double width, double height, Color backgroundColour) {
-    	gc.setFill(backgroundColour);
+                                    double width, double height, Color backgroundColour) {
+        gc.setFill(backgroundColour);
         gc.fillPolygon(new double[]{xCurrent - 1, xCurrent + width + 1, xCurrent - 1},
                         new double[]{yCurrent, yCurrent + (height * 0.5), yCurrent + height}, 3);
     }
@@ -276,8 +276,8 @@ public class DateRangeRenderer {
      * @param backgroundColour
      */
     private void renderStrikeout (GraphicsContext gc, double xCurrent, double yCurrent,
-									double width, double height, Color backgroundColour) {
-    	gc.setFill(backgroundColour);
+                                    double width, double height, Color backgroundColour) {
+        gc.setFill(backgroundColour);
         gc.fillRect(xCurrent, yCurrent, width, height);
     }
 }

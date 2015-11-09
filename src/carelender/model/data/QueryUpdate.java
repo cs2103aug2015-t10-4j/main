@@ -21,74 +21,74 @@ public class QueryUpdate extends QueryList {
     }
     
     public void addEvent ( Event e ) {
-    	updateList.add(e.copy());
+        updateList.add(e.copy());
     }
     
     public void addUpdateParam (UpdateParam key, Object value) {
-		this.updateParamsList.put(key, value);
-	}
-	
-	public HashMap<UpdateParam, Object> getUpdateParamsList () {
-		return updateParamsList;
-	}
+        this.updateParamsList.put(key, value);
+    }
+
+    public HashMap<UpdateParam, Object> getUpdateParamsList () {
+        return updateParamsList;
+    }
     
     public enum UpdateParam {
-		NAME,
-		DATE_RANGE,
-		CATEGORY
-	};
+        NAME,
+        DATE_RANGE,
+        CATEGORY
+    };
 
-	@Override
-	public void controllerExecute() {
-		Controller.clearMessages();
-		
-		final OnConfirmedCallback updateConfirmedCallback = new OnConfirmedCallback() {
-			@Override
-			public void onConfirmed(boolean confirmed) {
-				if ( confirmed ) {
-					for ( Event event : updateList ) {
-						System.out.println("UPDATING:" + (String)updateParamsList.get(QueryUpdate.UpdateParam.NAME));
-						if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
-							String fromName = (String)updateParamsList.get(QueryUpdate.UpdateParam.NAME);
-							event.setName(fromName);
-						}
+    @Override
+    public void controllerExecute() {
+        Controller.clearMessages();
 
-						if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
-							DateRange[] fromDateRange = (DateRange[])updateParamsList.get(QueryUpdate.UpdateParam.DATE_RANGE);
-							event.setDateRange(fromDateRange);
-						}
-						
-						if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.CATEGORY) ) {
-							String category = (String)updateParamsList.get(QueryUpdate.UpdateParam.CATEGORY);
-							event.setCategory(category);
-						}
-						//Model.getInstance().updateEvent(event);
-						System.out.println(event.getName());
-					}
-					Model.getInstance().updateEvent(updateList);
-					Controller.refreshDisplay();
-				} else {
-					Controller.displayMessage(QueryFeedback.updateCancelled());
-				}
-			}
-		};
+        final OnConfirmedCallback updateConfirmedCallback = new OnConfirmedCallback() {
+            @Override
+            public void onConfirmed(boolean confirmed) {
+                if ( confirmed ) {
+                    for ( Event event : updateList ) {
+                        System.out.println("UPDATING:" + (String)updateParamsList.get(QueryUpdate.UpdateParam.NAME));
+                        if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.NAME) ) {
+                            String fromName = (String)updateParamsList.get(QueryUpdate.UpdateParam.NAME);
+                            event.setName(fromName);
+                        }
 
-		if ( updateList.size() > 1 ) {
-			if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
-				Controller.displayMessage("Cannot bulk update dates! Will cause conflicts");
-			} else {
-				Controller.getBlockingStateController()
-		        .startConfirmation("Are you sure you want to update " + updateList.size() + " events? [Y/N]", updateConfirmedCallback);
-			}
-		} else if ( updateList.size() == 1 ) {
-			updateConfirmedCallback.onConfirmed(true);
-		}
-		
-	}
+                        if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
+                            DateRange[] fromDateRange = (DateRange[])updateParamsList.get(QueryUpdate.UpdateParam.DATE_RANGE);
+                            event.setDateRange(fromDateRange);
+                        }
 
-	@Override
-	public EventList searchExecute() {
-		EventList returnList = new EventList();
-		return returnList;
-	}
+                        if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.CATEGORY) ) {
+                            String category = (String)updateParamsList.get(QueryUpdate.UpdateParam.CATEGORY);
+                            event.setCategory(category);
+                        }
+                        //Model.getInstance().updateEvent(event);
+                        System.out.println(event.getName());
+                    }
+                    Model.getInstance().updateEvent(updateList);
+                    Controller.refreshDisplay();
+                } else {
+                    Controller.displayMessage(QueryFeedback.updateCancelled());
+                }
+            }
+        };
+
+        if ( updateList.size() > 1 ) {
+            if ( updateParamsList.containsKey(QueryUpdate.UpdateParam.DATE_RANGE) ) {
+                Controller.displayMessage("Cannot bulk update dates! Will cause conflicts");
+            } else {
+                Controller.getBlockingStateController()
+                .startConfirmation("Are you sure you want to update " + updateList.size() + " events? [Y/N]", updateConfirmedCallback);
+            }
+        } else if ( updateList.size() == 1 ) {
+            updateConfirmedCallback.onConfirmed(true);
+        }
+
+    }
+
+    @Override
+    public EventList searchExecute() {
+        EventList returnList = new EventList();
+        return returnList;
+    }
 }

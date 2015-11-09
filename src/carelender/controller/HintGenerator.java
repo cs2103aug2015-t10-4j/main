@@ -12,18 +12,18 @@ import carelender.model.Model;
 public class HintGenerator {
     private static HintGenerator singleton = null;
     private int[] dailyEventNumbers, weeklyEventNumbers;
-	private int monthlyEventNumber;
-	
-	private static final int SIX_WEEKS_DAYS = 42;
-	private static final int SIX_DAYS = 6;
-	private static final int DAYS_PER_WEEK = 7;
-	private static final int MONDAY_INDEX = 0;
-	private static final int SUNDAY_INDEX = 6;
-	private static final int MONTHLY_VACATION_THRESHOLD = 10;
-	private static final int WEEKLY_FREE_THRESHOLD = 18;
-	private static final int WEEKLY_BUSY_THRESHOLD = 30;
-	private static final int DAILY_FREE_THRESHOLD = 3;
-	private static final int DAILY_BUSY_THRESHOLD = 6;
+    private int monthlyEventNumber;
+
+    private static final int SIX_WEEKS_DAYS = 42;
+    private static final int SIX_DAYS = 6;
+    private static final int DAYS_PER_WEEK = 7;
+    private static final int MONDAY_INDEX = 0;
+    private static final int SUNDAY_INDEX = 6;
+    private static final int MONTHLY_VACATION_THRESHOLD = 10;
+    private static final int WEEKLY_FREE_THRESHOLD = 18;
+    private static final int WEEKLY_BUSY_THRESHOLD = 30;
+    private static final int DAILY_FREE_THRESHOLD = 3;
+    private static final int DAILY_BUSY_THRESHOLD = 6;
 
     private static final String BUSY_TOMORROW_HINT = "You have may tasks tomorrow. Rest well today :)";
     private static final String REMINDER_HINT = "Don't forget your tasks tomorrow!";
@@ -34,17 +34,17 @@ public class HintGenerator {
     private static final String BUSY_THEN_FREE_HINT = "Next week is so free! Hang on there :)";
     private static final String VACATION_PLAN_HINT = "This month looks clear, why not plan a vacation?";
     private static final String NICE_DAY_HINT = "Have a nice day :)";
-	
+
     private static final ArrayList<String> basicHints = Model.getInstance().loadStringArrayList("hints.dat");
-	private ArrayList<String> hints;
-	
+    private ArrayList<String> hints;
+
     public HintGenerator() {
-    	hints = new ArrayList<String>();
+        hints = new ArrayList<String>();
         hints = basicHints;
 
         dailyEventNumbers = new int[SIX_WEEKS_DAYS];
-		weeklyEventNumbers = new int [SIX_DAYS];
-		monthlyEventNumber = 0;
+        weeklyEventNumbers = new int [SIX_DAYS];
+        monthlyEventNumber = 0;
     }
 
     public static HintGenerator getInstance() {
@@ -59,24 +59,24 @@ public class HintGenerator {
      * Update dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber accordingly
      * @param monthEventNumbers
      */
-	public void setEventNumbers(int[][] monthEventNumbers) {
-		resetEventNumbers();
+    public void setEventNumbers(int[][] monthEventNumbers) {
+        resetEventNumbers();
 
-		//Update dailyEventNumbers
-		for(int i = 0; i < monthEventNumbers.length; i++){
-			for(int j = 0; j < monthEventNumbers[i].length; j++){
-				dailyEventNumbers[i] += monthEventNumbers[i][j];
-			}
-		}
+        //Update dailyEventNumbers
+        for(int i = 0; i < monthEventNumbers.length; i++){
+            for(int j = 0; j < monthEventNumbers[i].length; j++){
+                dailyEventNumbers[i] += monthEventNumbers[i][j];
+            }
+        }
 
-		//Update weeklyEventNumbers and monthlyEventNumber
-		for ( int i = 0 ; i < dailyEventNumbers.length; i++) {
-			weeklyEventNumbers[i / DAYS_PER_WEEK] += dailyEventNumbers[i];
-			monthlyEventNumber += dailyEventNumbers[i];
-		}
+        //Update weeklyEventNumbers and monthlyEventNumber
+        for ( int i = 0 ; i < dailyEventNumbers.length; i++) {
+            weeklyEventNumbers[i / DAYS_PER_WEEK] += dailyEventNumbers[i];
+            monthlyEventNumber += dailyEventNumbers[i];
+        }
 
-		generateHints();
-	}
+        generateHints();
+    }
 
 
     /**
@@ -131,13 +131,13 @@ public class HintGenerator {
     private void generateHintsForTomorrow(int todayIndex) {
         int tomorrowIndex = todayIndex + 1;
         if(dailyEventNumbers[tomorrowIndex] > DAILY_BUSY_THRESHOLD) {
-        	String newHint = BUSY_TOMORROW_HINT;
+            String newHint = BUSY_TOMORROW_HINT;
             hints.add(newHint);
         } else if (dailyEventNumbers[tomorrowIndex] > DAILY_FREE_THRESHOLD){
-        	String newHint = REMINDER_HINT;
+            String newHint = REMINDER_HINT;
             hints.add(newHint);
         } else {
-        	String newHint = SLACK_DAY_HINT;
+            String newHint = SLACK_DAY_HINT;
             hints.add(newHint);
         }
     }
@@ -183,13 +183,13 @@ public class HintGenerator {
      * Reset dailyEventNumbers, weeklyEventNumbers and monthlyEventNumber
      */
     private void resetEventNumbers(){
-    	for( int i = 0; i < dailyEventNumbers.length; i++ ){
-    		dailyEventNumbers[i] = 0;
-    	}
-		monthlyEventNumber = 0;
-		for ( int i = 0 ; i < weeklyEventNumbers.length; i++ ) {
-			weeklyEventNumbers[i] = 0;
-		}
+        for( int i = 0; i < dailyEventNumbers.length; i++ ){
+            dailyEventNumbers[i] = 0;
+        }
+        monthlyEventNumber = 0;
+        for ( int i = 0 ; i < weeklyEventNumbers.length; i++ ) {
+            weeklyEventNumbers[i] = 0;
+        }
     }
 
     /**

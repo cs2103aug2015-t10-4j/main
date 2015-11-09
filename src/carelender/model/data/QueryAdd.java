@@ -45,16 +45,16 @@ public class QueryAdd extends QueryBase {
         this.dateRanges[0] = dateRange;
     }
 
-	@Override
-	public void controllerExecute() {
+    @Override
+    public void controllerExecute() {
         Controller.displayMessage(QueryFeedback.addTask(name));
         Model.getInstance().addEvent(convertToEventObject());
-	}
+    }
 
-	@Override
-	public EventList searchExecute() {
-		return null;
-	}
+    @Override
+    public EventList searchExecute() {
+        return null;
+    }
 
     /**
      * Converts this query object into an event object
