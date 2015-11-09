@@ -82,15 +82,17 @@ public class ModelTest {
 		assertEquals(eventList.size(), 4);
 		System.out.println(eventList.toString());
 		assertNotNull(Model.getInstance().retrieveEvent());
-		assertEquals("2 | Event 2 | Mon 31 Aug 10:20AM", eventList.get(1).toString());
+		assertEquals("2 | Event 2 | Mon 31 Aug 10:20AM", eventList.get(1).getInfo());
 		
 		//Update Event
 		Event updateEvent = eventList.get(1);
 		updateEvent.setName("Update Name Test");
-		Model.getInstance().updateEvent(updateEvent);
+		EventList updateList = new EventList();
+		updateList.add(updateEvent);
+		Model.getInstance().updateEvent(updateList);
 		eventList = Model.getInstance().retrieveEvent();
 		System.out.println(eventList.toString());
-		assertEquals("2 | Update Name Test | Mon 31 Aug 10:20AM", eventList.get(3).toString());
+		assertEquals("2 | Update Name Test | Mon 31 Aug 10:20AM", eventList.get(3).getInfo());
 		System.out.println();
 
 		//Delete Single
@@ -101,7 +103,7 @@ public class ModelTest {
 		deleteList.add(dummyEvent4);
 		Model.getInstance().deleteEvent(deleteList);
 		eventList = Model.getInstance().retrieveEvent();
-		assertEquals("2 | Update Name Test | Mon 31 Aug 10:20AM", eventList.get(0).toString());
+		assertEquals("2 | Update Name Test | Mon 31 Aug 10:20AM", eventList.get(0).getInfo());
 		System.out.println(eventList.toString());
 		System.out.println();
 		

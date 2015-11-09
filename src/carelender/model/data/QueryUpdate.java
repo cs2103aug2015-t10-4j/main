@@ -62,9 +62,10 @@ public class QueryUpdate extends QueryList {
 							String category = (String)updateParamsList.get(QueryUpdate.UpdateParam.CATEGORY);
 							event.setCategory(category);
 						}
-						Model.getInstance().updateEvent(event);
+						//Model.getInstance().updateEvent(event);
 						System.out.println(event.getName());
 					}
+					Model.getInstance().updateEvent(updateList);
 					Controller.refreshDisplay();
 				} else {
 					Controller.displayMessage(QueryFeedback.updateCancelled());

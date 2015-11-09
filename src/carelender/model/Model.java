@@ -95,15 +95,20 @@ public class Model {
 	 * Finds the event object in EventList, and updates it with a new one
 	 * @param eventObj Event to be updated
 	 */
-	public void updateEvent(Event eventObj) {
-		for (int i = 0; i < events.size(); i++) {
-			if (events.get(i).getUid() == eventObj.getUid()) {
-				updateUndoManager(events.get(i), UndoType.UPDATE);
-				events.remove(i);
-				events.add(eventObj);
-				saveToFile(fileName, events);
+	public void updateEvent(EventList eventList) {
+		EventList redoEventList = new EventList();
+		for(int i = 0; i < eventList.size(); i++) {
+			for (int j = 0; j < events.size(); j++) {
+				if (events.get(j).getUid() == eventList.get(i).getUid()) {
+					redoEventList.add(events.get(j).copy());
+					events.remove(j);
+					events.add(eventList.get(i));
+					saveToFile(fileName, events);
+					break;
+				}
 			}
 		}
+		updateUndoManager(redoEventList, UndoType.UPDATE);
 	}
 
 	/**
@@ -135,7 +140,7 @@ public class Model {
 				}
 			}
 		}
-		updateUndoManager(deletedEventList);
+		updateUndoManager(deletedEventList, UndoStep.UndoType.DELETE);
 		saveToFile(fileName, events);
 	}
 
@@ -144,10 +149,14 @@ public class Model {
 	 * @param eventList Events to be undone
 	 */
 	public void undoAddedEvent(EventList eventList) {
-		for (int i = 0; i < events.size(); i++) {
-			for (Event eventObj : eventList) {
-				if (events.get(i).getUid() == eventObj.getUid()) {
-					events.remove(i);
+		System.out.println( "           "+eventList.toString());
+		System.out.println("REMOVE");
+		EventList redoEventList = new EventList();
+		for (int i = 0; i < eventList.size(); i++) {
+			for (int j = 0; j < events.size(); j++) {
+				if (events.get(j).getUid() == eventList.get(i).getUid()) {
+					redoEventList.add(events.get(j));
+					events.remove(j);	
                     break;
 				}
 			}
@@ -162,12 +171,15 @@ public class Model {
 	 */
 	public void undoUpdatedEvent(EventList eventList, boolean isUndo) {
 		EventList redoEventList = new EventList();
+		System.out.println("ME ALLED");
+		System.out.println(eventList.toString());
 		for (int i = 0; i < eventList.size(); i++) {
 			for (int j = 0; j < events.size(); j++) {
 				if (events.get(j).getUid() == eventList.get(i).getUid()) {
 					redoEventList.add(events.get(j));
 					events.remove(j);
 					events.add(eventList.get(i));
+					break;
 				}
 			}			
 		}
@@ -185,9 +197,14 @@ public class Model {
 	 * @param eventList Events to be added back upon undo
 	 */
 	public void undoDeletedEvent(EventList eventList) {
+		EventList redoEventList = new EventList();
 		for (int i = 0; i < eventList.size(); i++) {
+			redoEventList.add(eventList.get(i));
 			events.add(eventList.get(i));
 		}
+		System.out.println("ADDDDDDDDDD");
+		System.out.println(redoEventList.toString());
+		UndoManager.getInstance().add(redoEventList);
 		saveToFile(fileName, events);
 	}
 
@@ -219,9 +236,15 @@ public class Model {
 	 * Update undo manager with EventList
 	 * @param eventList 
 	 */
-	private void updateUndoManager(EventList eventList) {
+	private void updateUndoManager(EventList eventList, UndoStep.UndoType type) {
 		UndoManager.getInstance().clearRedoStack();
-		UndoManager.getInstance().delete(eventList);
+		switch (type) {
+		case DELETE:
+			UndoManager.getInstance().delete(eventList);
+			break;
+		case UPDATE:
+			UndoManager.getInstance().update(eventList);
+		}
 	}
 	
 	/**
