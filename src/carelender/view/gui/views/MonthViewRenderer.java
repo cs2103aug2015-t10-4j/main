@@ -1,3 +1,4 @@
+//@@author A0133907E
 package carelender.view.gui.views;
 
 import carelender.controller.Controller;
@@ -19,13 +20,20 @@ public class MonthViewRenderer extends CanvasRenderer {
     private EventList listResults;
     private TaskRenderer tasks;
 
+    private static final double TASK_XPAD = 15;
+    private static final double TASK_YPAD = 5;
+    private static final double TASK_WITTH_RATIO = 0.7;
+    private static final double TASK_HEIGTH_RATIO = 0.1;
+    private static final double DATE_WITTH_RATIO = 0.2;
+    private static final double DATE_HEIGTH_RATIO = 0.1;
+
     String messageText;
     String announcementText;
     private TabRenderer tab;
 
     public MonthViewRenderer() {
         tasks = new TaskRenderer();
-        tasks.setParams(15, 5, 0.7, 0.1, 0.2, 0.1);
+        tasks.setParams(TASK_XPAD, TASK_YPAD, TASK_WITTH_RATIO, TASK_HEIGTH_RATIO, DATE_WITTH_RATIO, DATE_HEIGTH_RATIO);
         
         listResults = new EventList();
         calender = new CalenderRenderer();
@@ -101,8 +109,9 @@ public class MonthViewRenderer extends CanvasRenderer {
         return tasks;
     }
 
-
-
+    /**
+     * Refresh the data stored in eventlist
+     */
     public void refreshData() {
         calender.refreshEventList();
     }
