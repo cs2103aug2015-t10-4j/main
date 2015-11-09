@@ -5,11 +5,9 @@ import carelender.controller.Controller;
 import carelender.model.data.EventList;
 import carelender.model.strings.AppColours;
 import carelender.model.strings.FontLoader;
+import carelender.view.gui.CanvasRenderer;
 import carelender.view.gui.components.*;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.text.Font;
-
-import java.nio.file.FileSystemNotFoundException;
 
 public class MonthViewRenderer extends CanvasRenderer {
     TextRenderer messageBox;

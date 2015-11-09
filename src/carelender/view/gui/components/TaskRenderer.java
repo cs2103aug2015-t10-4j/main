@@ -4,6 +4,7 @@ package carelender.view.gui.components;
 import carelender.model.strings.AppColours;
 import carelender.model.strings.DateFormats;
 import carelender.model.strings.FontLoader;
+import carelender.view.gui.CanvasRenderer;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
