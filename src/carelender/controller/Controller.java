@@ -1,3 +1,4 @@
+//@@author A0133269A
 package carelender.controller;
 
 import carelender.controller.callbacks.OnConfirmedCallback;
@@ -72,7 +73,7 @@ public class Controller {
         
         currentCommand = 0;
     }
-
+    //@@author A0133907E
     public static void stopTimer() {
         if ( isTimerRunning ) {
             timer.cancel();
@@ -89,7 +90,7 @@ public class Controller {
         }
     }
 
-
+    //@@author A0133269A
     public static void initUserInterfaceController(UIController UIController) {
         Controller.UIController = UIController;
 

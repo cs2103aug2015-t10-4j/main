@@ -165,7 +165,7 @@ public class Event implements Serializable{
         String dateString = DateFormats.DEBUG_FORMAT.format(getEarliestDate());
         return this.uid + " | " + this.name + " | " + dateString;
     }
-    
+    //@@author A0133269A
     public String getDetailedInfo() {
     	String dateConcat = " ";
     	StringBuilder sb = new StringBuilder();
@@ -202,7 +202,7 @@ public class Event implements Serializable{
     public Event copy () {
         return new Event(this);
     }
-    
+    //@@author A0125566B
     public enum EventType {
         FLOATING_TASK,
         DEADLINE_TASK,
