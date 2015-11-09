@@ -22,7 +22,7 @@ import carelender.model.data.EventList;
  * This class contains methods to render the Timeline View
  */
 public class TimelineRenderer extends CanvasRenderer {
-	private static final double BAR_SIZE_MIN_RATIO = 0.1;
+	private static final double BAR_SIZE_MIN_RATIO = 0.5;
 	
 	private static final double FADEOUT_ALPHA = 0.3;
 	private static final double DEFAULT_ALPHA = 1;

@@ -13,12 +13,12 @@ public enum QueryType {
     HELP,       //Showing the help list
     LIST,       //Listing tasks
     CLEAR,       //Clears the message screen
-    UNDO,
-    REDO,
-    COMPLETE,
-    SHOW,
-    SWITCHUI,
+    UNDO,       //Undo command
+    REDO,       //Redo command
+    COMPLETE,      //Complete and uncomplete command
+    SHOW,           //Show details command
+    SWITCHUI,       //Switching of the UI
     DATETEST,       //Used for testing date parsing
     SET,            //Used for customize setting
-    EXIT,
+    EXIT,           //Exits the program
 }
