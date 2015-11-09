@@ -9,6 +9,18 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 
 public class TimelineViewRenderer extends CanvasRenderer {
+    private static final double TIMELINE_X_PADDING = 10;
+    private static final double TIMELINE_Y_PADDING = 10;
+    private static final double TIMELINE_BAR_WIDTH_RATIO = 0.07;
+    private static final double TIMELINE_BAR_LABEL_RATIO = 0.07;
+
+    private static final double TASK_X_PADDING = 15;
+    private static final double TASK_Y_PADDING = 5;
+    private static final double TASK_WIDTH_RATIO = 0.7;
+    private static final double TASK_HEIGHT_RATIO = 0.1;
+    private static final double DATE_WIDTH_RATIO = 0.2;
+    private static final double DATE_HEIGHT_RATIO = 0.1;
+
 	TextRenderer messageBox;
     TextRenderer announcementBox;
 
@@ -22,9 +34,9 @@ public class TimelineViewRenderer extends CanvasRenderer {
 
     public TimelineViewRenderer() {
         this.weekView = new TimelineRenderer();
-        this.weekView.setParams(10, 10, 50, 50);
+
         this.taskView = new TaskRenderer();
-        this.taskView.setParams(15, 5, 0.7, 0.1, 0.2, 0.1);
+
         
         listResults = new EventList();
         announcementBox = new TextRenderer();
@@ -37,6 +49,10 @@ public class TimelineViewRenderer extends CanvasRenderer {
     @Override
     public void draw( GraphicsContext gc, double x, double y, double width, double height ) {
     	super.draw(gc, 0, 0, width, height);
+
+        this.weekView.setParams(TIMELINE_X_PADDING, TIMELINE_Y_PADDING,
+                                TIMELINE_BAR_WIDTH_RATIO * width, TIMELINE_BAR_LABEL_RATIO * width);
+        this.taskView.setParams(TASK_X_PADDING, TASK_Y_PADDING, TASK_WIDTH_RATIO, TASK_HEIGHT_RATIO, DATE_WIDTH_RATIO, DATE_HEIGHT_RATIO);
 
         LayoutHelper.setParams(x,y,width,height);
 

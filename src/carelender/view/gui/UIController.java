@@ -271,10 +271,9 @@ public class UIController implements Initializable {
 
         switch ( uiType ) {
             case CALENDAR:
+            case TIMELINE:
                 monthViewRenderer.setMessageBoxText(stringBuilder.toString());
                 monthViewRenderer.refreshData();
-                break;
-            case TIMELINE:
                 timelineViewRenderer.setMessageBoxText(stringBuilder.toString());
                 timelineViewRenderer.refreshData();
                 break;

@@ -20,7 +20,7 @@ public class Main extends Application {
         Controller.initialize();
         //Parent root = FXMLLoader.load(getClass().getResource("view/userinterface.fxml"));
 
-        Parent root = FXMLLoader.load(ClassLoader.getSystemResource("userinterface.fxml"));
+        Parent root = FXMLLoader.load(ClassLoader.getSystemResource("userInterface.fxml"));
         /*Parent root = FXMLLoader.load(new File("src/userinterface.fxml").toURI().toURL());
         if (root == null) {
         	System.out.println("Not from src");

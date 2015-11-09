@@ -362,7 +362,10 @@ public class Controller {
     }
 
 
-
+    /**
+     * The code that runs when the program is in the first start state
+     * @param userInput User's input
+     */
     private static void stateFirstStart ( String userInput ) {
     	final OnConfirmedCallback confirmNameCallback = (boolean confirmed) -> {
                 System.out.println("Confirmed: " + confirmed);
@@ -381,6 +384,10 @@ public class Controller {
         blockingStateController.startConfirmation(FirstStartMessages.confirmation(userName), confirmNameCallback);
     }
 
+    /**
+     * The code that runs when the program is in the default state
+     * @param userInput User's input
+     */
     private static void stateDefault(String userInput) {
         if ( userInput.length() == 0 ) {
             return;
